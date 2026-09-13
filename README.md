@@ -22,7 +22,22 @@ npm install
 npm run dev      # desarrollo en http://localhost:4321/echo-landing/
 npm run build    # salida estática en dist/
 npm run preview  # sirve dist/ como lo verá Pages
+npm run verificar # comprueba el copy sobre dist/ (hay que construir antes)
 ```
+
+## La comprobación de copy
+
+`npm run verificar` lee `dist/index.html` y falla si alguna de las tres
+redacciones innegociables (privacidad, cierre de la comparativa y «para quién no
+es») no aparece literal, si aparece alguna cadena prohibida, si los metadatos se
+salen de sus límites, si hay algún recurso de un dominio ajeno o si falta el
+`noindex`. Construye antes: se ejecuta sobre la salida, no sobre el código.
+
+## Revisar los estados del formulario
+
+`?estado=reposo|enviando|error|invalido|exito|duplicado` pinta cada estado sin
+necesidad de un endpoint vivo. Es una afordancia de revisión; no afecta a una
+visita normal.
 
 ## El `base` del sitio
 
@@ -42,7 +57,12 @@ Copia `.env.example` a `.env` y rellena lo que necesites. Solo hay una:
 
 | Variable | Qué es | Por defecto |
 |---|---|---|
-| `PUBLIC_FORM_ENDPOINT` | URL de destino del formulario de lista de espera. Cambiarla no exige tocar el marcado. | vacío — el formulario no envía nada |
+| `PUBLIC_FORM_ENDPOINT` | URL de destino del formulario de lista de espera. Cambiarla no exige tocar el marcado. | vacío — el formulario avisa de que el alta no está operativa y no envía |
+
+Sin endpoint el formulario **no finge**: se puede leer y revisar, pero el botón
+queda deshabilitado y ningún visitante ve un falso «apuntado». El envío nativo
+(sin JavaScript) va por `POST` al endpoint y vuelve a `/gracias` mediante el
+campo oculto `_next`.
 
 No es un secreto: es una URL pública de envío. **Ninguna clave de proveedor entra en
 este repositorio**; si un proveedor exige clave privada, va en secretos del repo y se
