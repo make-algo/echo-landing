@@ -29,20 +29,23 @@ const gracias = absoluteUrl('/gracias')
 
     <!--
       Honeypot: fuera de pantalla, sin foco por teclado y oculto al lector. No se
-      usa display:none, que algunos rellenadores detectan.
+      usa display:none, que algunos rellenadores detectan. El nombre _gotcha es el
+      campo nativo de Formspree; la convención bot-field de Netlify no la mira
+      nadie aquí, así que con ella el antispam sería decorativo.
     -->
     <p class="hp" aria-hidden="true">
       <label>
         No rellenar
-        <input tabindex="-1" autocomplete="off" name="bot-field" />
+        <input tabindex="-1" autocomplete="off" name="_gotcha" />
       </label>
     </p>
 
     {
       !activo && (
         <p class="notice" id="sin-endpoint" role="status">
-          El alta todavía no está operativa: estamos cerrando con quién guardará tu correo. El
-          formulario se puede leer y revisar, pero no envía nada.
+          El alta todavía no está operativa: nos falta cerrar el contrato de protección de datos
+          con Formspree, que es quien guardará tu correo. El formulario se puede leer y revisar,
+          pero no envía nada.
         </p>
       )
     }
@@ -98,6 +101,11 @@ const gracias = absoluteUrl('/gracias')
     </div>
 
     <button class="btn btn--submit" id="submit" type="submit" disabled={!activo}>Apuntarme</button>
+
+    <p class="microcopy">
+      Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
+      respondiendo a cualquier correo.
+    </p>
   </form>
 
   <!--
@@ -109,9 +117,8 @@ const gracias = absoluteUrl('/gracias')
   <p class="legalnote" id="legalnote">
     <strong>Protección de datos:</strong> el responsable es Make Algo SL. Usamos tu email solo para
     avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin
-    newsletter y sin cesiones comerciales. El formulario lo procesa <span class="pending"
-      >[proveedor por decidir]</span
-    > con las garantías que explicamos en la <a href={url('/privacidad')}>política de privacidad</a>,
+    newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE.&nbsp;UU.) con las
+    garantías que explicamos en la <a href={url('/privacidad')}>política de privacidad</a>,
     donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo
     o escribiendo a <span class="pending">[correo por definir]</span>.
   </p>

@@ -54,6 +54,11 @@ const INNEGOCIABLES = [
      beta.`,
   ],
   [
+    'CA-FORM-6 · microcopy bajo el botón',
+    `Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
+     respondiendo a cualquier correo.`,
+  ],
+  [
     'CA-INT-3 · para quién NO es',
     `No te va a servir si dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si
      tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no
@@ -128,6 +133,17 @@ else console.log('ok  CA-NEG-1 · ningún precio en la comparativa')
 const filas = (html.match(/<tr[^>]*>\s*<th[^>]*scope="row"/g) ?? []).length
 if (filas !== 4) fallos.push(`La comparativa tiene ${filas} filas y la entradilla anuncia cuatro`)
 else console.log('ok  comparativa · cuatro filas, como dice la entradilla')
+
+// --- CA-ENV-3 · el honeypot tiene que llamarse como el campo nativo del
+//     proveedor. Con otro nombre el antispam no hace nada y no se nota hasta
+//     que llega el spam.
+if (!/name="_gotcha"/.test(html)) fallos.push('CA-ENV-3: el honeypot no se llama _gotcha')
+else console.log('ok  CA-ENV-3 · honeypot con el nombre que lee el proveedor')
+
+// --- El sitio no puede contradecirse sobre quién procesa el formulario.
+if (/proveedor por (decidir|confirmar)/.test(html))
+  fallos.push('El formulario sigue diciendo que el proveedor está sin decidir')
+else console.log('ok  un solo relato sobre quién procesa el formulario')
 
 // --- Sin recursos de terceros (CA-NEG-9), en TODAS las páginas construidas y en
 //     el CSS. Se miran solo los atributos de CARGA: un <a href> a un dominio ajeno
