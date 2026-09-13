@@ -1,0 +1,386 @@
+/* ============================================================================
+   /b/ — CORRECCIÓN · la página es una galerada que se limpia sola según bajas
+   Material: las marcas de corrección, llevadas hasta que organizan la página.
+
+   Regla que rompe, con nombre y apellido: «el texto de una página no se tacha
+   ni se tapa: la legibilidad es sagrada».
+
+   La densidad de marcas BAJA con el scroll: la apertura es un destrozo, la
+   comparativa lleva cuatro correcciones, el cierre no tiene ninguna y el alta
+   está limpia. La página se limpia sola mientras la lees, que es literalmente
+   lo que vende el producto.
+
+   Ni una sola caja, radio cero en todas partes, y el rojo tiene una única
+   gramática: rojo es corrección. Por eso el CTA es rojo.
+   ========================================================================= */
+
+.ruta-correccion {
+  --c-paper: #f7f3ec;
+  --c-ink: #121110; /* 16,4:1 */
+  --c-ink-2: #4c463d; /*  8,0:1 */
+  --c-rojo: #b52216; /*  6,9:1 sobre papel; blanco sobre él 6,3:1 */
+  --c-rojo-fuerte: #8e1a10;
+  --c-m: clamp(1.25rem, 5vw, 5.5rem);
+  /* La banda del margen: donde vive la mano que corrige. Las marcas no flotan
+     sueltas por la página, tienen su sitio. */
+  --c-banda: clamp(1.5rem, 3.5vw, 3.25rem);
+
+  background: var(--c-paper);
+  color: var(--c-ink);
+
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-2);
+  --color-paper: var(--c-paper);
+  --color-paper-sunk: var(--c-paper);
+  --color-paper-raised: #fffdf9;
+  --color-line: #cdc4b4;
+  --color-accent: var(--c-rojo);
+  --color-accent-strong: var(--c-rojo-fuerte);
+  --color-accent-wash: #f2ddd6;
+  --color-error: var(--c-rojo-fuerte);
+  --color-focus: var(--c-rojo);
+  --color-border: var(--c-ink-2);
+}
+
+/* Radio cero en TODAS partes. No es una excepción por sección: es el sistema. */
+.ruta-correccion *,
+.ruta-correccion *::before,
+.ruta-correccion *::after {
+  border-radius: 0;
+}
+
+/* Sin contenedor y sin cajas: el texto va de borde a borde con la banda de
+   corrección a la izquierda. Esto es una galerada, no una web. */
+.ruta-correccion .acto {
+  padding-left: calc(var(--c-m) + var(--c-banda));
+  padding-right: var(--c-m);
+  position: relative;
+}
+.ruta-correccion .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* Las reglas negras gruesas se quedan SOLO donde marcan un cambio de acto.
+   Si hicieran falta para separar, sería que el espaciado no está resuelto. */
+.ruta-correccion .regla {
+  height: 6px;
+  background: var(--c-ink);
+  margin-block: clamp(2rem, 4vw, 3.25rem);
+}
+
+/* --- LA GRAMÁTICA DE MARCAS. Tres, y las tres con la MISMA regla geométrica.
+       El tachado es `line-through` nativo: una sola regla, altura óptica de la
+       fuente, grosor proporcional al cuerpo, y se pega al borde exacto de la
+       palabra incluso cuando la frase cambia de renglón. Un filete absoluto y
+       girado se despega en cuanto el texto se parte, y eso era justo lo que se
+       veía mal. ------------------------------------------------------------ */
+.ruta-correccion .tach {
+  color: var(--c-ink-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--c-rojo);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0;
+}
+
+/* La inserción: lo que la mano escribe encima, con su llamada. */
+.ruta-correccion .ins {
+  display: inline-block;
+  position: relative;
+  color: var(--c-rojo);
+  font: 500 0.26em / 1.2 var(--font-mono);
+  letter-spacing: 0;
+  vertical-align: 0.9em;
+  margin-inline: 0.15em;
+}
+.ruta-correccion .ins::before {
+  content: '^';
+  position: absolute;
+  left: 0;
+  top: 1.15em;
+  font-weight: 700;
+}
+
+/* La barra de margen: señala el párrafo intervenido. Vive en la banda. */
+.ruta-correccion .banda {
+  position: absolute;
+  left: var(--c-m);
+  width: 4px;
+  background: var(--c-rojo);
+  top: 0;
+  bottom: 0;
+}
+.ruta-correccion .nota {
+  font: 400 var(--text-micro) / 1.35 var(--font-mono);
+  color: var(--c-rojo);
+  letter-spacing: 0.02em;
+}
+
+/* --- LAS DOS VOCES. Display pesado para lo que se dijo, ligero para lo que se
+       escribe, y monoespaciada solo para la voz de la máquina. Dos familias, no
+       tres. Y las escalas bien separadas, para que se lean como antes/después y
+       no como una repetición. ---------------------------------------------- */
+.ruta-correccion .sucio {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  font-size: clamp(2rem, 1rem + 3.6vw, 4.5rem);
+  max-width: 22ch;
+  overflow-wrap: break-word;
+}
+.ruta-correccion h1,
+.ruta-correccion .limpio {
+  font-weight: 400;
+  letter-spacing: -0.024em;
+  line-height: 1.06;
+  font-size: clamp(1.375rem, 0.85rem + 2.2vw, 2.625rem);
+  max-width: 21ch;
+  text-wrap: balance;
+}
+.ruta-correccion h2 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.625rem);
+  max-width: 20ch;
+}
+.ruta-correccion h3 {
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  font-size: clamp(1.125rem, 1.05rem + 0.5vw, 1.375rem);
+}
+.ruta-correccion .c-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--c-ink-2);
+  max-width: 54ch;
+  margin-top: 1.5rem;
+}
+.ruta-correccion .c-dim,
+.ruta-correccion .rubric {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--c-ink-2);
+  letter-spacing: 0.02em;
+}
+.ruta-correccion .rubric {
+  color: var(--c-rojo);
+}
+.ruta-correccion p {
+  max-width: 58ch;
+}
+
+.ruta-correccion .btn {
+  background: var(--c-rojo);
+  color: var(--c-paper);
+  font-weight: 700;
+  font-size: 1.1875rem;
+  letter-spacing: -0.01em;
+  padding: 1rem 1.75rem;
+  min-height: 56px;
+  margin-top: 1.75rem;
+}
+.ruta-correccion .btn:hover {
+  background: var(--c-rojo-fuerte);
+}
+
+/* --- LA APERTURA. A la izquierda lo dictado corrigiéndose; a la derecha el
+       producto, porque una página que promete «hablas y aparece escrito» no
+       puede enseñar cero. ---------------------------------------------------- */
+@media (min-width: 1024px) {
+  .ruta-correccion .apertura {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+  .ruta-correccion .apertura__prod {
+    position: sticky;
+    top: 2rem;
+  }
+}
+.ruta-correccion .win {
+  border: 2px solid var(--c-ink);
+  background: var(--color-paper-raised);
+  padding: 0;
+  gap: 0;
+}
+.ruta-correccion .win__bar,
+.ruta-correccion .win__field {
+  padding: 0.4rem 0.85rem;
+  font-size: var(--text-micro);
+}
+.ruta-correccion .win__bar {
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--color-line);
+}
+.ruta-correccion .win__rule {
+  display: none;
+}
+.ruta-correccion .win__body {
+  padding: 0.9rem 0.85rem 2rem;
+  border-top: 1px solid var(--color-line);
+  font-size: 1.0625rem;
+}
+.ruta-correccion .caret {
+  background: var(--c-rojo);
+  width: 3px;
+}
+
+/* --- LA DEMO: la galerada entera. Lo que dijiste arriba, lo que queda debajo. */
+.ruta-correccion .galerada {
+  font-weight: 800;
+  font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  max-width: 30ch;
+}
+.ruta-correccion .resultado {
+  border-top: 6px solid var(--c-ink);
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  max-width: 40rem;
+}
+.ruta-correccion .resultado .campos {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--c-ink-2);
+}
+.ruta-correccion .resultado .campos b {
+  color: var(--c-ink);
+  font-weight: 500;
+}
+.ruta-correccion .resultado .texto {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+
+/* --- LA COMPARATIVA SON CUATRO CORRECCIONES, ni una más ------------------- */
+.ruta-correccion .corr {
+  border-top: 2px solid var(--c-ink);
+  padding: 1.25rem 0 1.5rem;
+}
+.ruta-correccion .corr:last-of-type {
+  border-bottom: 2px solid var(--c-ink);
+}
+.ruta-correccion .corr .crit {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--c-rojo);
+  margin-bottom: 0.6rem;
+}
+.ruta-correccion .corr .mal {
+  font-weight: 800;
+  font-size: clamp(1.1875rem, 1rem + 0.9vw, 1.625rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--c-ink-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--c-rojo);
+  text-decoration-thickness: 0.07em;
+}
+.ruta-correccion .corr .bien {
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+  letter-spacing: -0.028em;
+  line-height: 1.1;
+  margin-top: 0.4rem;
+  max-width: 24ch;
+}
+
+/* --- EL CIERRE: ya no queda ni una marca. La página se ha limpiado. ------- */
+.ruta-correccion .final {
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.05rem + 2vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.024em;
+  max-width: 22ch;
+}
+
+/* --- EL ALTA: mismo sistema. Líneas de escritura, ni una caja. ------------ */
+.ruta-correccion .beta__body,
+.ruta-correccion .beta__body > form,
+.ruta-correccion .beta__body > .done {
+  /* El alta no se parte en dos columnas como en el control: en estas dos
+     direcciones el eje es uno solo y meter una segunda columna lo rompería. */
+  display: block;
+  max-width: 38rem;
+}
+.ruta-correccion .legalnote {
+  max-width: 38rem;
+  margin-top: 1.5rem;
+}
+.ruta-correccion .beta__body:has(form:not([hidden])) {
+  min-height: 0;
+}
+.ruta-correccion .field > label {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--c-ink-2);
+  font-weight: 400;
+  text-transform: lowercase;
+}
+.ruta-correccion input[type='email'],
+.ruta-correccion textarea {
+  background: transparent;
+  border: 0;
+  border-bottom: 4px solid var(--c-ink);
+  padding: 0.5rem 0;
+  font-size: 1.1875rem;
+  font-weight: 500;
+}
+.ruta-correccion textarea {
+  font-weight: 400;
+  font-size: 1.0625rem;
+  resize: vertical;
+}
+.ruta-correccion .field--bad input[type='email'] {
+  border-bottom-color: var(--c-rojo);
+}
+.ruta-correccion .radio input {
+  accent-color: var(--c-rojo);
+}
+.ruta-correccion .notice,
+.ruta-correccion .alert {
+  border-width: 0 0 0 4px;
+  border-color: var(--c-rojo);
+  background: transparent;
+  padding: 0.25rem 0 0.25rem 0.9rem;
+}
+.ruta-correccion .faq {
+  border-bottom: 2px solid var(--c-ink);
+  max-width: 52rem;
+}
+.ruta-correccion .qa {
+  border-top: 2px solid var(--c-ink);
+}
+.ruta-correccion .qa > summary {
+  font-weight: 700;
+}
+.ruta-correccion .footer {
+  border-top: 6px solid var(--c-ink);
+  padding-left: calc(var(--c-m) + var(--c-banda));
+  padding-right: var(--c-m);
+  color: var(--c-ink-2);
+}
+
+@media (max-width: 819px) {
+  /* La marca de inserción no cabe flotando sobre un titular de 32 px: pasa a
+     ser una línea propia, que es como se anota un margen estrecho. */
+  .ruta-correccion .ins {
+    display: block;
+    font-size: 0.3em;
+    vertical-align: baseline;
+    margin: 0.2em 0 0.3em;
+  }
+  .ruta-correccion .ins::before {
+    position: static;
+    margin-right: 0.4em;
+  }
+  .ruta-correccion .sucio {
+    max-width: none;
+    font-size: clamp(1.625rem, 1rem + 3vw, 2.25rem);
+  }
+  .ruta-correccion .galerada {
+    max-width: none;
+  }
+}

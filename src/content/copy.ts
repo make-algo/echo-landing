@@ -287,40 +287,49 @@ export const pie = {
 export const saltar = 'Saltar al contenido'
 
 /**
- * Micro-texto que SOLO existe en las variantes: rótulos de interfaz que su idea
- * organizadora necesita y que el control no tiene. No sustituye copy aprobado
- * en ningún caso; se añade. Listado en la entrega para que lo apruebe
- * echo-launch.
+ * Micro-texto que SOLO existe en las variantes de la segunda tanda. Son rótulos
+ * de interfaz que la idea organizadora de cada dirección necesita y que el
+ * control no tiene. Ninguno sustituye copy aprobado: todos se añaden. Listado en
+ * la entrega para que lo apruebe echo-launch.
  */
 export const variantes = {
-  a: {
-    estados: [
-      { n: '01', nombre: 'Dictando' },
-      { n: '02', nombre: 'Comparando' },
-      { n: '03', nombre: 'Escrito' },
-    ],
-    ladoEscrito: 'Lo que se escribe',
-    ladoDicho: 'Lo que dices',
-    pasadas: 'Misma frase, cuatro pasadas',
-    indice: 'Estado de la página',
-  },
-  b: {
-    ladoDicho: 'Lo que dices',
-    ladoEscrito: 'Lo que se escribe',
+  /** /a/ — la página es una grabación que recorres con un cabezal. */
+  onda: {
+    grabando: 'grabando · ⌥ espacio mantenido',
     /**
-     * El titular, dictado en bruto. Es interfaz —el «antes» del producto—, no
-     * una reescritura del titular: el titular aprobado sigue entero al lado.
+     * Rótulos de los silencios. La duración NO se escribe aquí: sale de los
+     * huecos reales de la envolvente (`src/lib/onda.ts`), porque si el número
+     * se elige a ojo la pista vuelve a ser decoración con coartada.
      */
-    titularDictado: [
-      { fuera: 'eh… ', queda: 'habla' },
-      { fuera: 's', queda: ' y aparece escrito' },
-      { fuera: ', o sea', queda: ', sin muletillas, ' },
-      { fuera: 'sin tener que ir diciendo coma, punto, ', queda: 'sin dictar la puntuación ' },
-      { fuera: 'y eh, ', queda: 'y sin cambiar de idioma' },
-    ],
+    silencio: 'silencio',
+    pulido: 'tecla soltada · pulido',
+    fin: 'fin de la grabación',
+    segundos: 's',
+    pista: 'Pista de la grabación',
   },
-  c: {
-    cabeceraDocumento: 'echo — dictado para Mac',
+
+  /** /b/ — la página es una galerada que se limpia sola según bajas. */
+  correccion: {
+    capaSucia: 'dictado en bruto · sin editar',
+    capaLimpia: 'pegado en tu app · ya editado',
+    grabando: '⌥ espacio mantenido · grabando',
+    /** La corrección que la mano escribe encima del dictado de la apertura. */
+    insercion: 'sin dictar la puntuación',
+  },
+
+  /** /c/ — la página es un búfer de texto abierto en un editor. */
+  editor: {
+    comentarios: {
+      cabecera: '# echo — dictado para Mac',
+      demo: '# la demo',
+      comparativa: '# la comparativa',
+      preguntas: '# preguntas',
+      correo: '# tu correo',
+      uso: '# en qué lo usarías',
+      suscripcion: '# claude o chatgpt de pago',
+    },
+    barra: { fichero: 'echo.landing', idiomas: 'es-ES + en' },
     atajos: { ir: 'g', comparativa: 'c', beta: 'b' },
+    plegado: (n: number) => `⋯ ${n} líneas`,
   },
 } as const
