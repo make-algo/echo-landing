@@ -25,6 +25,10 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
+      # Las garantías se imponen, no se dejan a mano: si un cambio rompe el
+      # noindex o cuela un recurso de un dominio ajeno, el despliegue falla
+      # aquí en vez de publicarse en silencio.
+      - run: npm run verificar
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

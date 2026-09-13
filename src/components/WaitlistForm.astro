@@ -2,7 +2,7 @@
 import { absoluteUrl, formEndpoint, url } from '../lib/site'
 
 /**
- * Lista de espera. Diseño: docs/design/landing.md §6. Copy: 02 §5.8. Comportamiento: 03 §9.
+ * Lista de espera.
  *
  * Es un <form method="POST"> nativo: sin JavaScript el envío va al proveedor y este
  * redirige a /gracias, que repite el bloque de éxito. Con JavaScript se intercepta y
@@ -110,8 +110,8 @@ const gracias = absoluteUrl('/gracias')
     </p>
 
     <!--
-      Texto de protección de datos de asesor-legal (MAK-79), visible junto al botón y no
-      tras un enlace: es lo que hace que no haga falta checkbox de consentimiento.
+      Texto legal de protección de datos, visible junto al botón y no tras un enlace:
+      es lo que hace que no haga falta checkbox de consentimiento. No se reescribe.
       Los huecos [...] los rellena un humano antes de publicar en dominio propio.
     -->
     <p class="privacy-note">
@@ -240,8 +240,8 @@ const gracias = absoluteUrl('/gracias')
     })
 
     // Afordancia de revisión: ?estado=exito|duplicado|error|invalido|enviando pinta
-    // cada estado sin necesidad de un endpoint vivo, para que echo-ux y echo-pm los
-    // puedan provocar en la versión de prueba. No afecta a un visitante normal.
+    // cada estado sin necesidad de un endpoint vivo, para poder revisarlos uno a
+    // uno en la versión de prueba. No afecta a un visitante normal.
     const pedido = new URLSearchParams(location.search).get('estado')
     const estadosRevisables: Estado[] = ['reposo', 'enviando', 'error', 'invalido', 'exito', 'duplicado']
     if (pedido && (estadosRevisables as string[]).includes(pedido)) {

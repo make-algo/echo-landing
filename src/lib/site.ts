@@ -14,7 +14,7 @@ export function absoluteUrl(path: string): string {
 }
 
 export const site = {
-  // Copy literal de docs/gtm/02-propuesta-valor.md §6 (repo privado). No se reescribe.
+  // Copy aprobado. No se reescribe.
   title: 'echo — Dictado para Mac que escribe limpio',
   description:
     'Hablas y el texto aparece escrito y puntuado donde estabas escribiendo. Transcripción local; el pulido usa tu suscripción de Claude o ChatGPT.',

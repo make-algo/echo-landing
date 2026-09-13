@@ -34,7 +34,7 @@ const texto = readFileSync(HTML, 'utf8')
 
 const norm = (s) => s.replace(/\s+/g, ' ').trim()
 
-// --- Las tres redacciones innegociables (03 §4), literales de 02 §5.6, §5.5 y §5.7
+// --- Las tres redacciones innegociables: copy aprobado que va literal o no va.
 const INNEGOCIABLES = [
   [
     'CA-INT-1 · párrafo de privacidad',
@@ -57,13 +57,13 @@ const INNEGOCIABLES = [
   ],
 ]
 
-// --- Criterios negativos (03 §5, de 02 §5.11 y §4)
+// --- Criterios negativos: lo que no puede aparecer en la página.
 const PROHIBIDAS = [
   ['CA-PRIV-4', ['100% privado', '100 % privado', 'totalmente local', 'totalmente privado']],
   ['CA-NEG-4/7 · competidores', ['Wispr', 'Superwhisper', 'Aqua Voice', 'Trustpilot']],
   ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3', 'veces más rápido']],
   [
-    'CA-NEG-8 · palabras prohibidas de 02 §4',
+    'CA-NEG-8 · palabras prohibidas por el tono',
     [
       'revolucionario',
       'potenciado por IA',
@@ -96,7 +96,7 @@ const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''
 const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? ''
 
 if (title !== 'echo — Dictado para Mac que escribe limpio')
-  fallos.push(`CA-META-1: el <title> no es el de 02 §6 (es «${title}»)`)
+  fallos.push(`CA-META-1: el <title> no es el aprobado (es «${title}»)`)
 else if (title.length > 60) fallos.push(`CA-META-1: el <title> supera 60 caracteres (${title.length})`)
 else console.log(`ok  CA-META-1 · title (${title.length} caracteres)`)
 
