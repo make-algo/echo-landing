@@ -1,19 +1,14 @@
 ---
-import '../styles/global.css'
+import Base from '../layouts/Base.astro'
 ---
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Versión de prueba: no queremos que se indexe hasta que haya lanzamiento. -->
-    <meta name="robots" content="noindex, nofollow" />
-    <title>echo — versión de prueba</title>
-  </head>
-  <body class="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-8">
-    <main class="max-w-md text-center space-y-3">
-      <h1 class="text-3xl font-semibold tracking-tight">echo</h1>
-      <p class="text-neutral-400">Versión de prueba. Todavía no hay nada que ver aquí.</p>
-    </main>
-  </body>
-</html>
+
+<!--
+  Marcador de posición a la espera del diseño de echo-ux (MAK-74).
+  Las diez secciones de `02` §5 se implementan sobre este mismo layout.
+-->
+<Base>
+  <main id="contenido" class="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-3 px-6 text-center">
+    <h1 class="text-3xl font-semibold tracking-tight">echo</h1>
+    <p class="text-neutral-600">Versión de prueba. Todavía no hay nada que ver aquí.</p>
+  </main>
+</Base>

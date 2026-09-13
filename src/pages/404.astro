@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro'
+import { url } from '../lib/site'
+---
+
+<Base title="Página no encontrada — echo" path="/404">
+  <main id="contenido" class="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-4 px-6">
+    <h1 class="text-2xl font-semibold tracking-tight">Esta página no existe</h1>
+    <p class="text-neutral-600">El enlace que has seguido no lleva a ninguna parte.</p>
+    <p><a class="underline underline-offset-4" href={url('/')}>Volver al inicio</a></p>
+  </main>
+</Base>

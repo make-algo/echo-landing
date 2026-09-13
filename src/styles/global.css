@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/*
+  Base mínima, no identidad visual: los tokens (tipografía, paleta, escala, radios)
+  los fija echo-ux en MAK-74 y se añaden aquí cuando lleguen.
+*/
+
+/* Foco visible siempre, en cualquier elemento interactivo. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Quien pide menos movimiento no recibe ninguno, tampoco al saltar a un ancla. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
