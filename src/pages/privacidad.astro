@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+
+/**
+ * Texto íntegro de asesor-legal (MAK-79). No se reescribe ni se resume.
+ *
+ * Excepción declarada: el apartado «Quién más los trata» decía que Netlify presta
+ * el formulario y el alojamiento. Ya no es cierto — el sitio se aloja en GitHub
+ * Pages y el proveedor del formulario está sin decidir. Como ese párrafo lo está
+ * reescribiendo asesor-legal (MAK-79), aquí queda con la estructura correcta y los
+ * huecos marcados, sin inventar afirmaciones jurídicas.
+ */
+---
+
+<Base title="Política de privacidad — echo" path="/privacidad">
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Política de privacidad</h1>
+
+        <h2>Quién es el responsable</h2>
+        <p>
+          Make Algo SL, NIF B88875018, <span class="gap">[dirección completa]</span>, Madrid, España.
+          Email: <span class="gap">[email de contacto]</span>.
+        </p>
+
+        <h2>Qué datos recogemos</h2>
+        <p>
+          Los que nos das en el formulario de lista de espera: tu email (obligatorio) y, si quieres
+          contestar, para qué usarías echo y si tienes Claude o ChatGPT de pago (ambas opcionales).
+          No recogemos nada más: esta web no usa cookies ni analítica de terceros.
+        </p>
+
+        <h2>Para qué los usamos</h2>
+        <p>
+          Para gestionar la lista de espera de echo y escribirte cuando abramos tu tanda. Las
+          respuestas opcionales las usamos solo para ordenar la lista y decidir las tandas. Nada
+          más: sin newsletter, sin publicidad, sin ceder tus datos a terceros con fines comerciales,
+          y sin decisiones automatizadas que te afecten legalmente.
+        </p>
+
+        <h2>Con qué base legal</h2>
+        <p>
+          Tu consentimiento (art. 6.1.a RGPD), que nos das al enviar el formulario. Puedes retirarlo
+          cuando quieras respondiendo a cualquier correo nuestro o escribiendo a
+          <span class="gap">[email de contacto]</span>; retirarlo no afecta a lo tratado hasta ese
+          momento.
+        </p>
+
+        <h2>Cuánto tiempo los guardamos</h2>
+        <p>
+          Hasta que entres en tu tanda o pidas la baja y, como máximo, 12 meses después del
+          lanzamiento general de echo. Después los suprimimos.
+        </p>
+
+        <h2>Quién más los trata</h2>
+        <p>
+          El alojamiento de esta web lo presta <span class="gap">[alojamiento por confirmar]</span> y
+          el formulario lo procesa <span class="gap">[proveedor del formulario por confirmar]</span>,
+          que actúa como encargado del tratamiento con un contrato conforme al art. 28 RGPD.
+          <span class="gap">[Garantías de transferencia internacional, si el proveedor está fuera de
+          la UE]</span>. Fuera de esto, no cedemos tus datos a nadie salvo obligación legal.
+        </p>
+
+        <h2>Tus derechos</h2>
+        <p>
+          Puedes pedirnos acceso, rectificación, supresión, oposición, limitación del tratamiento y
+          portabilidad escribiendo a <span class="gap">[email de contacto]</span>. Te contestaremos
+          en el plazo máximo de un mes. Si crees que no lo hemos hecho bien, puedes reclamar ante la
+          Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener"
+            >www.aepd.es</a
+          >).
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+          Esta web no usa cookies propias ni de terceros. Si algún día eso cambia, actualizaremos
+          esta política y, si la ley lo exige, te pediremos consentimiento antes.
+        </p>
+
+        <p><em>Última actualización: <span class="gap">[fecha de publicación]</span>.</em></p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

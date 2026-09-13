@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+import { url } from '../lib/site'
+
+/**
+ * Destino del envío sin JavaScript (03 §9.4, landing.md §6.5). Repite el bloque de
+ * éxito con «tu correo» en lugar del correo, porque aquí no lo tenemos: es una
+ * página estática y el dato viajó al proveedor, no a nosotros.
+ */
+---
+
+<Base title="Apuntado — echo" path="/gracias">
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="form-card" style="min-height: auto">
+        <div class="done">
+          <p>Apuntado. Te escribimos a <span class="mail">tu correo</span> cuando abramos tu tanda.</p>
+          <p>Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.</p>
+        </div>
+        <p style="margin-top: 28px">
+          <a href={url('/')} style="color: var(--color-accent)">Volver a la página de echo</a>
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

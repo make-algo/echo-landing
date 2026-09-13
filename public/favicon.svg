@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="echo">
-  <!-- Provisional: el tratamiento de marca lo fija echo-ux en MAK-74. -->
-  <rect width="64" height="64" rx="14" fill="#111111"/>
-  <text x="32" y="45" font-family="ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif"
-        font-size="40" font-weight="600" fill="#ffffff" text-anchor="middle">e</text>
+  <!-- La letra «e» en tinta sobre papel, tipografía del sistema y sin recuadro
+       (docs/design/landing.md §2.6). No hay logotipo dibujado en la v1. -->
+  <rect width="64" height="64" fill="#FBFAF8"/>
+  <text x="32" y="47" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="52" font-weight="600" letter-spacing="-1" fill="#17150F" text-anchor="middle">e</text>
 </svg>
