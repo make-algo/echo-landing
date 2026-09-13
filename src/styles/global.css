@@ -594,7 +594,11 @@
   .hud__text .f { animation-name: strike; }
   .pasted { animation-name: paste; }
   .caret--end { animation-name: caretEnd; }
-  .caret--start { display: inline-block; animation-name: caretStart; }
+  /* El cursor de inicio solo existe mientras la demo se anima: fuera de
+     `.demo-anim` el marcado se queda en su fotograma final, que lleva un solo
+     cursor al final del texto pegado. Sin acotarlo aquí, las variantes que
+     reutilizan la ventana sin animarla pintaban dos cursores. */
+  .demo-anim .caret--start { display: inline-block; animation-name: caretStart; }
   /* Cinco fragmentos, no letra a letra: así aparece una transcripción en vivo. */
   .s1 { animation-name: f1; }
   .s2 { animation-name: f2; }

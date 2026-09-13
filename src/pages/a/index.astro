@@ -1,174 +1,313 @@
 ---
 import Base from '../../layouts/Base.astro'
-import Dicho from '../../components/demo/Dicho.astro'
 import Escrito from '../../components/demo/Escrito.astro'
 import Footer from '../../components/Footer.astro'
-import Argumentos from '../../components/secciones/Argumentos.astro'
-import Beta from '../../components/secciones/Beta.astro'
-import ParaQuien from '../../components/secciones/ParaQuien.astro'
-import Pasos from '../../components/secciones/Pasos.astro'
-import Preguntas from '../../components/secciones/Preguntas.astro'
-import Privacidad from '../../components/secciones/Privacidad.astro'
-import { apertura, cabecera, comparativa, demo, variantes } from '../../content/copy'
-import '../../styles/variante-a.css'
+import WaitlistForm from '../../components/WaitlistForm.astro'
+import {
+  apertura,
+  argumentos,
+  beta,
+  comparativa,
+  demo,
+  paraQuien,
+  pasos,
+  preguntas,
+  privacidad,
+  variantes,
+} from '../../content/copy'
+import { DURACION, TIEMPOS_DICTADO, envolvente, marca, silencios } from '../../lib/onda'
+import '../../styles/variante-onda.css'
 
 /**
- * Variante A — LA DEMO ES LA PÁGINA.
+ * /a/ — ONDA. La página es una grabación que recorres con un cabezal.
  *
- * La página no tiene secciones, tiene estados: hay un solo panel de dictado y
- * bajar no te lleva a otro sitio, le cambia el estado. La superficie oscura de
- * echo deja de ser un componente de la demo y pasa a ser el fondo de todo el
- * tramo del argumento; el papel sobrevive en un único sitio, dentro de la
- * ventana de la app.
+ * Un solo reloj para todo: la pista de la izquierda dibuja la envolvente de una
+ * sesión de dictado de 47 s, el margen izquierdo de cada bloque sale de la
+ * amplitud de su frase, los huecos entre secciones son los silencios REALES de
+ * esa envolvente —medidos, no elegidos a ojo— y la transcripción de la demo
+ * cuelga del segundo en que se dijo cada tramo.
  *
- * El texto es el mismo de `/`: sale de `src/content/copy.ts` y va literal. Lo
- * único que se añade son rótulos de interfaz (`variantes.a`).
+ * El cabezal no calcula su hora: la LEE del contenido que tiene al lado, así que
+ * no puede decir un segundo distinto del que dice la transcripción a su altura.
+ * Eso era lo que hundía la versión anterior de esta dirección.
  *
- * No lleva la cabecera del control: en A la marca vive en el raíl, y una
- * cabecera de papel sobre el tramo oscuro sería una costura de más en el primer
- * viewport.
+ * La pista entera va `aria-hidden`: es una capa decorativa. El copy aprobado
+ * vive entero, seguido y en orden en el árbol de accesibilidad.
  */
-const ogTitle = apertura.titular.join(' ')
-const v = variantes.a
+const v = variantes.onda
+const titular = apertura.titular.join(' ')
+const barras = envolvente(240)
+const huecos = silencios()
+
+/** Amplitud de un bloque: el pico de la envolvente en su tramo de tiempo. */
+function amp(desde: number, hasta: number): number {
+  const i0 = Math.round((desde / DURACION) * (barras.length - 1))
+  const i1 = Math.round((hasta / DURACION) * (barras.length - 1))
+  return Math.round(Math.max(...barras.slice(i0, i1 + 1)) * 104)
+}
+
+/**
+ * Los siete tramos del dictado con su instante. Salen de `demo.dictado`, que es
+ * la misma fuente que usa el control: aquí no se reescribe la demo, se compone
+ * en un eje de tiempo. Los tramos que echo conserva y que vienen seguidos se
+ * unen, porque se dijeron de corrido.
+ */
+const tramos: Array<{ texto: string; pico: boolean }> = []
+demo.dictado.forEach((t, i) => {
+  if (t.fuera) tramos.push({ texto: t.fuera.trim(), pico: false })
+  if (!t.queda) return
+  const previo = tramos.at(-1)
+  const seguido = previo?.pico && !demo.dictado[i].fuera
+  if (seguido) previo.texto += ' ' + t.queda.trim()
+  else tramos.push({ texto: t.queda.trim(), pico: true })
+})
+const dictado = tramos.map((t, i) => ({ ...t, t: TIEMPOS_DICTADO[i] }))
 ---
 
-<Base ogTitle={ogTitle} path="/a/">
-  <main id="contenido" class="ruta-a">
-    <div class="deck">
-      <div class="rail">
-        <div class="rail__sticky">
-          <span class="mark">{cabecera.marca}</span>
-          <ol class="states" id="estados" aria-label={v.indice}>
-            {
-              v.estados.map((e, i) => (
-                <li aria-current={i === 0 ? 'true' : undefined}>
-                  <span class="k">{e.n}</span>{e.nombre}
-                </li>
-              ))
-            }
-          </ol>
+<Base ogTitle={titular} path="/a/">
+  <main id="contenido" class="ruta-onda">
+    <div class="doc">
+      <!-- LA PISTA. Capa decorativa: nada de lo que dice existe solo aquí. -->
+      <div class="pista" aria-hidden="true" id="pista">
+        {
+          barras.map((a, i) => (
+            <b
+              style={`top:${((i / (barras.length - 1)) * 100).toFixed(3)}%;width:${Math.max(3, a * 108).toFixed(1)}px`}
+              data-t={((i / (barras.length - 1)) * DURACION).toFixed(2)}
+            />
+          ))
+        }
+      </div>
+      <div class="cabezal" aria-hidden="true"><i></i><span id="reloj">{marca(1.6)}</span></div>
+
+      <!-- 1,6 s · apertura -->
+      <div class="blk" data-t="1.6" style={`--amp:${amp(1.6, 4.2)}`}>
+        <h1>{titular}</h1>
+        <p class="o-lead">{apertura.subtitulo}</p>
+        <p><a class="btn" href="#beta">{apertura.cta}</a></p>
+        <p class="o-dim" style="margin-top: 1rem">
+          {apertura.requisito.aviso} {apertura.requisito.maquina}
+        </p>
+      </div>
+
+      <p class="silencio" aria-hidden="true" style={`--dur:${huecos[0].dur}`}>
+        {v.silencio} · {String(huecos[0].dur).replace('.', ',')} {v.segundos}
+      </p>
+
+      <!-- 6,1 s · la demo: cada palabra cuelga del instante en que se dijo, y
+           los huecos entre líneas son las pausas reales del dictado. -->
+      <figure class="blk" id="demo" data-t="6.1" style={`--amp:${amp(6.1, 12.5)}`}>
+        <h2 class="sr-only">{demo.tituloOculto}</h2>
+        <p class="sr-only">{demo.descripcion}</p>
+        <p class="o-dim" aria-hidden="true">{v.grabando}</p>
+        <ol class="dictado" aria-hidden="true">
+          {
+            dictado.map((d, i) => (
+              <li
+                data-pico={d.pico ? '' : undefined}
+                data-t={d.t.toFixed(2)}
+                style={`margin-top:calc(${(d.t - (dictado[i - 1]?.t ?? 6.1)).toFixed(2)} * clamp(0.5rem, 1.4vw, 1.2rem))`}
+              >
+                <span class="t">{marca(d.t)}</span>
+                <span class="w">{d.pico ? d.texto : <s>{d.texto}</s>}</span>
+              </li>
+            ))
+          }
+        </ol>
+
+        <p class="silencio" aria-hidden="true" style={`--dur:${huecos[1].dur}`}>
+          {v.pulido} {String(huecos[1].dur).replace('.', ',')} {v.segundos}
+        </p>
+
+        <Escrito />
+        <figcaption class="o-dim" style="margin-top: 0.75rem">{demo.pie}</figcaption>
+      </figure>
+
+      <!-- 14,3 s -->
+      <div class="blk" data-t="14.3" style={`--amp:${amp(14.3, 18.9)}`}>
+        <h2 class="rubric">{argumentos.rotulo}</h2>
+        <div class="args">
+          {
+            argumentos.lista.map((a) => (
+              <div class="arg">
+                <h3>{a.titulo}</h3>
+                <p>{a.texto}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
 
-      <div class="stages">
-        <!-- ESTADO 01 · Dictando. El titular deja el resto del campo oscuro
-             vacío a propósito: el vacío es lo que hace que el panel se lea
-             como un aparato encendido. -->
-        <section class="stage" data-estado="0">
-          <h1>{apertura.titular.join(' ')}</h1>
-          <p class="a-lead">{apertura.subtitulo}</p>
-          <p class="a-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
-          <p class="a-req">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
+      <p class="silencio" aria-hidden="true" style={`--dur:${huecos[2].dur}`}>
+        {v.silencio} · {String(huecos[2].dur).replace('.', ',')} {v.segundos}
+      </p>
 
-          <figure class="panel demo-anim" id="demo">
-            <h2 class="sr-only">{demo.tituloOculto}</h2>
-            <p class="sr-only">{demo.descripcion}</p>
-            <div class="panel__body">
-              <div class="panel__side">
-                <span class="panel__tag">{v.ladoEscrito}</span>
-                <Escrito />
-              </div>
-              <div class="panel__side">
-                <span class="panel__tag">{v.ladoDicho}</span>
-                <Dicho />
-              </div>
-            </div>
-            <figcaption class="a-req">{demo.pie}</figcaption>
-          </figure>
-        </section>
-
-        <Argumentos />
-        <Pasos />
-
-        <!-- ESTADO 02 · Comparando. No es una tabla: es el mismo panel
-             haciendo cuatro pasadas sobre la misma frase. -->
-        <section class="stage" id="comparacion" data-estado="1">
-          <h2>{comparativa.titulo}</h2>
-          <p class="a-lead">{comparativa.entradilla}</p>
-
-          <div class="panel">
-            <div class="panel__head"><span>{v.pasadas}</span></div>
-            <div class="passes">
-              <div class="pass pass--head" aria-hidden="true">
-                <div class="pass__attr">{comparativa.columnas.criterio}</div>
-                <div class="pass__echo">{comparativa.columnas.echo}</div>
-                <div class="pass__os">{comparativa.columnas.macos}</div>
-              </div>
-              {
-                comparativa.filas.map((fila) => (
-                  <div class="pass" data-fila-comparativa>
-                    <div class="pass__attr">{fila.criterio}</div>
-                    <div class="pass__echo"
-                      ><span class="col-label" aria-hidden="true">
-                        {comparativa.columnas.echo}</span
-                      >{fila.echo}</div
-                    >
-                    <div class="pass__os"
-                      ><span class="col-label" aria-hidden="true">
-                        {comparativa.columnas.macos}</span
-                      >{fila.macos}</div
-                    >
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </section>
-
-        <!-- ESTADO 03 · Escrito. El panel se apaga —sin animación: lo dicho se
-             queda tachado y quieto— y lo escrito permanece. -->
-        <section class="stage off" data-estado="2">
-          <div class="panel" aria-hidden="true">
-            <div class="panel__body">
-              <div class="panel__side">
-                <span class="panel__tag">{v.ladoEscrito}</span>
-                <Escrito />
-              </div>
-              <div class="panel__side">
-                <span class="panel__tag">{v.ladoDicho}</span>
-                <Dicho />
-              </div>
-            </div>
-          </div>
-          <p class="close-line" style="margin-top: 2.5rem">
-            {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
-          </p>
-          <p class="a-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
-        </section>
+      <!-- 21,5 s -->
+      <div class="blk" data-t="21.5" style={`--amp:${amp(21.5, 25.4)}`}>
+        <h2 class="rubric">{pasos.rotulo}</h2>
+        <ol class="pasos">
+          {
+            pasos.lista.map((paso) => (
+              <li class="paso">
+                <span class="n" aria-hidden="true">{paso.n}</span>
+                <h3>{paso.titulo}</h3>
+                <p>{paso.partes.map((t) => (t.dato ? <span class="t">{t.texto}</span> : t.texto))}</p>
+              </li>
+            ))
+          }
+        </ol>
       </div>
-    </div>
 
-    <!-- La costura: aquí se acaba el panel y vuelve el papel del control. -->
-    <Privacidad />
-    <ParaQuien />
-    <Beta />
-    <Preguntas />
+      <p class="silencio" aria-hidden="true" style={`--dur:${huecos[3].dur}`}>
+        {v.silencio} · {String(huecos[3].dur).replace('.', ',')} {v.segundos}
+      </p>
+
+      <!-- 27,7 s · la comparativa es la misma frase en dos pistas -->
+      <div class="blk" id="comparacion" data-t="27.7" style={`--amp:${amp(27.7, 32.6)}`}>
+        <h2>{comparativa.titulo}</h2>
+        <p class="o-lead">{comparativa.entradilla}</p>
+        <div style="margin-top: 1.5rem">
+          {
+            comparativa.filas.map((fila) => (
+              <div class="fila" data-fila-comparativa>
+                <p class="crit">{fila.criterio}</p>
+                <div class="dos">
+                  <p class="par par--os">
+                    <span class="et">{comparativa.columnas.macos}</span><span class="v">{fila.macos}</span>
+                  </p>
+                  <p class="par par--echo">
+                    <span class="et">{comparativa.columnas.echo}</span><span class="v">{fila.echo}</span>
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <h2 style="max-width: 26ch; margin-top: 2.5rem">
+          {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
+        </h2>
+      </div>
+
+      <p class="silencio" aria-hidden="true" style={`--dur:${huecos[4].dur}`}>
+        {v.silencio} · {String(huecos[4].dur).replace('.', ',')} {v.segundos}
+      </p>
+
+      <!-- 34,3 s -->
+      <div class="blk" id="privacidad" data-t="34.3" style={`--amp:${amp(34.3, 37.4)}`}>
+        <h2 class="rubric">{privacidad.rotulo}</h2>
+        <div class="priv">
+          <p style="font-size: 1.125rem">{privacidad.principal}</p>
+          {privacidad.notas.map((n) => <p>{n}</p>)}
+        </div>
+
+        <h2 class="rubric" style="margin-top: 2.5rem">{paraQuien.rotulo}</h2>
+        <div class="who">
+          {paraQuien.parrafos.map((p) => <p><strong>{p.fuerte}</strong>{p.resto}</p>)}
+        </div>
+      </div>
+
+      <p class="silencio" aria-hidden="true" style={`--dur:${huecos[5].dur}`}>
+        {v.silencio} · {String(huecos[5].dur).replace('.', ',')} {v.segundos}
+      </p>
+
+      <!-- 40,3 s · el alta no cambia de sistema: sigue siendo un instante de la
+           grabación, y por eso son líneas de escritura y no campos en cajas. -->
+      <div class="blk" id="beta" data-t="40.3" style={`--amp:${amp(40.3, 44.1)}`}>
+        <h2>{beta.titulo}</h2>
+        <p class="o-lead">{beta.entradilla}</p>
+        <WaitlistForm />
+
+        <h2 class="rubric" style="margin-top: 3rem" id="preguntas">{preguntas.rotulo}</h2>
+        <div class="faq">
+          {
+            preguntas.lista.map((q) => (
+              <details class="qa">
+                <summary>{q.p}</summary>
+                <p>{q.r}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+
+      <p class="silencio" aria-hidden="true" data-t="44.1" style={`--dur:${huecos[6].dur}`}>
+        {v.fin}
+      </p>
+    </div>
   </main>
 
   <Footer />
 </Base>
 
 <script>
-  // El índice de estados marca en cuál estás. No es una animación: es un
-  // estado, así que sigue funcionando con prefers-reduced-motion. Y no es un
-  // camino a ningún sitio, así que si esto no corre no se pierde nada.
-  const indice = document.getElementById('estados')
-  const tramos = document.querySelectorAll<HTMLElement>('[data-estado]')
-  if (indice && tramos.length && 'IntersectionObserver' in window) {
-    const items = Array.from(indice.children)
-    const marcar = (i: number) =>
-      items.forEach((li, j) =>
-        j === i ? li.setAttribute('aria-current', 'true') : li.removeAttribute('aria-current')
-      )
-    const observador = new IntersectionObserver(
-      (entradas) => {
-        const visible = entradas
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) marcar(Number((visible.target as HTMLElement).dataset.estado))
-      },
-      { rootMargin: '-30% 0px -50% 0px', threshold: [0, 0.25, 0.5] }
-    )
-    tramos.forEach((t) => observador.observe(t))
+  // La pista atada al contenido. Dos cosas, las dos decorativas:
+  //
+  // 1. Las barras se recolocan por POSICIÓN de documento, no por fracción de
+  //    tiempo: cada marca de tiempo del documento (`data-t`) es un ancla, y la
+  //    envolvente se interpola entre anclas. Así la ráfaga que se ve a la altura
+  //    de la demo es la frase que la demo transcribe, no una coincidencia.
+  // 2. El cabezal LEE su hora del ancla que acaba de pasar, así que nunca puede
+  //    contradecir a la transcripción que tiene al lado.
+  //
+  // Sin JavaScript la pista se dibuja repartida por tiempo y el cabezal se queda
+  // en la primera marca: sigue siendo coherente, solo deja de ser exacta.
+  const pista = document.getElementById('pista')
+  const reloj = document.getElementById('reloj')
+  const anclas = [...document.querySelectorAll<HTMLElement>('[data-t]:not(.pista b)')]
+
+  if (pista && reloj && anclas.length) {
+    const barras = [...pista.querySelectorAll<HTMLElement>('b')]
+    const dictado = [...document.querySelectorAll<HTMLElement>('.dictado li')]
+    const doc = pista.parentElement!
+
+    /** Y del ancla dentro del documento, y su instante. */
+    const puntos = () =>
+      anclas.map((el) => ({
+        t: Number(el.dataset.t),
+        y: el.getBoundingClientRect().top - doc.getBoundingClientRect().top,
+      }))
+
+    function colocar() {
+      const p = puntos()
+      const alto = doc.getBoundingClientRect().height
+      for (const b of barras) {
+        const t = Number(b.dataset.t)
+        let y: number
+        if (t <= p[0].t) y = (t / p[0].t) * p[0].y
+        else if (t >= p[p.length - 1].t) y = p[p.length - 1].y
+        else {
+          const i = p.findIndex((q) => q.t > t)
+          const a = p[i - 1]
+          const c = p[i]
+          y = a.y + ((t - a.t) / (c.t - a.t)) * (c.y - a.y)
+        }
+        b.style.top = `${(y / alto) * 100}%`
+      }
+    }
+
+    function leer() {
+      const y = innerHeight * 0.44
+      let actual = anclas[0]
+      for (const el of anclas) {
+        if (el.getBoundingClientRect().top <= y) actual = el
+      }
+      reloj!.textContent = formato(Number(actual.dataset.t))
+      // La línea de transcripción queda marcada cuando el cabezal llega a ella.
+      for (const li of dictado) {
+        const pasado = li.getBoundingClientRect().top <= y
+        li.toggleAttribute('data-pasado', pasado)
+      }
+    }
+
+    const formato = (t: number) =>
+      `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`
+
+    colocar()
+    leer()
+    addEventListener('scroll', leer, { passive: true })
+    addEventListener('resize', () => {
+      colocar()
+      leer()
+    })
   }
 </script>

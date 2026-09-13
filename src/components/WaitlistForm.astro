@@ -12,11 +12,22 @@ import { beta } from '../content/copy'
  * El destino vive en PUBLIC_FORM_ENDPOINT. Sin endpoint el formulario NO finge:
  * avisa de que el alta no está operativa todavía y no deja enviar.
  */
+interface Props {
+  /**
+   * Clase extra del bloque, para que cada variante lleve el alta a SU sistema
+   * sin duplicar ni la lógica ni una sola palabra del texto legal. Lo que
+   * cambia es la piel; los campos, los estados y la redacción de protección de
+   * datos son los mismos en las cuatro rutas.
+   */
+  clase?: string
+}
+
+const { clase = '' } = Astro.props
 const activo = formEndpoint !== ''
 const gracias = absoluteUrl('/gracias')
 ---
 
-<div class="beta__body">
+<div class:list={['beta__body', clase]}>
   <form
     id="waitlist"
     method="POST"
@@ -55,16 +66,18 @@ const gracias = absoluteUrl('/gracias')
 
     <div class="field" id="field-email">
       <label for="email">{beta.email.etiqueta}</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        required
-        autocomplete="email"
-        inputmode="email"
-        placeholder={beta.email.placeholder}
-        aria-describedby="email-error"
-      />
+      <div class="control">
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          inputmode="email"
+          placeholder={beta.email.placeholder}
+          aria-describedby="email-error"
+        />
+      </div>
       <span class="err" id="email-error" aria-live="polite"></span>
     </div>
 
@@ -72,13 +85,15 @@ const gracias = absoluteUrl('/gracias')
       <label for="uso">
         {beta.uso.etiqueta} <span class="opt">{beta.uso.opcional}</span>
       </label>
-      <textarea
-        id="uso"
-        name="uso"
-        rows="3"
-        maxlength="500"
-        placeholder={beta.uso.placeholder}
-        aria-describedby="uso-contador"></textarea>
+      <div class="control">
+        <textarea
+          id="uso"
+          name="uso"
+          rows="3"
+          maxlength="500"
+          placeholder={beta.uso.placeholder}
+          aria-describedby="uso-contador"></textarea>
+      </div>
       <!-- Solo a partir de 400 caracteres: un contador permanente en un campo
            opcional sugiere que hay una longitud esperada. -->
       <span class="err" id="uso-contador" aria-live="polite" style="color: var(--color-ink-3)"

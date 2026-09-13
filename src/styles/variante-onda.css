@@ -1,0 +1,436 @@
+/* ============================================================================
+   /a/ — ONDA · la página es una grabación que recorres con un cabezal
+   Material: la onda de sonido, llevada hasta que organiza la página entera.
+
+   Regla que rompe, con nombre y apellido: «el margen izquierdo de una columna
+   de texto es constante». Aquí ondula con la amplitud de la voz.
+
+   Cero color en toda la página: papel, tinta y nada más. Es una postura, y es
+   la que más distancia pone con las otras dos direcciones.
+   ========================================================================= */
+
+.ruta-onda {
+  --o-paper: #faf8f4;
+  --o-ink: #141310; /* 16,8:1 */
+  --o-ink-2: #4a463e; /*  8,4:1 */
+  --o-ink-3: #645f55; /*  5,6:1 */
+  --o-hair: #cfc8bb;
+  --o-pista: 144px;
+  --o-sangrado: clamp(1rem, 2.5vw, 2.5rem);
+
+  background: var(--o-paper);
+  color: var(--o-ink);
+
+  --color-ink: var(--o-ink);
+  --color-ink-2: var(--o-ink-2);
+  --color-ink-3: var(--o-ink-3);
+  --color-line: var(--o-hair);
+  --color-paper: var(--o-paper);
+  --color-paper-sunk: var(--o-paper);
+  --color-accent: var(--o-ink);
+  --color-accent-strong: #000;
+  --color-accent-wash: #e8e2d6;
+  --color-focus: var(--o-ink);
+  --color-border: var(--o-ink-2);
+}
+
+/* --- LA PISTA. No es un adorno lateral: es el eje del documento y la razón
+       por la que cada bloque está donde está. Recorre TODO el alto del
+       documento, así que la ráfaga que se ve a la altura de la demo es la
+       misma frase que la demo transcribe. --------------------------------- */
+.ruta-onda .doc {
+  position: relative;
+  padding-left: var(--o-pista);
+  padding-top: clamp(3rem, 7vw, 6rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+.ruta-onda .pista {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--o-pista);
+  border-right: 1px solid var(--o-hair);
+}
+.ruta-onda .pista b {
+  position: absolute;
+  right: 12px;
+  height: 3px;
+  background: var(--o-ink);
+  min-width: 3px;
+  transform: translateY(-50%);
+}
+/* El cabezal: dónde estás en la grabación. Lee su hora del contenido que tiene
+   al lado, así que nunca puede decir un segundo distinto del que dice la
+   transcripción a su altura. */
+.ruta-onda .cabezal {
+  position: fixed;
+  top: 44vh;
+  left: 0;
+  width: var(--o-pista);
+  height: 0;
+  z-index: 2;
+}
+.ruta-onda .cabezal i {
+  display: block;
+  height: 2px;
+  background: var(--o-ink);
+}
+.ruta-onda .cabezal span {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  font: 400 11px / 1.4 var(--font-mono);
+  color: var(--o-paper);
+  background: var(--o-ink);
+  padding: 1px 4px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- EL MARGEN IZQUIERDO RESPIRA. Donde la voz aprieta, el bloque entra;
+       donde afloja, sale. `--amp` lo fija la envolvente en ese punto del
+       documento. ---------------------------------------------------------- */
+.ruta-onda .blk {
+  margin-left: calc(var(--amp, 0) * 1px);
+  padding-left: var(--o-sangrado);
+  padding-right: clamp(1.25rem, 4vw, 4rem);
+}
+
+/* --- LOS SILENCIOS SON EL ESPACIADO, Y VAN MEDIDOS. El blanco de la página
+       deja de ser una decisión de gusto: tiene unidad, y la unidad es el
+       segundo. -------------------------------------------------------------- */
+.ruta-onda .silencio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: var(--o-sangrado);
+  font: 400 var(--text-micro) / 1.5 var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--o-ink-3);
+  /* El alto del silencio ES su duración: 2,6 s ocupan más que 1,8 s. */
+  margin-block: calc(var(--dur, 2) * clamp(1.1rem, 2.4vw, 2rem));
+}
+.ruta-onda .silencio::before {
+  content: '';
+  height: 1px;
+  background: var(--o-hair);
+  width: clamp(2rem, 6vw, 5rem);
+  flex: none;
+}
+
+/* --- Tipografía. Tres escalones entre el titular y el cuerpo, no dos: el
+       salto de 60 px a 17 px dejaba la página sin voz media. --------------- */
+.ruta-onda h1 {
+  font-size: clamp(2rem, 1.05rem + 3.1vw, 3.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.028em;
+  max-width: 19ch;
+  text-wrap: balance;
+}
+.ruta-onda h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1.3vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  max-width: 20ch;
+}
+.ruta-onda h3 {
+  font-size: clamp(1.1875rem, 1.1rem + 0.5vw, 1.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.014em;
+}
+.ruta-onda .o-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--o-ink-2);
+  max-width: 56ch;
+  margin-top: 1.25rem;
+}
+.ruta-onda .o-dim,
+.ruta-onda .rubric {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+  letter-spacing: 0.02em;
+}
+.ruta-onda .btn {
+  background: var(--o-ink);
+  color: var(--o-paper);
+  border-radius: 0;
+  font-weight: 500;
+  padding: 0.9rem 1.5rem;
+  margin-top: 1.75rem;
+}
+.ruta-onda .btn:hover {
+  background: #000;
+}
+
+/* --- LA DEMO NO ES UNA TARJETA: es el tramo sonoro de la propia pista, y cada
+       palabra cuelga del segundo en que se dijo. Lo que echo quita va tachado y
+       pequeño; lo que sobrevive, grande. ------------------------------------ */
+.ruta-onda .dictado {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+.ruta-onda .dictado li {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  align-items: baseline;
+  padding: 0.18rem 0;
+}
+.ruta-onda .dictado .t {
+  font: 400 var(--text-micro) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.ruta-onda .dictado .w {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--o-ink-2);
+}
+.ruta-onda .dictado .w s {
+  text-decoration-thickness: 1.5px;
+}
+.ruta-onda .dictado li[data-pico] .w {
+  font-size: 1.625rem;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--o-ink);
+}
+/* Cuando el cabezal llega a una línea, la línea queda marcada. Es un estado,
+   no una animación: bajo prefers-reduced-motion funciona igual. */
+.ruta-onda .dictado li[data-pasado] .t {
+  color: var(--o-ink);
+}
+.ruta-onda .dictado li[data-pasado] .t::after {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--o-ink);
+  vertical-align: 0.25em;
+  margin-left: 0.4rem;
+}
+
+.ruta-onda .win {
+  background: #fff;
+  border: 1px solid var(--o-hair);
+  max-width: 40rem;
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+}
+.ruta-onda .win__bar,
+.ruta-onda .win__field {
+  padding: 0.35rem 0.85rem;
+  font-size: var(--text-micro);
+}
+.ruta-onda .win__bar {
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--o-hair);
+}
+.ruta-onda .win__rule {
+  display: none;
+}
+.ruta-onda .win__body {
+  padding: 0.9rem 0.85rem 2rem;
+  border-top: 1px solid var(--o-hair);
+  margin-top: 0.3rem;
+}
+
+/* --- LA COMPARATIVA ES LA MISMA FRASE EN DOS PISTAS ------------------------ */
+.ruta-onda .fila {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 0 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--o-hair);
+  align-items: start;
+}
+.ruta-onda .fila:last-of-type {
+  border-bottom: 1px solid var(--o-hair);
+}
+.ruta-onda .fila .crit {
+  font: 400 var(--text-small) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+  padding-top: 0.3rem;
+}
+.ruta-onda .dos {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.ruta-onda .par {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: baseline;
+}
+.ruta-onda .par .et {
+  font: 400 var(--text-micro) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+}
+.ruta-onda .par--os .v {
+  color: var(--o-ink-2);
+}
+.ruta-onda .par--echo .v {
+  font-weight: 500;
+}
+.ruta-onda .par--echo .et {
+  color: var(--o-ink);
+}
+
+/* --- Los argumentos, los pasos y la prosa heredada, en la misma pista ----- */
+.ruta-onda .args {
+  display: grid;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  max-width: 58ch;
+}
+.ruta-onda .arg p,
+.ruta-onda .paso p,
+.ruta-onda .priv p,
+.ruta-onda .who p {
+  color: var(--o-ink-2);
+  max-width: 58ch;
+  margin-top: 0.4rem;
+}
+.ruta-onda .pasos {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+  max-width: 58ch;
+}
+.ruta-onda .pasos .t {
+  color: var(--o-ink);
+  font-weight: 500;
+}
+.ruta-onda .pasos .n {
+  font: 400 var(--text-micro) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+}
+.ruta-onda .priv,
+.ruta-onda .who {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* --- EL ALTA Y LAS PREGUNTAS, EN LA MISMA PISTA. La conversión no cambia de
+       sistema: sigue siendo un instante de la grabación, y por eso el
+       formulario son líneas de escritura y no campos en cajas. ------------- */
+.ruta-onda .beta__body,
+.ruta-onda .beta__body > form,
+.ruta-onda .beta__body > .done {
+  /* El alta no se parte en dos columnas como en el control: en estas dos
+     direcciones el eje es uno solo y meter una segunda columna lo rompería. */
+  display: block;
+  max-width: 36rem;
+}
+.ruta-onda .legalnote {
+  max-width: 36rem;
+  margin-top: 1.5rem;
+}
+.ruta-onda .beta__body:has(form:not([hidden])) {
+  min-height: 0;
+}
+.ruta-onda form {
+  margin-top: 1.5rem;
+}
+.ruta-onda .field > label {
+  font: 400 var(--text-micro) / 1.5 var(--font-mono);
+  color: var(--o-ink-3);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  font-weight: 400;
+}
+.ruta-onda input[type='email'],
+.ruta-onda textarea {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--o-ink);
+  border-radius: 0;
+  padding: 0.5rem 0;
+  font-size: 1.0625rem;
+}
+.ruta-onda textarea {
+  resize: vertical;
+}
+.ruta-onda input[type='email']:focus-visible,
+.ruta-onda textarea:focus-visible {
+  border-bottom-color: var(--o-ink);
+  outline-offset: 3px;
+}
+.ruta-onda .field--bad input[type='email'] {
+  border-bottom-color: var(--color-error);
+}
+.ruta-onda .radio input {
+  accent-color: var(--o-ink);
+}
+.ruta-onda .notice,
+.ruta-onda .alert {
+  border-radius: 0;
+  border-width: 0 0 0 2px;
+  padding: 0.25rem 0 0.25rem 0.9rem;
+  background: transparent;
+}
+.ruta-onda .done .mail {
+  background: var(--color-accent-wash);
+  border-radius: 0;
+}
+
+/* Las preguntas son una lista de marcas de la grabación. */
+.ruta-onda .faq {
+  border-bottom: 1px solid var(--o-hair);
+  max-width: 52rem;
+  margin-top: 1.5rem;
+}
+.ruta-onda .qa {
+  border-top: 1px solid var(--o-hair);
+}
+.ruta-onda .qa > summary::after {
+  color: var(--o-ink-3);
+}
+.ruta-onda .qa > p {
+  color: var(--o-ink-2);
+}
+
+.ruta-onda .footer {
+  border-top: 1px solid var(--o-hair);
+  margin-left: var(--o-pista);
+  padding-left: var(--o-sangrado);
+  color: var(--o-ink-3);
+}
+.ruta-onda .footer .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+@media (max-width: 819px) {
+  .ruta-onda {
+    --o-pista: 44px;
+  }
+  /* En columna estrecha no hay sitio para que el margen respire tanto: la
+     pista sigue marcando el tiempo y la ondulación se reduce, no se inventa
+     otra cosa. */
+  .ruta-onda .blk {
+    margin-left: 0;
+    padding-left: calc(var(--o-sangrado) + var(--amp, 0) * 0.28px);
+  }
+  .ruta-onda .dictado li {
+    grid-template-columns: 1fr;
+    padding: 0.35rem 0;
+  }
+  .ruta-onda .fila {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .ruta-onda .par {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
+  .ruta-onda .cabezal span {
+    font-size: 10px;
+  }
+}

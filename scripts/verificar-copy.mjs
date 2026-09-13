@@ -47,6 +47,71 @@ const visible = (html) =>
 
 const norm = (s) => s.replace(/\s+/g, ' ').trim()
 
+const VACIAS = new Set(['br', 'img', 'input', 'hr', 'meta', 'link', 'source', 'col', 'wbr'])
+
+/**
+ * El mismo texto visible, pero SIN las capas decorativas: se tira todo subárbol
+ * con `aria-hidden="true"`. Es lo que oye quien usa un lector de pantalla.
+ *
+ * Hace falta porque las variantes pintan encima capas sucias —la onda, el
+ * dictado tachado, la galerada corregida— y la promesa tiene que llegar
+ * primera y entera en voz alta, no segunda y descuartizada.
+ */
+function accesible(html) {
+  let salida = ''
+  let i = 0
+  while (i < html.length) {
+    const abre = html.indexOf('<', i)
+    if (abre < 0) {
+      salida += html.slice(i)
+      break
+    }
+    salida += html.slice(i, abre)
+    const cierra = html.indexOf('>', abre)
+    if (cierra < 0) break
+    const etiqueta = html.slice(abre, cierra + 1)
+    const nombre = etiqueta.match(/^<\/?([a-zA-Z0-9-]+)/)?.[1]?.toLowerCase()
+    i = cierra + 1
+    if (!nombre || VACIAS.has(nombre) || etiqueta.startsWith('</') || etiqueta.endsWith('/>')) {
+      salida += ' '
+      continue
+    }
+    if (!/aria-hidden="true"/.test(etiqueta)) {
+      salida += ' '
+      continue
+    }
+    // Saltar el subárbol entero, contando anidamientos de la misma etiqueta.
+    let hondo = 1
+    const re = new RegExp(`<\\/?${nombre}\\b[^>]*>`, 'gi')
+    re.lastIndex = i
+    let m
+    while ((m = re.exec(html))) {
+      if (m[0].startsWith('</')) hondo--
+      else if (!m[0].endsWith('/>')) hondo++
+      if (hondo === 0) break
+    }
+    i = m ? re.lastIndex : html.length
+    salida += ' '
+  }
+  return visible(salida)
+}
+
+/**
+ * El copy aprobado tiene que llegar entero, seguido y EN ORDEN a quien no ve la
+ * página. Esto no lo garantiza la comprobación de arriba: una variante puede
+ * tener las frases sueltas por el documento y en otro orden y seguir pasándola.
+ */
+const ORDEN = [
+  ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
+  ['subtítulo', 'Dictado para Mac. La voz se transcribe en tu propio ordenador'],
+  ['pie de la demo', 'Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la beta.'],
+  ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
+  ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
+  ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
+  ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
+  ['microcopy del alta', 'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter.'],
+]
+
 // --- Las redacciones innegociables: copy aprobado que va literal o no va.
 //     Se exigen SEGUIDAS, así que ninguna composición puede partirlas en dos
 //     cajas con otra cosa en medio.
@@ -163,6 +228,17 @@ for (const [ruta, fichero] of RUTAS) {
       if (!texto.includes(celda)) mal(ruta, `falta la celda «${celda}» de la comparativa`)
   }
 
+  // --- El árbol de accesibilidad: sin las capas decorativas, el copy aprobado
+  //     sigue entero, seguido y en el orden del argumento.
+  const oido = accesible(html)
+  let desde = -1
+  for (const [nombre, frase] of ORDEN) {
+    const donde = oido.indexOf(frase)
+    if (donde < 0) mal(ruta, `${nombre}: no llega entero al árbol de accesibilidad`)
+    else if (donde < desde) mal(ruta, `${nombre}: llega fuera de orden en el árbol de accesibilidad`)
+    else desde = donde
+  }
+
   // --- CA-ENV-3 · el honeypot tiene que llamarse como el campo nativo del
   //     proveedor. Con otro nombre el antispam no hace nada y no se nota hasta
   //     que llega el spam.
@@ -172,7 +248,7 @@ for (const [ruta, fichero] of RUTAS) {
   if (/proveedor por (decidir|confirmar)/.test(html))
     mal(ruta, 'el formulario sigue diciendo que el proveedor está sin decidir')
 
-  if (fallos.length === errores) console.log(`ok  ${ruta} · copy, metadatos, comparativa y alta`)
+  if (fallos.length === errores) console.log(`ok  ${ruta} · copy, metadatos, comparativa, alta y árbol de accesibilidad`)
 }
 
 // --- CA-NEG-1 en el control, donde la comparativa sí es una tabla: la fila

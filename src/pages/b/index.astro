@@ -1,127 +1,196 @@
 ---
 import Base from '../../layouts/Base.astro'
-import Dicho from '../../components/demo/Dicho.astro'
 import Escrito from '../../components/demo/Escrito.astro'
 import Footer from '../../components/Footer.astro'
-import Header from '../../components/Header.astro'
-import Argumentos from '../../components/secciones/Argumentos.astro'
-import Beta from '../../components/secciones/Beta.astro'
-import ParaQuien from '../../components/secciones/ParaQuien.astro'
-import Pasos from '../../components/secciones/Pasos.astro'
-import Preguntas from '../../components/secciones/Preguntas.astro'
-import Privacidad from '../../components/secciones/Privacidad.astro'
-import { apertura, comparativa, demo, variantes } from '../../content/copy'
-import '../../styles/variante-b.css'
+import WaitlistForm from '../../components/WaitlistForm.astro'
+import {
+  apertura,
+  argumentos,
+  beta,
+  comparativa,
+  demo,
+  paraQuien,
+  pasos,
+  preguntas,
+  privacidad,
+  variantes,
+} from '../../content/copy'
+import '../../styles/variante-correccion.css'
 
 /**
- * Variante B — SUCIO CONTRA LIMPIO COMO IDENTIDAD.
+ * /b/ — CORRECCIÓN. La página es una galerada que se limpia sola según bajas.
  *
- * La página está plegada por la mitad de arriba abajo: a la izquierda lo que
- * dices, a la derecha lo que se escribe. Todo aparece dos veces. La comparativa
- * deja de ser una sección porque la página entera ya es la comparativa.
+ * Lo que dijiste, en negro pesadísimo y a cuerpo de cartel, tachado y corregido
+ * en rojo delante de ti; y debajo, lo que queda escrito. La densidad de marcas
+ * baja con el scroll —apertura destrozada, cuatro correcciones en la
+ * comparativa, cierre y alta limpios— así que la página hace mientras la lees lo
+ * que el producto hace con tu texto.
  *
- * El texto es el mismo de `/` y va literal. Lo único añadido son los rótulos de
- * columna y la versión dictada en bruto del titular (`variantes.b`), que es
- * interfaz —el «antes» del producto— y no sustituye al titular aprobado, que
- * sigue entero al lado.
+ * Las dos capas sucias van `aria-hidden` y llevan su rótulo: en voz alta se lee
+ * el copy aprobado entero, seguido y en orden, sin una sola tachadura de por
+ * medio.
  */
-const ogTitle = apertura.titular.join(' ')
-const v = variantes.b
-const { columnas } = comparativa
+const v = variantes.correccion
+const titular = apertura.titular.join(' ')
 ---
 
-<Base ogTitle={ogTitle} path="/b/">
-  <Header />
+<Base ogTitle={titular} path="/b/">
+  <main id="contenido" class="ruta-correccion">
+    <!-- ACTO 1 · máxima densidad de marcas -->
+    <section class="acto" style="padding-top: clamp(2rem, 5vw, 4rem)">
+      <span class="banda" aria-hidden="true"></span>
+      <div class="apertura">
+        <div>
+          <p class="rubric">{v.capaSucia}</p>
+          <p class="sucio" aria-hidden="true">
+            <span class="tach">eh…</span> hablas y aparece escrito<span class="tach">, o sea</span>,
+            sin muletillas, <span class="tach">sin ir diciendo coma, punto,</span><span class="ins"
+              >{v.insercion}</span
+            > <span class="tach">y eh,</span> sin cambiar de idioma
+          </p>
 
-  <main id="contenido" class="ruta-b">
-    <!-- El fondo del pliegue es UNA sola pieza en este contenedor: una línea de
-         luz que recorre el tramo entero, sin costuras horizontales. -->
-    <div class="folded">
-      <!-- APERTURA. El visitante entiende el producto antes de leer,
-           comparando dos bloques de texto. -->
-      <div class="fold">
-        <div class="l">
-          <span class="tag">{v.ladoDicho}</span>
-          <p>
-            {
-              v.titularDictado.map((tramo) => (
-                <>{tramo.fuera && <s>{tramo.fuera}</s>}{tramo.queda}</>
-              ))
-            }
+          <div class="regla" aria-hidden="true"></div>
+
+          <p class="rubric">{v.capaLimpia}</p>
+          <h1>{titular}</h1>
+          <p class="c-lead">{apertura.subtitulo}</p>
+          <p><a class="btn" href="#beta">{apertura.cta}</a></p>
+          <p class="c-dim" style="margin-top: 1.25rem">
+            {apertura.requisito.aviso} {apertura.requisito.maquina}
           </p>
         </div>
-        <div class="r">
-          <span class="tag">{v.ladoEscrito}</span>
-          <h1>{apertura.titular.join(' ')}</h1>
-          <p class="b-lead">{apertura.subtitulo}</p>
-          <p class="b-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
-          <p class="b-req">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
-        </div>
-      </div>
 
-      <!-- LA DEMO, A CABALLO DEL PLIEGUE: la barra de echo cae en la mitad
-           sucia y la ventana de la app en la limpia. -->
-      <figure class="fold demo-anim" id="demo">
-        <h2 class="sr-only">{demo.tituloOculto}</h2>
-        <div class="l">
-          <p class="sr-only">{demo.descripcion}</p>
-          <Dicho />
-        </div>
-        <div class="r">
+        <!-- El producto, en el primer pantallazo. Una página que promete
+             «hablas y aparece escrito» no puede enseñar cero. -->
+        <div class="apertura__prod" aria-hidden="true">
           <Escrito />
-          <figcaption class="b-req">{demo.pie}</figcaption>
         </div>
+      </div>
+    </section>
+
+    <!-- ACTO 2 · la galerada entera -->
+    <section class="acto" style="margin-top: clamp(3rem, 7vw, 6rem)">
+      <span class="banda" aria-hidden="true"></span>
+      <div class="regla" aria-hidden="true"></div>
+      <figure id="demo">
+        <h2 class="sr-only">{demo.tituloOculto}</h2>
+        <p class="sr-only">{demo.descripcion}</p>
+        <p class="nota">{v.grabando}</p>
+        <p class="galerada" aria-hidden="true" style="margin-top: 1rem">
+          {
+            demo.dictado.map((t) => (
+              <>{t.fuera && <span class="tach">{t.fuera.trim()}</span>}{t.fuera && ' '}{t.queda}</>
+            ))
+          }
+        </p>
+        <div class="resultado">
+          <p class="campos" aria-hidden="true">
+            <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor} · <b
+              >{demo.ventana.asunto.etiqueta}</b
+            > {demo.ventana.asunto.valor}
+          </p>
+          <p class="texto">{demo.ventana.cuerpo}<span class="caret" aria-hidden="true"></span></p>
+        </div>
+        <figcaption class="c-dim" style="margin-top: 1rem">{demo.pie}</figcaption>
       </figure>
+    </section>
 
-      <!-- Secciones heredadas del control: viven en la mitad limpia, que es
-           donde vive la prosa compuesta. -->
-      <div class="fold">
-        <div class="l"></div>
-        <div class="r"><Argumentos /></div>
-      </div>
-      <div class="fold">
-        <div class="l"></div>
-        <div class="r"><Pasos /></div>
-      </div>
-
-      <!-- COMPARATIVA: el mismo pliegue, cuatro veces. -->
-      <div class="fold" id="comparacion">
-        <div class="l"></div>
-        <div class="r">
-          <h2>{comparativa.titulo}</h2>
-          <p class="b-lead">{comparativa.entradilla}</p>
-        </div>
-
+    <!-- ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más -->
+    <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <span class="banda" aria-hidden="true"></span>
+      <h2 class="rubric">{argumentos.rotulo}</h2>
+      <div style="display: grid; gap: 2rem; margin-top: 1.25rem">
         {
-          comparativa.filas.map((fila) => (
-            <>
-              <p class="row-attr" data-fila-comparativa>{fila.criterio}</p>
-              <div class="l">
-                <p class="cell-os"><span class="sr-only">{columnas.macos}: </span>{fila.macos}</p>
-              </div>
-              <div class="r">
-                <p class="cell-echo"><span class="sr-only">{columnas.echo}: </span>{fila.echo}</p>
-              </div>
-            </>
+          argumentos.lista.map((a) => (
+            <div>
+              <h3>{a.titulo}</h3>
+              <p style="margin-top: 0.4rem; color: var(--c-ink-2)">{a.texto}</p>
+            </div>
           ))
         }
       </div>
-    </div>
 
-    <!-- CIERRE: la columna sucia se acaba y la limpia sigue sola. Es el
-         argumento convertido en composición, y es también la costura: a partir
-         de aquí la página deja de estar plegada. -->
-    <div class="alone">
-      <p class="close">
-        {comparativa.cierre.concesion} <span class="plena">{comparativa.cierre.afirmacion}</span>
+      <h2 class="rubric" style="margin-top: 2.5rem">{pasos.rotulo}</h2>
+      <ol style="list-style: none; padding: 0; display: grid; gap: 1.25rem; margin-top: 1.25rem">
+        {
+          pasos.lista.map((paso) => (
+            <li>
+              <span class="c-dim" aria-hidden="true">{paso.n}</span>
+              <h3>{paso.titulo}</h3>
+              <p style="margin-top: 0.3rem; color: var(--c-ink-2)">
+                {paso.partes.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ACTO 4 · cuatro correcciones, ni una más -->
+    <section class="acto" id="comparacion" style="margin-top: clamp(4rem, 9vw, 8rem)">
+      <div class="regla" aria-hidden="true"></div>
+      <h2>{comparativa.titulo}</h2>
+      <p class="c-lead">{comparativa.entradilla}</p>
+
+      <div style="margin-top: 2rem">
+        {
+          comparativa.filas.map((fila) => (
+            <div class="corr" data-fila-comparativa>
+              <p class="crit">{fila.criterio}</p>
+              <p>
+                <span class="sr-only">{comparativa.columnas.macos}: </span>
+                <span class="mal">{fila.macos}</span>
+              </p>
+              <p class="bien">
+                <span class="sr-only">{comparativa.columnas.echo}: </span>{fila.echo}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ACTO 5 · cero marcas. La página ya está limpia. -->
+    <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
+      <p class="final">
+        {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
       </p>
-      <p class="b-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
-    </div>
+    </section>
 
-    <Privacidad />
-    <ParaQuien />
-    <Beta />
-    <Preguntas />
+    <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <h2 class="rubric">{privacidad.rotulo}</h2>
+      <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">{privacidad.principal}</p>
+      <div style="display: grid; gap: 1rem; margin-top: 1.25rem; color: var(--c-ink-2)">
+        {privacidad.notas.map((n) => <p>{n}</p>)}
+      </div>
+
+      <h2 class="rubric" style="margin-top: 2.5rem">{paraQuien.rotulo}</h2>
+      <div style="display: grid; gap: 1.25rem; margin-top: 1.25rem">
+        {paraQuien.parrafos.map((p) => <p><strong>{p.fuerte}</strong>{p.resto}</p>)}
+      </div>
+    </section>
+
+    <!-- ACTO 6 · el alta, en el mismo sistema y sin una sola caja -->
+    <section class="acto" id="beta" style="margin-top: clamp(4rem, 9vw, 8rem)">
+      <div class="regla" aria-hidden="true"></div>
+      <h2>{beta.titulo}</h2>
+      <p class="c-lead">{beta.entradilla}</p>
+      <WaitlistForm />
+    </section>
+
+    <section class="acto" id="preguntas" style="margin-top: clamp(3.5rem, 8vw, 7rem); padding-bottom: clamp(3rem, 7vw, 6rem)">
+      <h2 class="rubric">{preguntas.rotulo}</h2>
+      <div class="faq" style="margin-top: 1.25rem">
+        {
+          preguntas.lista.map((q) => (
+            <details class="qa">
+              <summary>{q.p}</summary>
+              <p>{q.r}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
   </main>
 
   <Footer />

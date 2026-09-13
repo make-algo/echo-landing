@@ -1,0 +1,558 @@
+/* ============================================================================
+   /c/ — EDITOR · la página es un búfer de texto abierto en un editor
+   Material: el sitio donde vive echo.
+
+   Regla que rompe, con nombre y apellido: «un formulario son campos etiquetados
+   dentro de cajas». Aquí el alta es escribir en el búfer.
+
+   Lo que salva esta dirección del tópico «landing con estética de terminal» es
+   una sola cosa: que el formulario y las preguntas estén DE VERDAD dentro del
+   búfer. Si eso se afloja, la dirección no se rescata, se tira.
+
+   Y la retícula es tiránica: el interlineado de la monoespaciada es la unidad de
+   toda la página, y cada número del canal señala UNA línea real. Los cortes del
+   titular los decidimos nosotros —el copy es literal, los cortes son nuestros—,
+   así que un titular de cuatro renglones son cuatro líneas numeradas.
+   ========================================================================= */
+
+.ruta-editor {
+  --e-paper: #fbfaf7;
+  --e-ink: #15140f; /* 16,9:1 */
+  --e-ink-2: #4b463d; /*  8,2:1 */
+  --e-canal: #6b655b; /*  5,0:1 — se diferencia por tamaño y por el canal,
+                              nunca bajando el contraste */
+  --e-rule: #e2dcd0;
+  --e-sel: #f4ce7a; /* la selección: tinta sobre ella 12,4:1 */
+  --e-num: 4.5rem;
+  /* LA UNIDAD. Todo el ritmo vertical es un múltiplo de esto. */
+  --e-u: 1.7;
+
+  background: var(--e-paper);
+  color: var(--e-ink);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: var(--e-u);
+  counter-reset: ln;
+
+  --color-paper: var(--e-paper);
+  --color-paper-sunk: var(--e-paper);
+  --color-ink: var(--e-ink);
+  --color-ink-2: var(--e-ink-2);
+  --color-ink-3: var(--e-canal);
+  --color-line: var(--e-rule);
+  --color-accent: var(--e-ink);
+  --color-accent-strong: var(--e-ink);
+  --color-accent-wash: var(--e-sel);
+  --color-focus: var(--e-ink);
+  --color-border: var(--e-ink-2);
+}
+
+.ruta-editor *,
+.ruta-editor *::before,
+.ruta-editor *::after {
+  border-radius: 0;
+}
+.ruta-editor ::selection {
+  background: var(--e-sel);
+  color: var(--e-ink);
+}
+
+/* --- LA LÍNEA DEL BÚFER. Todo lo que hay en la página es una de estas: el
+       titular, un párrafo, una línea de diff, una pregunta plegada, un campo del
+       formulario. Un solo borde izquierdo en toda la página, el del canal. --- */
+.ruta-editor .l,
+.ruta-editor .ln,
+.ruta-editor .campo-l {
+  display: grid;
+  grid-template-columns: var(--e-num) minmax(0, 1fr);
+  align-items: start;
+  /* El hueco entre el canal y el texto es `column-gap` y no un padding: así
+     vale igual para una línea con elemento propio y para una que solo tiene
+     texto suelto, como la etiqueta de un campo. */
+  column-gap: 1.25rem;
+}
+.ruta-editor .l::before,
+.ruta-editor .ln::before,
+.ruta-editor .campo-l::before {
+  counter-increment: ln;
+  content: counter(ln);
+  color: var(--e-canal);
+  font-size: var(--text-micro);
+  line-height: var(--e-u);
+  text-align: right;
+  padding-right: 1rem;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+/* UN SOLO BORDE IZQUIERDO EN TODA LA PÁGINA. El filete del canal no lo pinta
+   cada línea —eran cuatro bordes distintos y se veía— sino el fondo del búfer,
+   de arriba abajo y sin una sola interrupción. */
+.ruta-editor .buf {
+  /* El pliegue inferior no puede quedar pisado por la barra de estado. */
+  padding-bottom: 4rem;
+  background-image: linear-gradient(
+    to right,
+    transparent calc(var(--e-num) - 1px),
+    var(--e-rule) calc(var(--e-num) - 1px),
+    var(--e-rule) var(--e-num),
+    transparent var(--e-num)
+  );
+}
+.ruta-editor .l > *,
+.ruta-editor .ln > .v,
+.ruta-editor .campo-l > * {
+  min-width: 0;
+}
+.ruta-editor .l--vacia > * {
+  height: calc(var(--e-u) * 1em);
+}
+.ruta-editor .i1 > *,
+.ruta-editor .i1 .v {
+  padding-left: 2ch;
+}
+.ruta-editor .i2 > *,
+.ruta-editor .i2 .v {
+  padding-left: 4ch;
+}
+.ruta-editor .com {
+  color: var(--e-canal);
+}
+
+/* La única tipografía proporcional del documento es la salida de echo. El
+   titular, la línea `+` del diff, las preguntas y el cierre: nada más. */
+.ruta-editor .out,
+.ruta-editor h1,
+.ruta-editor h2 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.022em;
+  font-weight: 600;
+}
+/* Los renglones del titular miden DOS unidades EXACTAS —en rem, que es la
+   unidad del búfer, no en em, que dependería del propio cuerpo— así que el
+   canal sigue cayendo en la retícula aunque la letra sea el doble de grande. */
+.ruta-editor h1 .v,
+.ruta-editor h1 .ln::before,
+.ruta-editor h2 .v,
+.ruta-editor h2 .ln::before {
+  line-height: calc(var(--e-u) * 2rem);
+}
+.ruta-editor h1 .v {
+  font-size: clamp(1.5rem, 0.95rem + 1.8vw, 2.5rem);
+  letter-spacing: -0.028em;
+}
+.ruta-editor h2 .v {
+  font-size: clamp(1.1875rem, 1rem + 0.9vw, 1.625rem);
+  letter-spacing: -0.022em;
+}
+.ruta-editor h3 {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.ruta-editor .txt .v,
+.ruta-editor .txt {
+  font-size: var(--text-small);
+  line-height: var(--e-u);
+  color: var(--e-ink-2);
+}
+
+/* El CTA no es un botón: es una tirada de texto seleccionada, con su cursor. */
+.ruta-editor .btn,
+.ruta-editor .sel-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  background: var(--e-sel);
+  color: var(--e-ink);
+  font: 500 1.0625rem / 1.2 var(--font-sans);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  padding: 0.65rem 0.9rem;
+  border: 0;
+  box-shadow: 2px 0 0 var(--e-ink);
+}
+.ruta-editor .btn:hover,
+.ruta-editor .sel-cta:hover {
+  background: #efc153;
+}
+
+/* --- LA DEMO ES LA PIEZA CENTRAL, no una banda de 100 px. El panel oscuro y la
+       ventana clara se separan para que se lean como antes → después, y ninguno
+       de los dos cruza el filete del canal. ------------------------------- */
+.ruta-editor .demo-par {
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 900px) {
+  .ruta-editor .demo-par {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+  }
+}
+.ruta-editor .hud {
+  background: #1c1a15;
+  padding: 0.75rem 0.9rem;
+  gap: 8px 12px;
+}
+.ruta-editor .hud__text {
+  font-size: var(--text-small);
+}
+.ruta-editor .win {
+  border: 1px solid var(--e-rule);
+  background: #fff;
+  padding: 0;
+  gap: 0;
+}
+.ruta-editor .win__bar,
+.ruta-editor .win__field {
+  padding: 0.3rem 0.8rem;
+  font-size: var(--text-micro);
+}
+.ruta-editor .win__rule {
+  display: none;
+}
+.ruta-editor .win__body {
+  font-family: var(--font-sans);
+  padding: 0.8rem;
+  border-top: 1px solid var(--e-rule);
+}
+
+/* --- LA COMPARATIVA ES UN DIFF. El signo lleva el significado, no el color:
+       funciona en monocromo, sin distinguir colores y en papel. ------------ */
+.ruta-editor .hunk {
+  color: var(--e-canal);
+  font-size: var(--text-micro);
+}
+.ruta-editor .dl {
+  display: grid;
+  grid-template-columns: 2ch minmax(0, 1fr);
+  gap: 1ch;
+}
+.ruta-editor .dl--add {
+  background: #efeadb;
+}
+.ruta-editor .dl--add .v2 {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.ruta-editor .dl--del .v2 {
+  color: var(--e-ink-2);
+}
+
+/* --- LAS PREGUNTAS NO SON UN ACORDEÓN: SON PLEGADO DE CÓDIGO. -------------- */
+.ruta-editor .faq {
+  border: 0;
+  display: block;
+}
+.ruta-editor .qa {
+  border: 0;
+}
+/* La pregunta es una línea del búfer: su número, el triángulo de plegado y el
+   texto. El triángulo va en `::after` con `order`, porque `::before` ya es el
+   número que pone el contador del canal. */
+.ruta-editor .qa > summary {
+  grid-template-columns: var(--e-num) 2ch minmax(0, 1fr);
+  column-gap: 1.25rem;
+  padding: 0;
+  max-width: none;
+  font-weight: 400;
+  list-style: none;
+}
+.ruta-editor .qa > summary::-webkit-details-marker {
+  display: none;
+}
+.ruta-editor .qa > summary::after {
+  content: '▸';
+  color: var(--e-canal);
+  user-select: none;
+  order: 2;
+  font-size: 1rem;
+  line-height: var(--e-u);
+}
+.ruta-editor .qa[open] > summary::after {
+  content: '▾';
+}
+.ruta-editor .qa > summary::before {
+  order: 1;
+}
+.ruta-editor .qa > summary > .q {
+  order: 3;
+}
+.ruta-editor .qa > summary .q {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+/* La marca de líneas plegadas, con el número REAL de líneas de la respuesta. */
+.ruta-editor .qa > summary .q::after {
+  content: ' ⋯ ' attr(data-lineas) ' líneas';
+  background: #efeadb;
+  color: var(--e-canal);
+  font: 400 var(--text-micro) / 1.4 var(--font-mono);
+  padding: 0 0.5rem;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+.ruta-editor .qa[open] > summary .q::after {
+  content: none;
+}
+.ruta-editor .qa > .lineas .v {
+  color: var(--e-ink-2);
+  font-size: var(--text-small);
+  padding-left: calc(1.25rem + 2ch);
+}
+.ruta-editor .qa > p {
+  padding-bottom: 0;
+}
+
+/* --- EL ALTA ES ESCRIBIR EN EL BÚFER. Ni una sola caja: la etiqueta es una
+       línea de comentario, el campo es una línea con su marca de entrada, y al
+       enfocarlo se ilumina como una selección. Esto es lo único que salva a esta
+       dirección del tópico «landing con estética de terminal», así que va
+       entero, no a medias. -------------------------------------------------- */
+.ruta-editor .beta__body,
+.ruta-editor .beta__body > form,
+.ruta-editor .beta__body > .done,
+.ruta-editor .legalnote {
+  max-width: none;
+  display: block;
+  grid-column: auto;
+  grid-row: auto;
+}
+.ruta-editor .beta__body:has(form:not([hidden])) {
+  min-height: 0;
+}
+.ruta-editor form {
+  margin-top: 0;
+}
+.ruta-editor .field {
+  margin-bottom: 0;
+}
+
+/* Cada pieza del alta es una línea del búfer y lleva su número como cualquier
+   otra línea del documento.
+
+   Aquí el número NO va en una columna de rejilla sino posicionado sobre el
+   canal: estas líneas llevan dentro texto suelto, negritas y enlaces, y una
+   rejilla convertiría cada trozo en una celda distinta. Con el número absoluto
+   da igual cómo esté hecha la línea por dentro. */
+.ruta-editor .field > label,
+.ruta-editor .control,
+.ruta-editor .radios,
+.ruta-editor .microcopy,
+.ruta-editor .legalnote,
+.ruta-editor .notice,
+.ruta-editor .alert,
+.ruta-editor form > button,
+.ruta-editor .done > p {
+  position: relative;
+  display: block;
+  margin: 0;
+  max-width: none;
+  padding-left: calc(var(--e-num) + 1.25rem);
+}
+.ruta-editor .field > label::before,
+.ruta-editor .control::before,
+.ruta-editor .radios::before,
+.ruta-editor .microcopy::before,
+.ruta-editor .legalnote::before,
+.ruta-editor .notice::before,
+.ruta-editor .alert::before,
+.ruta-editor form > button::before,
+.ruta-editor .done > p::before {
+  counter-increment: ln;
+  content: counter(ln);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--e-num);
+  padding-right: 1rem;
+  color: var(--e-canal);
+  font: 400 var(--text-micro) / var(--e-u) var(--font-mono);
+  text-align: right;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La etiqueta es una línea de comentario del búfer. */
+.ruta-editor .field > label {
+  font: 400 var(--text-small) / var(--e-u) var(--font-mono);
+  color: var(--e-canal);
+  text-transform: lowercase;
+}
+.ruta-editor label .opt {
+  color: var(--e-canal);
+}
+
+/* El campo es una línea del búfer con su marca de entrada. Sin caja. */
+.ruta-editor .control::after {
+  content: '›';
+  position: absolute;
+  left: calc(var(--e-num) + 1.25rem);
+  top: 0;
+  color: var(--e-canal);
+  line-height: var(--e-u);
+  user-select: none;
+}
+.ruta-editor .control {
+  padding-left: calc(var(--e-num) + 1.25rem + 2ch);
+}
+.ruta-editor .control > input,
+.ruta-editor .control > textarea {
+  border: 0;
+  border-bottom: 1px dashed var(--e-rule);
+  background: transparent;
+  padding: 0;
+  font: 400 1rem / var(--e-u) var(--font-mono);
+  min-height: calc(var(--e-u) * 1.6rem);
+  max-width: 42rem;
+  color: var(--e-ink);
+}
+.ruta-editor .control > textarea {
+  resize: vertical;
+  min-height: calc(var(--e-u) * 3rem);
+}
+/* Enfocar un campo es seleccionar esa tirada del búfer. */
+.ruta-editor .control > input:focus-visible,
+.ruta-editor .control > textarea:focus-visible {
+  background: var(--e-sel);
+  border-bottom-color: transparent;
+  outline-offset: 1px;
+}
+.ruta-editor .field--bad .control > input {
+  border-bottom: 2px solid var(--color-error);
+}
+.ruta-editor .err {
+  display: block;
+  padding-left: calc(var(--e-num) + 1.25rem);
+  min-height: 0;
+  font-family: var(--font-mono);
+}
+/* Los radios siguen siendo nativos y siguen siendo una línea del búfer: lo que
+   cambia es que la línea los reparte en fila, no que se apilen unos sobre
+   otros. */
+.ruta-editor .radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 3ch;
+}
+.ruta-editor .radio {
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+  gap: 0.6ch;
+}
+.ruta-editor .radio input {
+  accent-color: var(--e-ink);
+}
+
+/* Ninguna línea de prosa pasa de la medida del búfer. */
+.ruta-editor .microcopy,
+.ruta-editor .legalnote,
+.ruta-editor .notice,
+.ruta-editor .alert,
+.ruta-editor .done > p {
+  max-width: calc(var(--e-num) + 1.25rem + 74ch);
+  font-size: var(--text-small);
+  line-height: var(--e-u);
+}
+.ruta-editor form > button {
+  display: block;
+  width: max-content;
+}
+.ruta-editor .notice,
+.ruta-editor .alert {
+  border: 0;
+  background: transparent;
+  color: var(--e-canal);
+  font-size: var(--text-small);
+}
+.ruta-editor .alert {
+  color: var(--color-error);
+}
+.ruta-editor .done .mail {
+  background: var(--e-sel);
+}
+.ruta-editor .pending {
+  background: #efeadb;
+}
+
+/* --- LA BARRA DE ESTADO. Valores reales, no adorno. ---------------------- */
+.ruta-editor-barra {
+  position: fixed;
+  inset: auto 0 0 0;
+  background: #15140f;
+  color: #f4f1ea;
+  font: 400 var(--text-micro) / 1.6 var(--font-mono);
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.4rem clamp(0.75rem, 2vw, 1.5rem);
+  z-index: 5;
+}
+.ruta-editor-barra .sp {
+  margin-left: auto;
+}
+.ruta-editor-barra kbd {
+  font: inherit;
+  border: 1px solid #3a352d;
+  padding: 0 0.3rem;
+}
+/* Un atajo de teclado en un móvil es una promesa que no se puede cumplir. */
+/* Un atajo de teclado en una pantalla táctil es una promesa que no se puede
+   cumplir: donde no hay teclado, no se anuncia. */
+@media (pointer: coarse), (hover: none) {
+  .ruta-editor-barra .at {
+    display: none;
+  }
+}
+
+.ruta-editor .footer {
+  border-top: 1px solid var(--e-rule);
+  color: var(--e-canal);
+}
+.ruta-editor .footer .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+  padding-left: calc(var(--e-num) + 1.25rem);
+}
+
+@media (max-width: 819px) {
+  .ruta-editor {
+    --e-num: 3rem;
+  }
+  .ruta-editor .l::before,
+  .ruta-editor .ln::before,
+  .ruta-editor .campo-l::before,
+  .ruta-editor .field > label::before,
+  .ruta-editor .field > input::before,
+  .ruta-editor .radios::before,
+  .ruta-editor .microcopy::before,
+  .ruta-editor .legalnote::before,
+  .ruta-editor .notice::before,
+  .ruta-editor .alert::before,
+  .ruta-editor form > button::before,
+  .ruta-editor .done > p::before {
+    font-size: 12px;
+    padding-right: 0.5rem;
+  }
+  .ruta-editor .l > *,
+  .ruta-editor .ln > .v,
+  .ruta-editor .campo-l > * {
+    padding-left: 0.75rem;
+  }
+  .ruta-editor .i1 > *,
+  .ruta-editor .i1 .v,
+  .ruta-editor .i2 > *,
+  .ruta-editor .i2 .v {
+    padding-left: calc(0.75rem + 1ch);
+  }
+  .ruta-editor-barra .oculta {
+    display: none;
+  }
+  /* La barra de estado no puede pisar la última línea del búfer. */
+  .ruta-editor .buf {
+    padding-bottom: 6rem;
+  }
+}
