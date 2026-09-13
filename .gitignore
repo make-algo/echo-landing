@@ -4,3 +4,6 @@ dist/
 .DS_Store
 .env
 .env.*
+# El ejemplo sí va al repo: es la documentación de que la variable existe y de
+# que va vacía hasta que un humano cree la cuenta del proveedor.
+!.env.example

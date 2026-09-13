@@ -8,7 +8,8 @@
  *
  *   npm run build && npm run verificar
  */
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
+import { join } from 'node:path'
 
 const HTML = 'dist/index.html'
 
@@ -103,17 +104,55 @@ if (description.length === 0 || description.length > 155)
   fallos.push(`CA-META-2: la meta description mide ${description.length} caracteres`)
 else console.log(`ok  CA-META-2 · description (${description.length} caracteres)`)
 
-// --- Sin recursos de terceros (CA-NEG-9)
-const externos = [...html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)]
-  .map((m) => m[1])
-  .filter((u) => !u.startsWith('https://make-algo.github.io/'))
-if (externos.length) fallos.push(`CA-NEG-9: recursos de dominios ajenos: ${externos.join(', ')}`)
-else console.log('ok  CA-NEG-9 · ningún recurso de terceros')
+// --- Sin recursos de terceros (CA-NEG-9), en TODAS las páginas construidas y en
+//     el CSS. Se miran solo los atributos de CARGA: un <a href> a un dominio ajeno
+//     es un enlace navegable legítimo —la política enlaza a www.aepd.es— y no una
+//     petición que el navegador haga al pintar la página.
+function ficheros(dir, ext) {
+  return readdirSync(dir).flatMap((n) => {
+    const ruta = join(dir, n)
+    if (statSync(ruta).isDirectory()) return ficheros(ruta, ext)
+    return n.endsWith(ext) ? [ruta] : []
+  })
+}
 
-// --- La versión de prueba no se indexa
-if (!/<meta name="robots" content="noindex/.test(html))
-  fallos.push('Falta el noindex de la versión de prueba')
-else console.log('ok  noindex de la versión de prueba')
+const PROPIO = 'https://make-algo.github.io/'
+const ajeno = (u) => /^https?:\/\//.test(u) && !u.startsWith(PROPIO)
+
+/** Cargas declaradas en un documento o una hoja de estilos. */
+function cargas(texto) {
+  const urls = []
+  for (const m of texto.matchAll(/\ssrc="([^"]+)"/g)) urls.push(m[1])
+  for (const m of texto.matchAll(/<link\b[^>]*>/g)) {
+    // `rel="canonical"` y `rel="alternate"` no cargan nada; el resto sí.
+    if (/rel="(canonical|alternate)"/.test(m[0])) continue
+    const href = m[0].match(/href="([^"]+)"/)
+    if (href) urls.push(href[1])
+  }
+  for (const m of texto.matchAll(/url\(\s*['"]?([^'")]+)/g)) urls.push(m[1])
+  for (const m of texto.matchAll(/@import\s+(?:url\()?['"]([^'"]+)/g)) urls.push(m[1])
+  return urls
+}
+
+const paginas = ficheros('dist', '.html')
+const hojas = ficheros('dist', '.css')
+const terceros = []
+for (const f of [...paginas, ...hojas]) {
+  for (const u of cargas(readFileSync(f, 'utf8'))) if (ajeno(u)) terceros.push(`${f}: ${u}`)
+}
+
+if (terceros.length) fallos.push(`CA-NEG-9: recursos de dominios ajenos: ${terceros.join(', ')}`)
+else
+  console.log(
+    `ok  CA-NEG-9 · ningún recurso de terceros (${paginas.length} páginas, ${hojas.length} hojas de estilo)`
+  )
+
+// --- Ninguna página de la versión de prueba se indexa
+const sinNoindex = paginas.filter(
+  (f) => !/<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
+)
+if (sinNoindex.length) fallos.push(`Falta el noindex en: ${sinNoindex.join(', ')}`)
+else console.log(`ok  noindex en las ${paginas.length} páginas construidas`)
 
 if (fallos.length) {
   console.error('\nFALLA la comprobación de copy:\n' + fallos.map((f) => `  ✗ ${f}`).join('\n'))
