@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css'
 import { absoluteUrl, site, url } from '../lib/site'
+import { saltar } from '../content/copy'
 
 interface Props {
   /** Título de la pestaña. Por defecto, el aprobado para la portada. */
@@ -66,7 +67,7 @@ const canonical = absoluteUrl(path)
     <slot name="head" />
   </head>
   <body>
-    <a href="#contenido" class="skip">Saltar al contenido</a>
+    <a href="#contenido" class="skip">{saltar}</a>
     <slot />
   </body>
 </html>

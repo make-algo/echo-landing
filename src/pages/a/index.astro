@@ -1,0 +1,174 @@
+---
+import Base from '../../layouts/Base.astro'
+import Dicho from '../../components/demo/Dicho.astro'
+import Escrito from '../../components/demo/Escrito.astro'
+import Footer from '../../components/Footer.astro'
+import Argumentos from '../../components/secciones/Argumentos.astro'
+import Beta from '../../components/secciones/Beta.astro'
+import ParaQuien from '../../components/secciones/ParaQuien.astro'
+import Pasos from '../../components/secciones/Pasos.astro'
+import Preguntas from '../../components/secciones/Preguntas.astro'
+import Privacidad from '../../components/secciones/Privacidad.astro'
+import { apertura, cabecera, comparativa, demo, variantes } from '../../content/copy'
+import '../../styles/variante-a.css'
+
+/**
+ * Variante A — LA DEMO ES LA PÁGINA.
+ *
+ * La página no tiene secciones, tiene estados: hay un solo panel de dictado y
+ * bajar no te lleva a otro sitio, le cambia el estado. La superficie oscura de
+ * echo deja de ser un componente de la demo y pasa a ser el fondo de todo el
+ * tramo del argumento; el papel sobrevive en un único sitio, dentro de la
+ * ventana de la app.
+ *
+ * El texto es el mismo de `/`: sale de `src/content/copy.ts` y va literal. Lo
+ * único que se añade son rótulos de interfaz (`variantes.a`).
+ *
+ * No lleva la cabecera del control: en A la marca vive en el raíl, y una
+ * cabecera de papel sobre el tramo oscuro sería una costura de más en el primer
+ * viewport.
+ */
+const ogTitle = apertura.titular.join(' ')
+const v = variantes.a
+---
+
+<Base ogTitle={ogTitle} path="/a/">
+  <main id="contenido" class="ruta-a">
+    <div class="deck">
+      <div class="rail">
+        <div class="rail__sticky">
+          <span class="mark">{cabecera.marca}</span>
+          <ol class="states" id="estados" aria-label={v.indice}>
+            {
+              v.estados.map((e, i) => (
+                <li aria-current={i === 0 ? 'true' : undefined}>
+                  <span class="k">{e.n}</span>{e.nombre}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+
+      <div class="stages">
+        <!-- ESTADO 01 · Dictando. El titular deja el resto del campo oscuro
+             vacío a propósito: el vacío es lo que hace que el panel se lea
+             como un aparato encendido. -->
+        <section class="stage" data-estado="0">
+          <h1>{apertura.titular.join(' ')}</h1>
+          <p class="a-lead">{apertura.subtitulo}</p>
+          <p class="a-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
+          <p class="a-req">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
+
+          <figure class="panel demo-anim" id="demo">
+            <h2 class="sr-only">{demo.tituloOculto}</h2>
+            <p class="sr-only">{demo.descripcion}</p>
+            <div class="panel__body">
+              <div class="panel__side">
+                <span class="panel__tag">{v.ladoEscrito}</span>
+                <Escrito />
+              </div>
+              <div class="panel__side">
+                <span class="panel__tag">{v.ladoDicho}</span>
+                <Dicho />
+              </div>
+            </div>
+            <figcaption class="a-req">{demo.pie}</figcaption>
+          </figure>
+        </section>
+
+        <Argumentos />
+        <Pasos />
+
+        <!-- ESTADO 02 · Comparando. No es una tabla: es el mismo panel
+             haciendo cuatro pasadas sobre la misma frase. -->
+        <section class="stage" id="comparacion" data-estado="1">
+          <h2>{comparativa.titulo}</h2>
+          <p class="a-lead">{comparativa.entradilla}</p>
+
+          <div class="panel">
+            <div class="panel__head"><span>{v.pasadas}</span></div>
+            <div class="passes">
+              <div class="pass pass--head" aria-hidden="true">
+                <div class="pass__attr">{comparativa.columnas.criterio}</div>
+                <div class="pass__echo">{comparativa.columnas.echo}</div>
+                <div class="pass__os">{comparativa.columnas.macos}</div>
+              </div>
+              {
+                comparativa.filas.map((fila) => (
+                  <div class="pass" data-fila-comparativa>
+                    <div class="pass__attr">{fila.criterio}</div>
+                    <div class="pass__echo"
+                      ><span class="col-label" aria-hidden="true">
+                        {comparativa.columnas.echo}</span
+                      >{fila.echo}</div
+                    >
+                    <div class="pass__os"
+                      ><span class="col-label" aria-hidden="true">
+                        {comparativa.columnas.macos}</span
+                      >{fila.macos}</div
+                    >
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ESTADO 03 · Escrito. El panel se apaga —sin animación: lo dicho se
+             queda tachado y quieto— y lo escrito permanece. -->
+        <section class="stage off" data-estado="2">
+          <div class="panel" aria-hidden="true">
+            <div class="panel__body">
+              <div class="panel__side">
+                <span class="panel__tag">{v.ladoEscrito}</span>
+                <Escrito />
+              </div>
+              <div class="panel__side">
+                <span class="panel__tag">{v.ladoDicho}</span>
+                <Dicho />
+              </div>
+            </div>
+          </div>
+          <p class="close-line" style="margin-top: 2.5rem">
+            {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
+          </p>
+          <p class="a-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
+        </section>
+      </div>
+    </div>
+
+    <!-- La costura: aquí se acaba el panel y vuelve el papel del control. -->
+    <Privacidad />
+    <ParaQuien />
+    <Beta />
+    <Preguntas />
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // El índice de estados marca en cuál estás. No es una animación: es un
+  // estado, así que sigue funcionando con prefers-reduced-motion. Y no es un
+  // camino a ningún sitio, así que si esto no corre no se pierde nada.
+  const indice = document.getElementById('estados')
+  const tramos = document.querySelectorAll<HTMLElement>('[data-estado]')
+  if (indice && tramos.length && 'IntersectionObserver' in window) {
+    const items = Array.from(indice.children)
+    const marcar = (i: number) =>
+      items.forEach((li, j) =>
+        j === i ? li.setAttribute('aria-current', 'true') : li.removeAttribute('aria-current')
+      )
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        const visible = entradas
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) marcar(Number((visible.target as HTMLElement).dataset.estado))
+      },
+      { rootMargin: '-30% 0px -50% 0px', threshold: [0, 0.25, 0.5] }
+    )
+    tramos.forEach((t) => observador.observe(t))
+  }
+</script>

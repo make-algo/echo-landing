@@ -1,0 +1,179 @@
+---
+import Base from '../../layouts/Base.astro'
+import Dicho from '../../components/demo/Dicho.astro'
+import Escrito from '../../components/demo/Escrito.astro'
+import Footer from '../../components/Footer.astro'
+import Argumentos from '../../components/secciones/Argumentos.astro'
+import Beta from '../../components/secciones/Beta.astro'
+import ParaQuien from '../../components/secciones/ParaQuien.astro'
+import Pasos from '../../components/secciones/Pasos.astro'
+import Preguntas from '../../components/secciones/Preguntas.astro'
+import Privacidad from '../../components/secciones/Privacidad.astro'
+import { apertura, comparativa, demo, variantes } from '../../content/copy'
+import '../../styles/variante-c.css'
+
+/**
+ * Variante C — LA PÁGINA ES UN EDITOR.
+ *
+ * Canal de numeración, nada centrado, cada bloque entrando por una columna
+ * distinta, y la inversión que lo sostiene todo: el documento está compuesto en
+ * monoespaciada y la proporcional aparece únicamente donde aparece la salida de
+ * echo. En el primer viewport el titular es lo único compuesto que hay.
+ *
+ * La numeración la lleva un contador de CSS, así que añadir o quitar bloques no
+ * deja números mentirosos. El canal va `aria-hidden`: es decoración
+ * estructural, no información que no esté en otro sitio.
+ *
+ * No lleva la cabecera del control: la marca es la primera línea del documento.
+ */
+const ogTitle = apertura.titular.join(' ')
+const v = variantes.c
+const { columnas } = comparativa
+---
+
+<Base ogTitle={ogTitle} path="/c/">
+  <main id="contenido" class="ruta-c">
+    <div class="doc">
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c meta">
+        {v.cabeceraDocumento}
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+
+      <!-- APERTURA. El h1 es lo único compuesto del primer viewport: es la
+           salida. Cada bloque entra por una columna distinta y esa escalera es
+           la composición. -->
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c">
+        <h1>{apertura.titular.join(' ')}</h1>
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <p class="c-lead">{apertura.subtitulo}</p>
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i2">
+        <a class="sel-cta" href="#beta">{apertura.cta}</a>
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i2">
+        <p class="dim" style="padding-top: 0.75rem">
+          {apertura.requisito.aviso} {apertura.requisito.maquina}
+        </p>
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+
+      <!-- LA DEMO, como un bloque de salida del documento -->
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <figure class="demo-anim" id="demo">
+          <h2 class="sr-only">{demo.tituloOculto}</h2>
+          <p class="sr-only">{demo.descripcion}</p>
+          <div class="pair">
+            <Dicho />
+            <Escrito />
+          </div>
+          <figcaption class="dim" style="padding-top: 0.6rem">{demo.pie}</figcaption>
+        </figure>
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <Argumentos />
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i2">
+        <Pasos />
+      </div></div>
+
+      <!-- COMPARATIVA COMO DIFF. El signo lleva el significado, no el color:
+           por eso no hay ni rojo ni verde. Cada línea lleva su rótulo de
+           columna para el lector de pantalla, igual que la tabla del control. -->
+      <div class="ln" id="comparacion"><div class="n" aria-hidden="true"></div><div class="c i3">
+        <h2 class="out">{comparativa.titulo}</h2>
+        <p class="c-lead" style="margin-top: 1rem">{comparativa.entradilla}</p>
+      </div></div>
+
+      <div class="diff">
+        {
+          comparativa.filas.map((fila) => (
+            <div class="hunk" data-fila-comparativa>
+              <div class="n" aria-hidden="true" />
+              <div class="b">
+                <p class="t">{fila.criterio}</p>
+                <div class="lines">
+                  <div class="dl dl--del">
+                    <span class="s" aria-hidden="true">−</span>
+                    <span class="v"><span class="sr-only">{columnas.macos}: </span>{fila.macos}</span>
+                  </div>
+                  <div class="dl dl--add">
+                    <span class="s" aria-hidden="true">+</span>
+                    <span class="v"><span class="sr-only">{columnas.echo}: </span>{fila.echo}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+
+      <!-- CIERRE: la última salida del documento. -->
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <p class="out" style="font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.5rem); line-height: 1.4; max-width: 36ch">
+          {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
+        </p>
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1" style="padding-top: 1.25rem">
+        <a class="sel-cta" href="#beta">{apertura.cta}</a>
+      </div></div>
+      <div class="ln blank"><div class="n" aria-hidden="true"></div><div class="c"></div></div>
+
+      <!-- La costura de C es invisible: el documento no se acaba, sigue. -->
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <Privacidad />
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i2">
+        <ParaQuien />
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i1">
+        <Beta />
+      </div></div>
+      <div class="ln"><div class="n" aria-hidden="true"></div><div class="c i3">
+        <Preguntas />
+      </div></div>
+    </div>
+  </main>
+
+  <p class="keys ruta-c" aria-hidden="true">
+    <kbd>{v.atajos.ir}</kbd> <kbd>{v.atajos.comparativa}</kbd> comparativa · <kbd>{v.atajos.ir}</kbd
+    > <kbd>{v.atajos.beta}</kbd> beta
+  </p>
+
+  <Footer />
+</Base>
+
+<script>
+  // Atajos de editor: `g` y luego `c` o `b`. Son un guiño que el segmento
+  // reconoce, no el único camino a ningún sitio —el CTA y el scroll siguen
+  // ahí—, y se callan en cuanto estás escribiendo en un campo.
+  let esperando = 0
+  const escribiendo = (e: KeyboardEvent) => {
+    const t = e.target as HTMLElement | null
+    return !!t?.closest('input, textarea, select, [contenteditable]')
+  }
+  addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey || escribiendo(e)) return
+    if (e.key === 'g') {
+      esperando = Date.now()
+      return
+    }
+    if (Date.now() - esperando > 1000) return
+    const destino = e.key === 'c' ? '#comparacion' : e.key === 'b' ? '#beta' : ''
+    if (!destino) return
+    esperando = 0
+    const destinoEl = document.querySelector<HTMLElement>(destino)
+    if (!destinoEl) return
+    destinoEl.scrollIntoView()
+    // El teclado va detrás del scroll: si no, el foco se queda arriba y el
+    // siguiente tabulador devuelve al visitante al principio de la página.
+    destinoEl.setAttribute('tabindex', '-1')
+    destinoEl.focus({ preventScroll: true })
+  })
+</script>

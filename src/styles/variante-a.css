@@ -1,0 +1,329 @@
+/* ============================================================================
+   Variante A — LA DEMO ES LA PÁGINA
+   La página no tiene secciones: tiene estados. Un solo panel de dictado, y
+   bajar no te lleva a otro sitio, le cambia el estado.
+
+   Reglas de este fichero:
+   - Todo cuelga de `.ruta-a`. `src/styles/tokens.css` es del control y no se
+     toca; aquí solo se REDEFINEN tokens dentro del tramo oscuro, para que los
+     componentes de sección heredados (argumentos, pasos) funcionen sobre él sin
+     tocar su marcado.
+   - El tramo heredado en papel —privacidad, para quién, alta y preguntas— se
+     queda exactamente como en el control.
+   ========================================================================= */
+
+.ruta-a {
+  --a-bg: #14120e; /* fondo del tramo del argumento                        */
+  --a-surface: #1f1c17; /* el panel                                        */
+  --a-edge: #332e27; /* separadores dentro del panel (decorativos)         */
+  --a-on: #f4f1ea; /* texto principal sobre oscuro     16,9:1 / bg         */
+  --a-on-2: #a8a29a; /* secundario y mono                7,0:1 / bg        */
+  --a-signal: #e9a93f; /* CTA y estado activo            9,1:1 / bg        */
+  --a-off: #6e675c; /* el panel apagado, en el cierre                      */
+  --a-rail: 20rem;
+  --a-pad: clamp(1.25rem, 3vw, 3rem);
+}
+
+/* --- El armazón: raíl fijo de estados y, a su derecha, el tramo. Nada
+       centrado y ningún contenedor que cierre por la derecha. -------------- */
+.ruta-a .deck {
+  background: var(--a-bg);
+  display: grid;
+  grid-template-columns: var(--a-rail) minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 3vw, 3rem);
+  padding-left: var(--a-pad);
+  /* El panel sangra por la derecha a propósito, pero eso no puede convertirse
+     en scroll horizontal de la página. `clip` recorta sin crear un contenedor
+     de desplazamiento, así que el raíl sigue siendo `sticky`. */
+  overflow-x: clip;
+
+  /* Los componentes heredados hablan en tokens: aquí se les cambia el papel
+     por la superficie oscura y siguen valiendo sin tocar su marcado. */
+  --color-ink: var(--a-on);
+  --color-ink-2: var(--a-on-2);
+  --color-ink-3: var(--a-on-2);
+  --color-line: var(--a-edge);
+  --color-accent: var(--a-signal);
+  --color-accent-strong: #f2b953;
+  --color-focus: var(--a-on);
+  color: var(--a-on);
+}
+
+/* Dentro del tramo no hay contenedor centrado: el eje es el raíl. */
+.ruta-a .deck .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.ruta-a .rail {
+  padding-block: clamp(2.5rem, 5vw, 5rem) 4rem;
+}
+.ruta-a .rail__sticky {
+  position: sticky;
+  top: clamp(2.5rem, 5vw, 5rem);
+}
+.ruta-a .mark {
+  font: 500 var(--text-small) / 1 var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--a-on);
+}
+
+/* El índice de estados es orientación, no navegación: no es el único camino a
+   ningún sitio y desaparece en estrecho sin que se pierda nada. */
+.ruta-a .states {
+  list-style: none;
+  padding: 0;
+  margin-top: 2.5rem;
+  border-left: 1px solid var(--a-edge);
+}
+.ruta-a .states li {
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--a-on-2);
+  padding: 0.55rem 0 0.55rem 1rem;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+}
+/* El cambio de estado es un cambio de color de borde, no una animación: bajo
+   prefers-reduced-motion sigue funcionando igual. */
+.ruta-a .states li[aria-current] {
+  color: var(--a-on);
+  border-left-color: var(--a-signal);
+}
+.ruta-a .states .k {
+  color: var(--a-on-2);
+  margin-right: 0.75rem;
+}
+
+.ruta-a .stages {
+  min-width: 0;
+  padding-right: 0;
+}
+.ruta-a .stage,
+.ruta-a .deck .section {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+.ruta-a .stages > * + * {
+  border-top: 1px solid var(--a-edge);
+}
+
+/* --- Tipografía del tramo --------------------------------------------- */
+.ruta-a .deck h1 {
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.024em;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+.ruta-a .deck h2 {
+  max-width: 24ch;
+}
+.ruta-a .a-lead {
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  color: var(--a-on-2);
+  max-width: 52ch;
+  margin-top: 1.25rem;
+}
+.ruta-a .a-req {
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--a-on-2);
+  margin-top: 1rem;
+  max-width: 46ch;
+}
+.ruta-a .a-cta {
+  margin-top: 1.75rem;
+}
+.ruta-a .deck .btn {
+  background: var(--a-signal);
+  color: #17150f; /* tinta sobre el ámbar: 8,7:1 */
+}
+.ruta-a .deck .btn:hover {
+  background: #f2b953;
+}
+
+/* --- El panel. Sangra por el borde derecho: la página no lo encierra. El
+       resultado queda entero y a la izquierda; lo que se desborda es el
+       material en bruto. ---------------------------------------------------- */
+.ruta-a .panel {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  margin-right: calc(-1 * var(--a-pad));
+  background: var(--a-surface);
+  border: 1px solid var(--a-edge);
+  border-right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  overflow: hidden;
+}
+.ruta-a .panel__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+.ruta-a .panel__side {
+  padding: 1.5rem;
+  min-width: 0;
+}
+.ruta-a .panel__side + .panel__side {
+  border-left: 1px solid var(--a-edge);
+}
+.ruta-a .panel__tag {
+  display: block;
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--a-on-2);
+  margin-bottom: 1rem;
+}
+.ruta-a .panel__head {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--a-edge);
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--a-on-2);
+}
+
+/* La barra de echo deja de ser una caja de 60 px: es el lado derecho del panel,
+   sobre la misma superficie. La máquina de estados es la del control. */
+.ruta-a .hud {
+  background: transparent;
+  padding: 0;
+  gap: 10px 14px;
+}
+.ruta-a .hud__text {
+  margin-top: 4px;
+}
+
+/* La ventana de la app es la única superficie de papel del tramo: dentro de
+   ella vuelven a mandar los tokens del control. */
+.ruta-a .win {
+  --color-ink: #17150f;
+  --color-ink-2: #55504a;
+  --color-ink-3: #5e584f;
+  --color-line: #e4ded4;
+  --color-accent: #17150f;
+  --color-accent-wash: #f7e6c4;
+  --color-focus: #17150f;
+  border-radius: 8px;
+  color: var(--color-ink);
+}
+
+/* --- Comparativa: cuatro pasadas del mismo panel, no una tabla ---------- */
+.ruta-a .passes {
+  border-top: 1px solid var(--a-edge);
+}
+.ruta-a .pass {
+  display: flex;
+  border-bottom: 1px solid var(--a-edge);
+}
+.ruta-a .pass:last-child {
+  border-bottom: 0;
+}
+.ruta-a .pass > * {
+  padding: 1.1rem 1.25rem;
+  min-width: 0;
+  flex: 1 1 0;
+}
+.ruta-a .pass__attr {
+  flex: 0 0 14rem;
+  order: 1;
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--a-on);
+}
+/* El orden echo-antes-que-macOS es deliberado: el panel también pone el
+   resultado primero. Lo compuesto va en sans; lo que sale sin componer, en
+   mono, igual que en la demo. */
+.ruta-a .pass__echo {
+  order: 2;
+  font-size: var(--text-body);
+  color: var(--a-on);
+  border-left: 1px solid var(--a-edge);
+}
+.ruta-a .pass__os {
+  order: 3;
+  font: 400 var(--text-small) / 1.55 var(--font-mono);
+  color: var(--a-on-2);
+  border-left: 1px solid var(--a-edge);
+}
+.ruta-a .pass--head > * {
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--a-on-2);
+  padding-block: 0.75rem;
+}
+.ruta-a .col-label {
+  display: none;
+}
+
+/* --- Cierre: el panel se apaga y lo escrito se queda -------------------- */
+.ruta-a .off .panel__head,
+.ruta-a .off .panel__tag,
+.ruta-a .off .hud,
+.ruta-a .off .hud__text {
+  color: var(--a-off);
+}
+.ruta-a .close-line {
+  font-size: clamp(1.1875rem, 1.05rem + 0.6vw, 1.5rem);
+  line-height: 1.45;
+  max-width: 40ch;
+  color: var(--a-on);
+}
+
+/* La costura. El tramo oscuro se acaba y vuelve el papel justo donde la
+   sección heredada dice «qué sale de tu Mac»: el panel se cierra y vuelves a
+   tu ordenador. La banda es el hueco de papel que lo anuncia, no una caja. */
+.ruta-a > #privacidad {
+  padding-top: calc(var(--space-section) + clamp(1rem, 3vw, 2.5rem));
+}
+
+@media (max-width: 899px) {
+  .ruta-a .deck {
+    grid-template-columns: 1fr;
+    padding-right: var(--a-pad);
+  }
+  .ruta-a .rail {
+    padding-bottom: 0;
+  }
+  .ruta-a .rail__sticky {
+    position: static;
+  }
+  .ruta-a .states {
+    display: none;
+  }
+  .ruta-a .panel {
+    margin-right: 0;
+    border-right: 1px solid var(--a-edge);
+    border-radius: var(--radius-md);
+  }
+  .ruta-a .panel__body {
+    grid-template-columns: 1fr;
+  }
+  .ruta-a .panel__side + .panel__side {
+    border-left: 0;
+    border-top: 1px solid var(--a-edge);
+  }
+  /* Las filas pasan a bloques apilados con el rótulo de columna delante, igual
+     que hace la tabla del control. */
+  .ruta-a .pass {
+    flex-wrap: wrap;
+  }
+  .ruta-a .pass > * {
+    flex: 1 1 100%;
+  }
+  .ruta-a .pass--head {
+    display: none;
+  }
+  .ruta-a .pass__echo,
+  .ruta-a .pass__os {
+    border-left: 0;
+    padding-top: 0;
+  }
+  .ruta-a .pass__attr {
+    padding-bottom: 0.5rem;
+  }
+  .ruta-a .col-label {
+    display: block;
+    font: 400 var(--text-micro) / 1.4 var(--font-mono);
+    color: var(--a-on-2);
+    margin-bottom: 2px;
+  }
+}

@@ -1,0 +1,22 @@
+---
+import { demo } from '../../content/copy'
+
+/**
+ * La mitad «lo que se escribe» de la demo: la ventana de correo con el texto ya
+ * pegado. Es la única superficie de papel de la variante A y la mitad limpia de
+ * la B, así que vive aparte de la barra para que cada composición la coloque
+ * donde quiera. El estado BASE del marcado es el texto pegado: sin animación se
+ * ve eso.
+ */
+const { ventana } = demo
+---
+
+<div class="win">
+  <div class="win__bar">{ventana.barra}</div>
+  <div class="win__field win__field--to"><b>{ventana.para.etiqueta}</b> {ventana.para.valor}</div>
+  <div class="win__field"><b>{ventana.asunto.etiqueta}</b> {ventana.asunto.valor}</div>
+  <div class="win__rule" aria-hidden="true"></div>
+  <div class="win__body"><span class="caret caret--start" aria-hidden="true"></span><span
+      class="pasted">{ventana.cuerpo}</span><span class="caret caret--end" aria-hidden="true"
+    ></span></div>
+</div>

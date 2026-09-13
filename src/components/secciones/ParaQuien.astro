@@ -1,0 +1,15 @@
+---
+import { paraQuien } from '../../content/copy'
+
+/** 7 · Para quién es (y para quién no). Los dos párrafos con el mismo peso: el
+    segundo es un filtro, no una disculpa. */
+---
+
+<section id="para-quien" class="section">
+  <div class="wrap">
+    <h2 class="rubric">{paraQuien.rotulo}</h2>
+    <div class="who">
+      {paraQuien.parrafos.map((p) => <p><strong>{p.fuerte}</strong>{p.resto}</p>)}
+    </div>
+  </div>
+</section>

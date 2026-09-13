@@ -1,5 +1,6 @@
 ---
 import { url } from '../lib/site'
+import { cabecera } from '../content/copy'
 
 /**
  * Cabecera mínima: la marca en pantalla y un acceso permanente al alta.
@@ -11,7 +12,7 @@ import { url } from '../lib/site'
 
 <header class="top">
   <div class="wrap">
-    <span class="wordmark">echo</span>
-    <a class="top__cta" href={`${url('/')}#beta`}>Entrar en la beta privada</a>
+    <span class="wordmark">{cabecera.marca}</span>
+    <a class="top__cta" href={`${url('/')}#beta`}>{cabecera.cta}</a>
   </div>
 </header>

@@ -3,16 +3,24 @@ import Base from '../layouts/Base.astro'
 import Demo from '../components/Demo.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
-import WaitlistForm from '../components/WaitlistForm.astro'
+import Argumentos from '../components/secciones/Argumentos.astro'
+import Beta from '../components/secciones/Beta.astro'
+import ComparativaTabla from '../components/secciones/ComparativaTabla.astro'
+import ParaQuien from '../components/secciones/ParaQuien.astro'
+import Pasos from '../components/secciones/Pasos.astro'
+import Preguntas from '../components/secciones/Preguntas.astro'
+import Privacidad from '../components/secciones/Privacidad.astro'
+import { apertura } from '../content/copy'
 
 /**
- * Las diez secciones de la landing, en su orden definitivo.
+ * El control: las diez secciones de la landing, en su orden definitivo.
  *
- * Todo el texto visible es copy aprobado y va literal. Si algo no cabe, se
- * cambia la caja; no la frase.
+ * Todo el texto visible sale de `src/content/copy.ts` y va literal; esta página
+ * decide la composición, no las palabras. `/a/`, `/b/` y `/c/` reordenan la
+ * misma fuente con otra idea organizadora y heredan de aquí los componentes de
+ * sección.
  */
-const ogTitle =
-  'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'
+const ogTitle = apertura.titular.join(' ')
 ---
 
 <Base ogTitle={ogTitle}>
@@ -24,22 +32,18 @@ const ogTitle =
     <div class="first wrap">
       <div class="first__grid">
         <h1>
-          Habla y aparece escrito.<br class="wide" /> Sin muletillas, sin dictar la puntuación<br
-            class="wide"
-          /> y sin cambiar de idioma.
+          {apertura.titular[0]}<br class="wide" /> {apertura.titular[1]}<br class="wide" /> {
+            apertura.titular[2]
+          }
         </h1>
 
         <div class="hero__rest">
-          <p class="lead hero__sub">
-            Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la
-            suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.
-          </p>
-          <p class="hero__cta"><a class="btn" href="#beta">Entrar en la beta privada</a></p>
+          <p class="lead hero__sub">{apertura.subtitulo}</p>
+          <p class="hero__cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
           <p class="hero__req">
-            Sin descargable público todavía. Te escribimos cuando abramos tu tanda.<span class="sep"
-            >
-              ·
-            </span><br class="br" />macOS&nbsp;26 y Apple&nbsp;Silicon.
+            {apertura.requisito.aviso}<span class="sep"> · </span><br class="br" />{
+              apertura.requisito.maquina
+            }
           </p>
         </div>
 
@@ -47,283 +51,13 @@ const ogTitle =
       </div>
     </div>
 
-    <!-- 3 · Tres argumentos, en orden de fuerza -->
-    <section id="que-hace-distinto" class="section">
-      <div class="wrap">
-        <h2 class="rubric">Qué hace distinto</h2>
-        <div class="args">
-          <div class="arg">
-            <h3>Limpia el texto, no solo lo transcribe</h3>
-            <p>
-              Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta
-              («el martes, no, mejor el jueves») y puntúa sola. También adapta el formato a donde
-              estés escribiendo: párrafos y saludo en un correo, texto plano en un editor o una
-              terminal.
-            </p>
-          </div>
-          <div class="arg">
-            <h3>Español con inglés técnico en medio</h3>
-            <p>
-              «Hacemos el deploy del backend en GitHub» no se convierte en «depploy del Back and and
-              Get Have». echo usa un modelo multilingüe que detecta el idioma solo y aguanta la
-              mezcla dentro de la misma frase. 25 idiomas&nbsp;europeos.
-            </p>
-          </div>
-          <div class="arg">
-            <h3>Sin cuotas por minuto</h3>
-            <p>
-              La transcripción corre en tu Mac, así que no hay servidor que pagar ni minutos que
-              gastar. El pulido lo hace el CLI de Claude Code o el de Codex con tu propia sesión:
-              consume tu cuota, no una nuestra. No te pedimos ninguna API key.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4 · Cómo funciona: una tira continua, no tres tarjetas -->
-    <section id="como-funciona" class="section">
-      <div class="wrap">
-        <h2 class="rubric">Qué pasa cuando sueltas la tecla</h2>
-        <ol class="steps">
-          <li>
-            <span class="n" aria-hidden="true">01</span>
-            <h3>Se transcribe en tu Mac.</h3>
-            <p><span class="t">Décimas de segundo.</span> Modelo local, sin&nbsp;conexión.</p>
-          </li>
-          <li>
-            <span class="n" aria-hidden="true">02</span>
-            <h3>Se pule con tu suscripción.</h3>
-            <p>
-              El texto transcrito pasa por Claude o ChatGPT, con tu sesión. <span class="t"
-                >De 1,5 a 2,5 segundos.</span
-              > Puedes dejarlo en «solo cuando haga falta», que es como viene: los dictados que ya salen
-              limpios se pegan al&nbsp;instante.
-            </p>
-          </li>
-          <li>
-            <span class="n" aria-hidden="true">03</span>
-            <h3>Se pega donde estabas.</h3>
-            <p>
-              En la app activa, con el formato que le corresponda. Y se queda en el portapapeles por
-              si lo quieres pegar otra&nbsp;vez.
-            </p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- 5 · Comparación honesta con el dictado del Mac.
-         Cuatro filas, y el número no es casual: la entradilla anuncia «las
-         cuatro cosas que no hace». Si alguien añade una quinta, cambia también
-         el número de la entradilla. -->
-    <section id="comparacion" class="section ruled">
-      <div class="wrap">
-        <h2>El dictado del Mac transcribe. echo escribe.</h2>
-        <p class="lead measure" style="margin-top: 16px">
-          El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas
-          que no hace, y son las cuatro razones por las que existe echo.
-        </p>
-
-        <!--
-          Los roles implícitos de la tabla se pierden al cambiar `display` en
-          móvil, así que van explícitos: la relación fila/columna sigue viva
-          para el lector de pantalla cuando la tabla pasa a pares.
-        -->
-        <div class="cmp">
-          <table role="table">
-            <colgroup><col class="c-attr" /><col class="c-os" /><col class="c-echo" /></colgroup>
-            <thead role="rowgroup">
-              <tr role="row">
-                <td role="cell"><span class="sr-only">Criterio</span></td>
-                <th role="columnheader" scope="col">Dictado de macOS</th>
-                <th role="columnheader" scope="col" class="t-echo">echo</th>
-              </tr>
-            </thead>
-            <tbody role="rowgroup">
-              <tr role="row">
-                <th role="rowheader" scope="row">Muletillas y repeticiones</th>
-                <td role="cell"
-                  ><span class="col-label" aria-hidden="true">Dictado de macOS</span>Las transcribe
-                  tal cual</td
-                >
-                <td role="cell" class="t-echo"
-                  ><span class="col-label" aria-hidden="true">echo</span>Las quita</td
-                >
-              </tr>
-              <tr role="row">
-                <th role="rowheader" scope="row">Puntuación</th>
-                <td role="cell"
-                  ><span class="col-label" aria-hidden="true">Dictado de macOS</span>La dictas tú,
-                  palabra por palabra</td
-                >
-                <td role="cell" class="t-echo"
-                  ><span class="col-label" aria-hidden="true">echo</span>La pone sola</td
-                >
-              </tr>
-              <tr role="row">
-                <th role="rowheader" scope="row">Idiomas mezclados</th>
-                <td role="cell"
-                  ><span class="col-label" aria-hidden="true">Dictado de macOS</span>Un idioma fijo
-                  por sesión</td
-                >
-                <td role="cell" class="t-echo"
-                  ><span class="col-label" aria-hidden="true">echo</span>Detecta y mezcla, 25
-                  idiomas</td
-                >
-              </tr>
-              <tr role="row">
-                <th role="rowheader" scope="row">Formato según la app</th>
-                <td role="cell"
-                  ><span class="col-label" aria-hidden="true">Dictado de macOS</span>No lo cambia</td
-                >
-                <td role="cell" class="t-echo"
-                  ><span class="col-label" aria-hidden="true">echo</span>Correo, chat o terminal,
-                  distinto</td
-                >
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p class="closer">
-          <span
-            >Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para
-            cuando dictas párrafos y te cansa editarlos&nbsp;después.</span
-          >
-        </p>
-      </div>
-    </section>
-
-    <!-- 6 · Privacidad. Se lee como una explicación, no como un sello: ni una
-         negrita, ni un icono, ni una caja. -->
-    <section id="privacidad" class="section">
-      <div class="wrap">
-        <h2 class="rubric">Qué sale de tu Mac y qué no</h2>
-        <div class="priv">
-          <p class="priv__main">
-            Tu voz no sale nunca de tu Mac: la transcripción es local. Si activas el pulido, el
-            texto transcrito —no el audio— se envía a Claude o a ChatGPT con tu propia cuenta, igual
-            que si lo hubieras pegado tú en el chat. Si prefieres que no salga nada, desactiva el
-            pulido: echo sigue funcionando.
-          </p>
-          <div class="priv__notes">
-            <p>
-              No tenemos servidores en medio: echo habla con el CLI que ya tienes instalado, no con
-              una API nuestra.
-            </p>
-            <p>
-              No guardamos ni enviamos a ninguna parte lo que dictas. El audio solo se guarda en tu
-              disco si tú lo activas para hacer pruebas.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7 · Para quién es (y para quién no) -->
-    <section id="para-quien" class="section">
-      <div class="wrap">
-        <h2 class="rubric">Para quién es</h2>
-        <div class="who">
-          <p>
-            <strong>Te va a servir si</strong> escribes mucho a lo largo del día —prompts, mensajes,
-            issues, correos, documentos— y hablas más rápido de lo que tecleas. Si trabajas en dos
-            idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más.
-            Si teclear te duele o te&nbsp;cuesta.
-          </p>
-          <p>
-            <strong>No te va a servir si</strong> dictas frases sueltas de vez en cuando (el dictado
-            del Mac te sobra), si tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está
-            bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy
-            tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que
-            lo hace interesante.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8 · Lista de espera. La única banda de la página. -->
-    <section id="beta" class="section band">
-      <div class="wrap beta">
-        <h2>Entrar en la beta privada</h2>
-        <p class="lead">
-          Vamos abriendo por tandas para poder atender a cada uno. Nos dices en qué lo usarías y te
-          escribimos cuando te toque.
-        </p>
-        <WaitlistForm />
-      </div>
-    </section>
-
-    <!-- 9 · Preguntas -->
-    <section id="preguntas" class="section">
-      <div class="wrap">
-        <h2 class="rubric">Preguntas</h2>
-        <div class="faq">
-          <details class="qa">
-            <summary>¿Necesito pagar Claude?</summary>
-            <p>
-              Vale Claude Pro o Max, y también ChatGPT Plus. No te pedimos que contrates nada nuevo,
-              sino que lo que ya pagas haga una cosa más. Y si no tienes ninguna de las dos, echo
-              funciona con el pulido desactivado: transcripción local y puntuación por voz.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿Se envía mi voz a algún sitio?</summary>
-            <p>
-              No. La transcripción es local siempre. Con el pulido activado sale el texto ya
-              transcrito, no el audio, y va a tu propia cuenta de Claude o ChatGPT. Con el pulido
-              desactivado no sale nada.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿En qué se diferencia del&nbsp;dictado que ya trae el Mac?</summary>
-            <p>
-              El de macOS transcribe literalmente: tus muletillas, y la puntuación la dictas tú. Va
-              a un idioma fijo y no sabe en qué app estás escribiendo. Si dictas frases sueltas, te
-              sobra con él.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿Cuánto tarda?</summary>
-            <p>
-              La transcripción, décimas de segundo. El pulido, entre 1,5 y 2,5 segundos con Claude.
-              Por defecto solo se pule cuando hace falta, así que la mayoría de los dictados se
-              pegan al&nbsp;instante.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿Y si falla Claude o no tengo conexión?</summary>
-            <p>Se pega la transcripción en bruto y el menú te dice por qué. No pierdes el dictado.</p>
-          </details>
-          <details class="qa">
-            <summary>¿Qué Mac necesito?</summary>
-            <p>
-              macOS 26 (Tahoe) y Apple Silicon. La primera vez se descarga el modelo de voz, unos
-              600 MB.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿En qué idiomas funciona?</summary>
-            <p>25 idiomas europeos, con detección automática y mezcla dentro de la misma frase.</p>
-          </details>
-          <details class="qa">
-            <summary>¿Cuánto va a costar?</summary>
-            <p>
-              Todavía no está decidido. Quien esté en la lista de espera lo sabrá antes que nadie y
-              con condiciones de early-bird.
-            </p>
-          </details>
-          <details class="qa">
-            <summary>¿Cuándo puedo descargarlo?</summary>
-            <p>
-              Estamos en beta privada por tandas. No damos fecha porque no la sabemos; te escribimos
-              cuando te toque.
-            </p>
-          </details>
-        </div>
-      </div>
-    </section>
+    <Argumentos />
+    <Pasos />
+    <ComparativaTabla />
+    <Privacidad />
+    <ParaQuien />
+    <Beta />
+    <Preguntas />
   </main>
 
   <!-- 10 · Pie -->
