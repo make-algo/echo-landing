@@ -308,10 +308,20 @@
      texto del 01. Puestos en tres columnas iguales, la retícula prometía una
      simetría que el texto no cumple y el resultado era el de tres tarjetas
      con los pies descuadrados. Aquí cada tiempo es una FILA de la retícula
-     de la página: el número y el título en el eje A, la prosa en el eje B.
-     La carga desigual se convierte en filas de altura desigual, que es lo
-     que una secuencia de tres tiempos es de verdad. Las reglas finas los
-     encadenan en el orden en que ocurren. */
+     de la página: el título en el eje A, la prosa en el eje B. La carga
+     desigual se convierte en filas de altura desigual, que es lo que una
+     secuencia de tres tiempos es de verdad. Las reglas finas los encadenan
+     en el orden en que ocurren.
+     El ordinal (01/02/03) se quitó (MAK-83): un crítico externo lo señaló
+     como firma de página generada, y el rótulo de la sección —«Qué pasa
+     cuando sueltas la tecla»— ya declara que esto es una secuencia; los tres
+     verbos reflejos encadenados («se transcribe» → «se pule» → «se pega»)
+     hacen el resto. El eje A se queda solo con el título: no necesita un
+     ancla añadida, la necesita un poco más de peso, porque ahora es lo único
+     que hay en su columna y tiene que sostenerla él solo. Sube un escalón,
+     de `text-body` a `text-h3` — el mismo tamaño que ya usan los títulos de
+     «Qué hace distinto» dos secciones más arriba, así que no es un tamaño
+     nuevo en la página. */
   .steps { list-style: none; padding: 0; display: grid; gap: 0; }
   /* Los filetes van SOLO entre tiempos. Cerrada por arriba y por abajo, la
      sección se veía igual que el acordeón de preguntas del final: mismo
@@ -319,10 +329,6 @@
      secuencia, que es lo que es. */
   .steps li { padding: 24px 0; }
   .steps li + li { border-top: 1px solid var(--color-line); }
-  .steps .n {
-    font: 400 var(--text-micro) / 1 var(--font-mono);
-    color: var(--color-ink-3); display: block; margin-bottom: 8px;
-  }
   .steps h3 { font-size: var(--text-body); font-weight: 600; }
   .steps p {
     color: var(--color-ink-2); margin-top: 6px;
@@ -333,12 +339,9 @@
      una negrita suelta y no como una cifra. */
   .steps .t { color: var(--color-ink); }
   @media (min-width: 768px) {
-    .steps li { grid-template-rows: auto 1fr; padding: 22px 0 26px; }
-    /* El ordinal manda sobre la fila entera; debajo, título y prosa arrancan
-       a la misma altura, cada uno en su eje. */
-    .steps .n { grid-column: 1 / -1; grid-row: 1; margin-bottom: 14px; }
-    .steps h3 { grid-column: 1 / 6; grid-row: 2; }
-    .steps p { grid-column: 6 / -1; grid-row: 2; margin-top: 0; max-width: none; }
+    .steps li { padding: 26px 0; }
+    .steps h3 { grid-column: 1 / 6; font-size: var(--text-h3); }
+    .steps p { grid-column: 6 / -1; margin-top: 0; max-width: none; }
   }
 
   /* --- Comparativa ------------------------------------------------------ */
