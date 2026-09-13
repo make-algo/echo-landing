@@ -3,8 +3,8 @@ import Base from '../../layouts/Base.astro'
 import Dicho from '../../components/demo/Dicho.astro'
 import Escrito from '../../components/demo/Escrito.astro'
 import Footer from '../../components/Footer.astro'
-import Lineas from '../../components/editor/Lineas.astro'
 import WaitlistForm from '../../components/WaitlistForm.astro'
+import '../../styles/variante-editor.css'
 import {
   apertura,
   argumentos,
@@ -17,162 +17,156 @@ import {
   privacidad,
   variantes,
 } from '../../content/copy'
-import { lineas } from '../../lib/lineas'
-import '../../styles/variante-editor.css'
 
 /**
  * /c/ — EDITOR. La página es un búfer de texto abierto en un editor.
+ * Pulido de la ronda final (MAK-82): ver `docs/design/pulido-editor-mak82.md`.
  *
  * Lo que salva esta dirección del tópico «landing con estética de terminal» es
- * que el formulario y las preguntas están DE VERDAD dentro del búfer: el alta se
- * escribe en una línea con su marca de entrada, y las preguntas se despliegan
- * como plegado de código con su marca de líneas plegadas. Si eso se afloja, la
- * dirección no se rescata.
+ * que el formulario y las preguntas están DE VERDAD dentro del búfer: el alta
+ * se escribe en una línea con su marca de entrada y las preguntas se despliegan
+ * como plegado de código real —con teclado, `aria-expanded` y un contador de
+ * líneas que es una medida, no un adorno—.
  *
- * Y el canal de numeración no miente: el texto va partido en líneas de origen y
- * cada número señala una. Los cortes del titular los decidimos nosotros —el copy
- * es literal, los cortes son nuestros—, así que un titular de cuatro renglones
- * son cuatro líneas numeradas.
+ * Y el canal de numeración no miente: cada `.ln-num` lo cuenta
+ * `src/components/editor/numeracion.ts` MIDIENDO su alto real dividido por su
+ * propio interlineado, nunca adivinando un ancho de columna. El detalle está
+ * en ese fichero.
  */
-const v = variantes.editor
 const titular = apertura.titular.join(' ')
-/** Cuántas líneas ocupa cada respuesta plegada. El número es real. */
-const plegadas = preguntas.lista.map((q) => lineas(q.r).length)
+const v = variantes.editor
 ---
 
 <Base ogTitle={titular} path="/c/">
   <main id="contenido" class="ruta-editor">
-    <div class="buf">
-      <div class="l"><p class="com">{v.comentarios.cabecera}</p></div>
-      <div class="l l--vacia"><p></p></div>
+    <div class="buf" id="buf">
+      <p class="ln-num com">{v.comentarios.cabecera}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <Lineas texto={titular} como="h1" ancho={30} />
-      <div class="l l--vacia"><p></p></div>
-      <Lineas texto={apertura.subtitulo} clase="txt i1" />
-      <div class="l l--vacia"><p></p></div>
-      <div class="l i1"><p><a class="sel-cta" href="#beta">{apertura.cta}</a></p></div>
-      <div class="l l--vacia"><p></p></div>
-      <Lineas
-        texto={`${apertura.requisito.aviso} ${apertura.requisito.maquina}`}
-        clase="txt i1"
-      />
-      <div class="l l--vacia"><p></p></div>
+      <h1 class="ln-num">{titular}</h1>
+      <p class="ln-num com vacia">&nbsp;</p>
+      <p class="ln-num txt i1">{apertura.subtitulo}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      <p class="ln-num i1"><a class="sel-cta" href="#beta">{apertura.cta}</a></p>
+      <p class="ln-num txt i1">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
       <!-- LA DEMO, pieza central: el panel oscuro y la ventana clara separados
-           para que se lean como antes → después. -->
-      <div class="l"><p class="com">{v.comentarios.demo}</p></div>
-      <figure class="l i1 demo-anim" id="demo">
-        <div>
-          <h2 class="sr-only">{demo.tituloOculto}</h2>
-          <p class="sr-only">{demo.descripcion}</p>
-          <div class="demo-par">
-            <Dicho />
-            <Escrito />
-          </div>
+           para que se lean como antes → después. `data-fijo`: es un objeto
+           incrustado, no texto que fluye, así que cuenta como una sola línea
+           por alto que renderice. -->
+      <p class="ln-num com">{v.comentarios.demo}</p>
+      <figure class="ln-num i1 demo-anim" id="demo" data-fijo>
+        <h2 class="sr-only">{demo.tituloOculto}</h2>
+        <p class="sr-only">{demo.descripcion}</p>
+        <div class="demo-par">
+          <Dicho />
+          <Escrito />
         </div>
       </figure>
-      <Lineas texto={demo.pie} clase="txt i1" />
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num txt i1">{demo.pie}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <div class="l"><p class="com">{argumentos.rotulo.toLowerCase()}</p></div>
+      <p class="ln-num com">{argumentos.rotulo.toLowerCase()}</p>
       {
         argumentos.lista.map((a) => (
           <>
-            <div class="l i1"><h3>{a.titulo}</h3></div>
-            <Lineas texto={a.texto} clase="txt i2" />
-            <div class="l l--vacia"><p></p></div>
+            <h3 class="ln-num i1">{a.titulo}</h3>
+            <p class="ln-num txt i2">{a.texto}</p>
+            <p class="ln-num com vacia">&nbsp;</p>
           </>
         ))
       }
 
-      <div class="l"><p class="com">{pasos.rotulo.toLowerCase()}</p></div>
+      <p class="ln-num com">{pasos.rotulo.toLowerCase()}</p>
       {
         pasos.lista.map((paso) => (
           <>
-            <div class="l i1">
-              <h3><span class="com" aria-hidden="true">{paso.n} </span>{paso.titulo}</h3>
-            </div>
-            <Lineas
-              texto={paso.partes.map((t) => t.texto).join('')}
-              clase="txt i2"
-            />
+            <h3 class="ln-num i1">{paso.titulo}</h3>
+            <p class="ln-num txt i2">
+              {paso.partes.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}
+            </p>
           </>
         ))
       }
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com vacia">&nbsp;</p>
 
       <!-- LA COMPARATIVA ES UN DIFF. El signo lleva el significado, no el
            color: funciona en monocromo y para quien no distingue colores. -->
-      <div class="l" id="comparacion"><p class="com">{v.comentarios.comparativa}</p></div>
-      <Lineas texto={comparativa.titulo} como="h2" ancho={40} />
-      <Lineas texto={comparativa.entradilla} clase="txt i1" />
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com" id="comparacion">{v.comentarios.comparativa}</p>
+      <h2 class="ln-num">{comparativa.titulo}</h2>
+      <p class="ln-num txt i1">{comparativa.entradilla}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
       {
         comparativa.filas.map((fila) => (
           <>
-            <div class="l" data-fila-comparativa>
-              <p class="hunk">@@ {fila.criterio} @@</p>
-            </div>
-            <div class="l">
-              <p class="dl dl--del">
-                <span aria-hidden="true">−</span>
-                <span class="v2"><span class="sr-only">{comparativa.columnas.macos}: </span>{fila.macos}</span>
-              </p>
-            </div>
-            <div class="l">
-              <p class="dl dl--add">
-                <span aria-hidden="true">+</span>
-                <span class="v2"><span class="sr-only">{comparativa.columnas.echo}: </span>{fila.echo}</span>
-              </p>
-            </div>
+            <p class="ln-num hunk" data-fila-comparativa>
+              @@ {fila.criterio} @@
+            </p>
+            <p class="ln-num dl dl--del">
+              <span aria-hidden="true">−</span>
+              <span class="v2">
+                <span class="sr-only">{comparativa.columnas.macos}: </span>
+                {fila.macos}
+              </span>
+            </p>
+            <p class="ln-num dl dl--add">
+              <span aria-hidden="true">+</span>
+              <span class="v2">
+                <span class="sr-only">{comparativa.columnas.echo}: </span>
+                {fila.echo}
+              </span>
+            </p>
           </>
         ))
       }
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <Lineas
-        texto={`${comparativa.cierre.concesion} ${comparativa.cierre.afirmacion}`}
-        como="h2"
-        ancho={44}
-      />
-      <div class="l l--vacia"><p></p></div>
+      <h2 class="ln-num">{comparativa.cierre.concesion} {comparativa.cierre.afirmacion}</h2>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <div class="l" id="privacidad"><p class="com">{privacidad.rotulo.toLowerCase()}</p></div>
-      <Lineas texto={privacidad.principal} clase="txt i1" />
-      <div class="l l--vacia"><p></p></div>
-      {privacidad.notas.map((n) => <Lineas texto={n} clase="txt i1" />)}
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com" id="privacidad">{privacidad.rotulo.toLowerCase()}</p>
+      <p class="ln-num txt i1">{privacidad.principal}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      {privacidad.notas.map((n) => <p class="ln-num txt i1">{n}</p>)}
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <div class="l"><p class="com">{paraQuien.rotulo.toLowerCase()}</p></div>
+      <p class="ln-num com">{paraQuien.rotulo.toLowerCase()}</p>
       {
         paraQuien.parrafos.map((p) => (
-          <>
-            <Lineas texto={`${p.fuerte}${p.resto}`} clase="txt i1" />
-            <div class="l l--vacia"><p></p></div>
-          </>
+          <p class="ln-num txt i1">
+            <strong>{p.fuerte}</strong>
+            {p.resto}
+          </p>
         ))
       }
+      <p class="ln-num com vacia">&nbsp;</p>
 
-      <!-- LAS PREGUNTAS SON PLEGADO DE CÓDIGO, no un acordeón. -->
-      <div class="l" id="preguntas"><p class="com">{v.comentarios.preguntas}</p></div>
+      <!-- LAS PREGUNTAS SON PLEGADO DE CÓDIGO, no un acordeón: cada una es un
+           <details> real, con teclado y `aria-expanded` sincronizado por el
+           script de más abajo. El contador «N líneas» de cada etiqueta plegada
+           es la misma medida que usa el canal, calculada al vuelo. -->
+      <p class="ln-num com" id="preguntas">{v.comentarios.preguntas}</p>
       <div class="faq">
         {
-          preguntas.lista.map((q, i) => (
-            <details class="qa">
-              <summary class="l"><span class="q" data-lineas={plegadas[i]}>{q.p}</span></summary>
-              <Lineas texto={q.r} clase="txt i1" />
+          preguntas.lista.map((q) => (
+            <details class="qa" open={q.p === '¿Se envía mi voz a algún sitio?' || undefined}>
+              <summary class="ln-num">
+                <span class="tri" aria-hidden="true">▸</span>
+                <span class="q">{q.p}</span>
+              </summary>
+              <p class="ln-num txt i1">{q.r}</p>
             </details>
           ))
         }
       </div>
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com vacia">&nbsp;</p>
 
       <!-- EL ALTA ES ESCRIBIR EN EL BÚFER. Ni una sola caja. -->
-      <div class="l" id="beta"><p class="com">{beta.titulo.toLowerCase()}</p></div>
-      <Lineas texto={beta.entradilla} clase="txt i1" />
-      <div class="l l--vacia"><p></p></div>
+      <p class="ln-num com" id="beta">{beta.titulo.toLowerCase()}</p>
+      <p class="ln-num txt i1">{beta.entradilla}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
       <WaitlistForm />
-      <div class="l l--vacia"><p></p></div>
     </div>
   </main>
 
@@ -189,6 +183,26 @@ const plegadas = preguntas.lista.map((q) => lineas(q.r).length)
 </Base>
 
 <script>
+  import { iniciarNumeracion } from '../../components/editor/numeracion'
+
+  const buf = document.getElementById('buf')
+  if (buf) iniciarNumeracion(buf)
+
+  // El plegado de cada pregunta es un <details> nativo: el clic y el teclado
+  // (Tab, Enter, Espacio) ya funcionan solos. Lo único que el navegador no da
+  // gratis es `aria-expanded` reflejado como atributo del <summary>, así que
+  // se sincroniza aquí, y con él el triángulo — el mismo estado, dos señales.
+  for (const detalles of document.querySelectorAll('details.qa')) {
+    const resumen = detalles.querySelector('summary')
+    const tri = detalles.querySelector('.tri')
+    const sincronizar = () => {
+      resumen?.setAttribute('aria-expanded', String(detalles.open))
+      if (tri) tri.textContent = detalles.open ? '▾' : '▸'
+    }
+    detalles.addEventListener('toggle', sincronizar)
+    sincronizar()
+  }
+
   // Atajos de editor: `g` y luego `c` o `b`. No son el único camino a ningún
   // sitio —el CTA y el scroll siguen ahí— y se callan mientras escribes.
   let esperando = 0
