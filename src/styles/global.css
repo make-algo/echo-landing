@@ -90,6 +90,22 @@
 
   a { color: var(--color-accent); text-underline-offset: 3px; }
 
+  /* Un enlace dentro de un párrafo se distingue subrayado, no solo por color:
+     el acento contra el texto de alrededor da 1,11:1 y el color por sí solo
+     necesitaría 3:1. Fuera de párrafo —la cabecera, el CTA— el enlace es un
+     bloque aparte y se reconoce por su sitio; el botón conserva su
+     `text-decoration: none` porque `.btn` gana en especificidad. */
+  p a,
+  li a { text-decoration: underline; }
+
+  /* Microcopy del formulario: va inmediatamente bajo el botón y no lo sustituye
+     la letra legal de al lado. Uno cumple la ley, el otro quita el miedo a
+     dejar el correo. */
+  .microcopy {
+    font-size: var(--text-small); line-height: 1.5;
+    color: var(--color-ink-3); margin-top: 16px; max-width: 30rem;
+  }
+
   .lead { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); }
   .measure { max-width: var(--container-measure); }
 
