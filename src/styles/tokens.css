@@ -92,9 +92,19 @@
 
   /* --- Retícula ---------------------------------------------------------- */
   --container-page:    62rem;   /*  992 px — ancho máximo de contenido     */
-  --container-measure: 36rem;   /* medida de párrafo ≈ 62 caracteres      */
+  /* La medida ES siete columnas de la retícula: 565 px al ancho máximo.
+     Antes eran 576 y no coincidía con ninguna columna, así que los bordes
+     derechos de la página se separaban once píxeles entre sí —demasiado poco
+     para leerse como decisión y bastante para ensuciar. */
+  --container-measure: 35.333rem; /* 7 columnas ≈ 62 caracteres            */
   --container-narrow:  32rem;   /* formulario                              */
   --gutter:            clamp(1.25rem, 0.9rem + 1.8vw, 2rem); /* 20 → 32 px */
+
+  /* Retícula: doce columnas y un solo canal. La página tiene DOS arranques
+     posibles y ninguno más: el borde del contenedor (eje A, línea 1) y la
+     línea 6 (eje B). Una columna de prosa mide siempre siete columnas —
+     565 px al ancho máximo, la medida de párrafo— esté en A o en B. */
+  --grid-gap:          2rem;
 
   /* --- Radios: cortos. Es una herramienta, no una app de bienestar. ------ */
   /* DOS radios y ninguno más. Antes había cuatro y no significaban nada.   */

@@ -93,7 +93,6 @@ export const pasos = {
   rotulo: 'Qué pasa cuando sueltas la tecla',
   lista: [
     {
-      n: '01',
       titulo: 'Se transcribe en tu Mac.',
       /** `dato` es la cifra que el escéptico viene a buscar: sube a tinta plena. */
       partes: [
@@ -102,7 +101,6 @@ export const pasos = {
       ],
     },
     {
-      n: '02',
       titulo: 'Se pule con tu suscripción.',
       partes: [
         { dato: false, texto: 'El texto transcrito pasa por Claude o ChatGPT, con tu sesión. ' },
@@ -115,7 +113,6 @@ export const pasos = {
       ],
     },
     {
-      n: '03',
       titulo: 'Se pega donde estabas.',
       partes: [
         {

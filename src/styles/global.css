@@ -63,6 +63,17 @@
     padding-inline: var(--gutter);
   }
 
+  /* --- La retícula ------------------------------------------------------
+     Doce columnas, un canal, DOS ejes. Antes no había retícula: cada sección
+     inventaba su proporción (15rem, 5fr/7fr, 6fr/5fr, 1fr/1fr, 7fr/5fr,
+     tres tercios) y la página tenía nueve arranques distintos leyéndola de
+     arriba abajo. Ahora todo bloque empieza en el eje A (línea 1) o en el
+     eje B (línea 6), y una columna de prosa mide siete columnas en los dos
+     casos. Quién se apoya en ella está declarado en un único sitio, al final
+     de esta hoja («Los bloques que van sobre la retícula»). Si una sección
+     nueva necesita dos columnas, se añade ahí; no se inventa una nueva
+     proporción. */
+
   /* La ÚNICA banda de la página es la de conversión. Cuatro alternancias con
      dos beiges casi idénticos no se leían como estructura. */
   .band { background: var(--color-paper-sunk); }
@@ -103,7 +114,8 @@
      dejar el correo. */
   .microcopy {
     font-size: var(--text-small); line-height: 1.5;
-    color: var(--color-ink-3); margin-top: 16px; max-width: 30rem;
+    color: var(--color-ink-3); margin-top: 16px;
+    max-width: var(--container-measure);
   }
 
   .lead { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); }
@@ -149,8 +161,19 @@
     transition: background var(--duration-fast) var(--ease-out);
   }
   .btn:hover { background: var(--color-accent-strong); }
-  .btn[disabled] { opacity: 0.75; cursor: progress; }
-  .btn--submit { margin-top: 12px; }
+  /* Mientras el alta no está operativa el botón no envía. Con solo un 0,75
+     de opacidad seguía leyéndose como un botón vivo y la página prometía un
+     envío que no ocurre. Ahora es sólido y neutro: conserva el peso que
+     necesita el final de la sección —vaciado y con borde se hundía por debajo
+     de los propios campos— pero no es el acento, así que se lee como un botón
+     que hoy no está disponible. La nota de estado de arriba dice por qué.
+     Es andamiaje: con la cuenta de Formspree el botón vuelve a acento. */
+  .btn[disabled] {
+    background: var(--color-ink-3); color: var(--color-paper);
+    cursor: not-allowed;
+  }
+  .btn[disabled]:hover { background: var(--color-ink-3); }
+  .btn--submit { margin-top: 4px; }
 
   /* --- Primer viewport: hero + demo ------------------------------------- */
   .first { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(3rem, 2rem + 3vw, 4rem); }
@@ -182,7 +205,7 @@
     border: 1px solid var(--color-line); border-radius: var(--radius-md);
     overflow: hidden;
   }
-  .demo__foot { margin-top: 16px; max-width: 34rem; }
+  .demo__foot { margin-top: 16px; }
   .demo__caption { font-size: var(--text-small); line-height: 1.5; color: var(--color-ink-2); }
 
   .win {
@@ -273,57 +296,74 @@
   .arg h3 { margin-bottom: 8px; }
   .arg p { color: var(--color-ink-2); max-width: var(--container-measure); font-size: var(--text-body); }
   @media (min-width: 768px) {
-    .arg {
-      display: grid; grid-template-columns: 15rem minmax(0, 1fr);
-      column-gap: 2.5rem; align-items: start;
-    }
     .arg h3 {
-      margin-bottom: 0; font-size: 1.625rem;
+      grid-column: 1 / 6; margin-bottom: 0; font-size: 1.625rem;
       line-height: 1.2; letter-spacing: -0.018em;
     }
+    .arg p { grid-column: 6 / -1; max-width: none; }
   }
 
-  /* --- Pasos: una tira continua, no tres tarjetas ----------------------- */
+  /* --- Pasos: tres tiempos, no tres columnas ---------------------------
+     Los tres tramos de copy pesan muy distinto: el 02 tiene seis veces el
+     texto del 01. Puestos en tres columnas iguales, la retícula prometía una
+     simetría que el texto no cumple y el resultado era el de tres tarjetas
+     con los pies descuadrados. Aquí cada tiempo es una FILA de la retícula
+     de la página: el título en el eje A, la prosa en el eje B. La carga
+     desigual se convierte en filas de altura desigual, que es lo que una
+     secuencia de tres tiempos es de verdad. Las reglas finas los encadenan
+     en el orden en que ocurren.
+     El ordinal (01/02/03) se quitó (MAK-83): un crítico externo lo señaló
+     como firma de página generada, y el rótulo de la sección —«Qué pasa
+     cuando sueltas la tecla»— ya declara que esto es una secuencia; los tres
+     verbos reflejos encadenados («se transcribe» → «se pule» → «se pega»)
+     hacen el resto. El eje A se queda solo con el título: no necesita un
+     ancla añadida, la necesita un poco más de peso, porque ahora es lo único
+     que hay en su columna y tiene que sostenerla él solo. Sube un escalón,
+     de `text-body` a `text-h3` — el mismo tamaño que ya usan los títulos de
+     «Qué hace distinto» dos secciones más arriba, así que no es un tamaño
+     nuevo en la página. */
   .steps { list-style: none; padding: 0; display: grid; gap: 0; }
-  .steps li {
-    padding: 24px 0; border-top: 1px solid var(--color-line);
-    max-width: var(--container-measure);
-  }
-  .steps li:last-child { border-bottom: 1px solid var(--color-line); }
-  .steps .n {
-    font: 400 var(--text-micro) / 1 var(--font-mono);
-    color: var(--color-ink-3); display: block; margin-bottom: 8px;
-  }
+  /* Los filetes van SOLO entre tiempos. Cerrada por arriba y por abajo, la
+     sección se veía igual que el acordeón de preguntas del final: mismo
+     componente para argumentar y para responder. Abierta se lee como una
+     secuencia, que es lo que es. */
+  .steps li { padding: 24px 0; }
+  .steps li + li { border-top: 1px solid var(--color-line); }
   .steps h3 { font-size: var(--text-body); font-weight: 600; }
-  .steps p { color: var(--color-ink-2); margin-top: 6px; font-size: var(--text-small); }
-  /* Las cifras suben a `ink`: es el dato que el escéptico viene a buscar. */
-  .steps .t { color: var(--color-ink); font-weight: 500; }
+  .steps p {
+    color: var(--color-ink-2); margin-top: 6px;
+    font-size: var(--text-small); max-width: var(--container-measure);
+  }
+  /* Los tiempos suben a tinta plena: es el dato que el escéptico viene a
+     buscar. Sin el salto de grosor, que en mitad de un párrafo se leía como
+     una negrita suelta y no como una cifra. */
+  .steps .t { color: var(--color-ink); }
   @media (min-width: 768px) {
-    .steps {
-      grid-template-columns: repeat(3, 1fr); column-gap: 3rem;
-      border-top: 1px solid var(--color-line);
-    }
-    .steps li { border-top: 0; padding: 20px 0 0; max-width: none; }
-    .steps li:last-child { border-bottom: 0; }
+    .steps li { padding: 26px 0; }
+    .steps h3 { grid-column: 1 / 6; font-size: var(--text-h3); }
+    .steps p { grid-column: 6 / -1; margin-top: 0; max-width: none; }
   }
 
   /* --- Comparativa ------------------------------------------------------ */
   .cmp { margin-top: clamp(2rem, 1.4rem + 2.5vw, 3rem); }
   table { border-collapse: collapse; width: 100%; text-align: left; table-layout: fixed; }
-  col.c-attr { width: 38%; }
-  col.c-os { width: 31%; }
-  col.c-echo { width: 31%; }
+  /* La quiebra principal de la tabla —criterio | datos— cae en el eje B, como
+     cualquier otro par de la página. 43,1 % del ancho de contenido son las
+     cinco primeras columnas de la retícula más su calle. */
+  col.c-attr { width: 43.1%; }
+  col.c-os { width: 28.45%; }
+  col.c-echo { width: 28.45%; }
   thead th, thead td {
     font-size: var(--text-h3); font-weight: 600; color: var(--color-ink);
-    padding: 0 20px 12px 0; border-bottom: 1px solid var(--color-ink);
+    padding: 0 var(--grid-gap) 12px 0; border-bottom: 1px solid var(--color-ink);
     vertical-align: bottom;
   }
   tbody th {
-    font-weight: 400; color: var(--color-ink-2); padding: 16px 20px 16px 0;
+    font-weight: 400; color: var(--color-ink-2); padding: 16px var(--grid-gap) 16px 0;
     vertical-align: top; border-bottom: 1px solid var(--color-line);
   }
   tbody td {
-    color: var(--color-ink-2); padding: 16px 20px 16px 0;
+    color: var(--color-ink-2); padding: 16px var(--grid-gap) 16px 0;
     vertical-align: top; border-bottom: 1px solid var(--color-line);
   }
   tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
@@ -376,24 +416,34 @@
     display: grid; gap: 16px; color: var(--color-ink-2);
     font-size: var(--text-body); max-width: var(--container-measure);
   }
+  /* El eje B es SIEMPRE la segunda columna de un par; nada cuelga de él solo.
+     Las notas probaron a ir ahí y se leían como un sangrado sin causa, con un
+     hueco de media página a su izquierda. Van en el eje A, debajo, separadas
+     por el filete de la retícula: subordinadas por orden y por cuerpo, que es
+     como se subordina un texto. */
+  @media (min-width: 768px) {
+    .priv { row-gap: 0; }
+    .priv__main { grid-column: 1 / 8; max-width: none; }
+    .priv__notes {
+      max-width: none; border-top: 1px solid var(--color-line);
+      margin-top: 28px; padding-top: 28px;
+    }
+  }
   @media (min-width: 1024px) {
-    .priv { grid-template-columns: 6fr 5fr; column-gap: 3rem; align-items: start; }
     .priv__main { font-size: var(--text-h3); line-height: 1.45; }
   }
 
   /* --- Para quién es ----------------------------------------------------
      Los dos párrafos con el mismo peso: el segundo es un filtro, no una
      disculpa. */
-  .who { display: grid; gap: 28px; max-width: var(--container-measure); }
-  .who p { color: var(--color-ink); }
+  /* Mismo peso, mismo eje y misma medida: apilados. Puestos en dos columnas
+     de anchura distinta —como estaban— el segundo párrafo se leía como una
+     nota al pie del primero, que es justo lo contrario de lo que dice. */
+  .who { display: grid; gap: 28px; }
+  .who p { color: var(--color-ink); max-width: var(--container-measure); }
   .who p + p { border-top: 1px solid var(--color-line); padding-top: 28px; }
-  @media (min-width: 1024px) {
-    .who {
-      grid-template-columns: 1fr 1fr; column-gap: 3rem;
-      max-width: none; align-items: start;
-    }
-    .who p { border-top: 1px solid var(--color-line); padding-top: 20px; max-width: 26rem; }
-    .who p + p { padding-top: 20px; }
+  @media (min-width: 768px) {
+    .who p { max-width: none; }
   }
 
   /* --- Formulario -------------------------------------------------------
@@ -401,23 +451,28 @@
      está reservada mientras el formulario existe, así que ni el error de
      campo ni el de envío mueven el contenido de debajo; en éxito y duplicado
      sí se encoge, porque el formulario ya no está. */
+  /* Una sola columna de conversión, en el eje A. La letra legal estaba a la
+     derecha, a la altura del botón y con su propio arranque: competía con el
+     punto de conversión y añadía un margen izquierdo más. Debajo del
+     microcopy sigue estando a la vista y sin enlace de por medio —que es lo
+     que exige el consentimiento— y deja de disputarle el sitio al botón. */
   .beta__body { max-width: var(--container-narrow); }
   .beta__body:has(form:not([hidden])) { min-height: 480px; }
-  @media (min-width: 1024px) {
-    .beta__body {
-      max-width: none; display: grid; grid-template-columns: 7fr 5fr;
-      column-gap: 3rem; align-items: start;
-    }
-    .beta__body > form, .beta__body > .done {
-      grid-column: 1; grid-row: 1; max-width: 30rem;
-    }
-    .beta__body .legalnote {
-      grid-column: 2; grid-row: 1; align-self: end; margin-top: 0; max-width: 21rem;
-    }
+  @media (min-width: 768px) {
+    .beta__body { max-width: none; }
+    .beta__body > form, .beta__body > .done { grid-column: 1 / 8; }
   }
   .beta .lead { max-width: var(--container-measure); margin-top: 16px; }
-  form { margin-top: 36px; }
-  .field { margin-bottom: 22px; }
+  /* El aviso del alta abre el formulario, así que va agrupado con él: más aire
+     por encima que por debajo. A 36/32 quedaba equidistante y no se sabía de
+     qué bloque era. */
+  form { margin-top: 48px; }
+  /* El hueco reservado para el error ya separa un campo del siguiente; sumarle
+     el margen entero daba 90 px entre la caja de texto y los radios y 34 px
+     entre los radios y el botón. Ahora hay 28 px de etiqueta a etiqueta en
+     todo el formulario. */
+  .field { margin-bottom: 24px; }
+  .field:has(.err) { margin-bottom: 6px; }
   .field > label {
     display: block; font-size: var(--text-small); font-weight: 500;
     color: var(--color-ink); margin-bottom: 8px;
@@ -425,9 +480,13 @@
   /* La marca «(opcional)» es texto, no un color ni la ausencia de asterisco. */
   label .opt { font-weight: 400; color: var(--color-ink-3); }
 
+  /* El papel de la página, no blanco puro: sobre la banda beige, una caja
+     blanca con borde oscuro se leía como un campo por defecto de navegador,
+     traído de otra hoja de estilos. En hueso el campo sigue destacando de la
+     banda —y con el mismo contraste de borde— pero pertenece a la página. */
   input[type="email"], textarea {
     width: 100%; font: 400 var(--text-body) / 1.5 var(--font-sans);
-    color: var(--color-ink); background: var(--color-paper-raised);
+    color: var(--color-ink); background: var(--color-paper);
     border: 1px solid var(--color-border); border-radius: var(--radius-xs);
     padding: 12px 14px; min-height: 48px;
   }
@@ -457,9 +516,16 @@
   }
   .field--bad input[type="email"] { border-color: var(--color-error); border-width: 2px; }
 
+  /* Debajo del microcopy hay dos textos grises seguidos y no dicen lo mismo:
+     uno quita el miedo a dejar el correo, el otro cumple la ley. La regla fina
+     marca el cambio de registro; sin ella el bloque legal pesaba tanto como el
+     formulario. */
   .legalnote {
     font-size: var(--text-micro); line-height: 1.5;
-    color: var(--color-ink-3); margin-top: 24px; max-width: 30rem;
+    color: var(--color-ink-3);
+    border-top: 1px solid var(--color-line);
+    margin-top: 32px; padding-top: 20px;
+    max-width: var(--container-measure);
   }
   /* Dato jurídico que todavía no existe: se marca como pendiente en vez de
      publicarse como si fuera definitivo. No lleva el resaltado del correo del
@@ -476,17 +542,26 @@
      a algo que hayas hecho: va antes de escribir el correo, no después de
      rellenarlo todo. Ni el rojo del error ni el acento: el acento se reserva
      para el éxito, y un aviso permanente que lo gastara dejaría de señalar. */
+  /* Es una nota de estado, no un párrafo de la página: una caja blanca con
+     borde a 17 px pesaba más que el propio botón y era lo primero que se leía
+     al llegar al alta. Sin caja y sin fondo, en el cuerpo pequeño de los
+     pies, colgando de una regla: se lee igual de entera, dice exactamente lo
+     mismo y ya no es el protagonista de la zona de conversión. Tampoco lleva
+     filete: con una regla al costado era el único elemento «citado» de la
+     página y llamaba más la atención así que dentro de la caja. Se distingue
+     de la entradilla por cuerpo y por aire, no por ornamento. Es andamiaje;
+     desaparece el día que exista la cuenta de Formspree. */
   .notice {
-    border: 1px solid var(--color-line); border-radius: var(--radius-xs);
-    background: var(--color-paper); color: var(--color-ink-2);
-    padding: 12px 14px; margin-bottom: 24px; font-size: var(--text-body);
+    margin: 0 0 28px; color: var(--color-ink-2);
+    font-size: var(--text-small); line-height: 1.5;
+    max-width: var(--container-measure);
   }
 
   /* El bloque recibe foco para que el lector de pantalla lo lea; el anillo
      sobra en un texto no interactivo. */
   [tabindex="-1"]:focus { outline: none; }
 
-  .done { margin-top: 36px; max-width: 30rem; }
+  .done { margin-top: 36px; max-width: var(--container-measure); }
   .done p:first-of-type {
     font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink);
   }
@@ -507,11 +582,12 @@
      cerraban a la misma altura. */
   .faq { display: grid; gap: 0; border-bottom: 1px solid var(--color-line); }
   .qa { border-top: 1px solid var(--color-line); }
+  /* El signo se ancla al final del filete. Recortado a 30rem flotaba a media
+     página y dejaba el borde derecho de la lista dentado. */
   .qa > summary {
     padding: 16px 0; font-size: var(--text-body); font-weight: 500;
     cursor: pointer; list-style: none; display: flex;
     justify-content: space-between; gap: 16px; align-items: baseline;
-    max-width: 30rem;
   }
   .qa > summary::-webkit-details-marker { display: none; }
   .qa > summary::after {
@@ -521,7 +597,7 @@
   .qa[open] > summary::after { content: "–"; }
   .qa > p {
     color: var(--color-ink-2); padding-bottom: 18px;
-    font-size: var(--text-small); max-width: 32rem;
+    font-size: var(--text-small); max-width: var(--container-measure);
   }
 
   /* --- Pie -------------------------------------------------------------- */
@@ -532,6 +608,39 @@
   .legal { margin-top: 8px; }
   .legal a { color: var(--color-ink-3); }
   .legal a + a { margin-left: 20px; }
+
+  /* Un filete mide el bloque que separa, no el contenedor que lo contiene.
+     El de los tiempos cruza la retícula entera porque el bloque la cruza
+     —etiqueta en el eje A, prosa en el eje B—; el de un texto a la medida se
+     detiene donde se detiene el texto. Probamos a estirarlos todos a lo ancho
+     y el filete de la letra legal volaba 360 px sobre un vacío. */
+  @media (min-width: 768px) {
+    .fila-med { grid-column: 1 / 8; max-width: none; }
+  }
+
+  /* --- Los bloques que van sobre la retícula ----------------------------
+     Esta es la lista completa. Doce columnas, un canal, dos ejes:
+       eje A = línea 1   · títulos, rótulos, tablas, la columna de conversión
+       eje B = línea 6   · la demo y toda la prosa subordinada
+     Una columna de prosa son siete columnas (565 px al ancho máximo, la
+     medida de párrafo) tanto si arranca en A como en B. El hero entra en la
+     retícula a partir de 1024 px, no de 768: por debajo la demo no cabe al
+     lado del titular. */
+  @media (min-width: 768px) {
+    .arg,
+    .steps li,
+    .priv,
+    .who,
+    .beta__body {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      align-items: start;
+    }
+    /* Las dos columnas de un tiempo comparten línea base, no borde superior.
+       Es la diferencia entre una fila compuesta y dos cajas puestas al lado. */
+    .steps li { align-items: baseline; }
+  }
 
   /* --- Páginas de texto (legales, gracias, 404) ------------------------- */
   .prose { max-width: var(--container-measure); }
@@ -544,18 +653,19 @@
     .wide { display: inline; }
     h1 { text-wrap: initial; }
     .first__grid {
-      grid-template-columns: 5fr 7fr; column-gap: 3rem;
-      row-gap: 40px; align-items: start;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap); row-gap: 40px; align-items: start;
     }
     /* El titular ocupa el ancho de página; la demo y el resto del hero se
        reparten debajo. */
     .first__grid > h1 {
       grid-column: 1 / -1; grid-row: 1;
+      max-width: none;
       font-size: clamp(2.75rem, 4vw, 3.625rem);
     }
-    .hero__rest { grid-column: 1; grid-row: 2; }
+    .hero__rest { grid-column: 1 / 6; grid-row: 2; }
     .demo {
-      grid-column: 2; grid-row: 2; margin-top: 4px;
+      grid-column: 6 / -1; grid-row: 2; margin-top: 4px;
       display: flex; flex-direction: column;
     }
     .demo__media { flex: 1; aspect-ratio: auto; min-block-size: var(--demo-min-h); }

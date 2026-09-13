@@ -11,7 +11,6 @@ import { pasos } from '../../content/copy'
       {
         pasos.lista.map((paso) => (
           <li>
-            <span class="n" aria-hidden="true">{paso.n}</span>
             <h3>{paso.titulo}</h3>
             <p>{paso.partes.map((t) => (t.dato ? <span class="t">{t.texto}</span> : t.texto))}</p>
           </li>
