@@ -165,9 +165,26 @@
     background: var(--color-accent-strong);
   }
 
+  /* Deshabilitado mientras se envía: es momentáneo, por eso sigue siendo el botón
+     de siempre y el cursor dice «espera». */
   .btn[disabled] {
     opacity: 0.75;
     cursor: progress;
+  }
+
+  /* Deshabilitado porque el alta no está operativa: no es momentáneo y no hay nada
+     que esperar. El botón se apaga para que nadie lo intente y el cursor lo confirma
+     si lo intenta igual. */
+  form[data-activo='no'] .btn[disabled] {
+    background: var(--color-paper-sunk);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-3);
+    opacity: 1;
+    cursor: not-allowed;
+  }
+
+  form[data-activo='no'] .btn[disabled]:hover {
+    background: var(--color-paper-sunk);
   }
 
   .btn--block {
