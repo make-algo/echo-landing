@@ -1,16 +1,16 @@
 /* ============================================================================
    echo — tokens de la landing
-   Fuente única de verdad del diseño. MAK-74 · echo-ux · 2026-09-13
-   Formato: Tailwind v4 (@theme). El frontend importa este fichero y usa las
+   Tokens de diseño: fuente única de verdad de color, tipografía, escala,
+   espaciado, radios, foco y movimiento.
+   Formato: Tailwind v4 (@theme). Se importa desde global.css y se usan las
    utilidades generadas (bg-paper, text-ink-2, text-h2, p-6, rounded-md…).
    No se inventan valores fuera de aquí. Si falta un token, se añade aquí.
-   Razonamiento y contrastes verificados: docs/design/landing.md §2.
    ========================================================================= */
 
 @theme {
   /* --- Color -------------------------------------------------------------
-     Papel y tinta. Un único acento. Todo par texto/fondo verificado AA
-     en docs/design/landing.md §2.3 (tabla con los valores medidos).        */
+     Papel y tinta. Un único acento. Todo par texto/fondo está verificado
+     AA; el ratio medido va anotado en cada línea.                          */
 
   --color-paper:        #FBFAF8; /* fondo de página                        */
   --color-paper-sunk:   #F1EEE9; /* bandas alternas, superficies hundidas  */
@@ -41,7 +41,7 @@
   /* --- Tipografía --------------------------------------------------------
      Cero fuentes descargadas: 0 KB, 0 CLS, y en el Mac del visitante la
      landing usa exactamente la misma tipografía que la app que le vamos a
-     instalar. Justificación y alternativa descartada: landing.md §2.1.     */
+     instalar. Cero fuentes descargadas: 0 KB y 0 de contribución a CLS.    */
 
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text",
                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -85,7 +85,7 @@
 
   /* --- Retícula ---------------------------------------------------------- */
   --container-page:    70rem;   /* 1120 px — ancho máximo de contenido     */
-  --container-measure: 40rem;   /* medida de párrafo ≈ 66 car. (CA-RESP-8) */
+  --container-measure: 40rem;   /* medida de párrafo ≈ 66 caracteres      */
   --container-narrow:  34rem;   /* formulario y textos centrados           */
   --gutter:            clamp(1.25rem, 0.9rem + 1.8vw, 2rem); /* 20 → 32 px */
 
@@ -96,7 +96,7 @@
   --radius-lg:     0.875rem;  /* 14 px — marco de la demo                  */
   --radius-pill:   999px;     /* SOLO el punto de grabación de la demo      */
 
-  /* --- Foco: un único patrón en toda la página (CA-A11Y-2) --------------- */
+  /* --- Foco: un único patrón en toda la página -------------------------- */
   --focus-width:   2px;
   --focus-offset:  2px;       /* el hueco deja ver el fondo de página:
                                  el anillo siempre contrasta ≥ 4,5:1       */
@@ -110,7 +110,7 @@
   --ease-out:      cubic-bezier(0.22, 0.61, 0.36, 1);
   --duration-fast: 120ms;   /* respuesta de control                        */
   --duration-base: 240ms;   /* cambio de estado                            */
-  --demo-cycle:    19s;     /* ciclo completo de la demo (CA-DEMO-3: 12–25)*/
+  --demo-cycle:    19s;     /* ciclo completo de la demo                   */
 
   /* --- Demo -------------------------------------------------------------- */
   --demo-aspect:   16 / 10;  /* ≥640 px. Por debajo el marco lo fija el

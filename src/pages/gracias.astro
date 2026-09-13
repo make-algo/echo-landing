@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro'
 import { url } from '../lib/site'
 
 /**
- * Destino del envío sin JavaScript (03 §9.4, landing.md §6.5). Repite el bloque de
+ * Destino del envío sin JavaScript. Repite el bloque de
  * éxito con «tu correo» en lugar del correo, porque aquí no lo tenemos: es una
  * página estática y el dato viajó al proveedor, no a nosotros.
  */
@@ -14,6 +14,13 @@ import { url } from '../lib/site'
   <main id="contenido" class="section">
     <div class="wrap">
       <div class="form-card" style="min-height: auto">
+        <!--
+          El h1 va oculto a la vista y no en pantalla: esta página no tiene
+          titular propio en el copy aprobado, y un titular visible sería copy
+          nuevo, que no se inventa aquí. Oculto le da a la página el encabezado
+          que le faltaba sin tocar el diseño ni añadir una palabra visible.
+        -->
+        <h1 class="sr-only">Apuntado a la lista de espera de echo</h1>
         <div class="done">
           <p>Apuntado. Te escribimos a <span class="mail">tu correo</span> cuando abramos tu tanda.</p>
           <p>Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.</p>

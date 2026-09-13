@@ -3,13 +3,13 @@ import '../styles/global.css'
 import { absoluteUrl, site, url } from '../lib/site'
 
 interface Props {
-  /** Título de la pestaña. Por defecto, el de `02` §6. */
+  /** Título de la pestaña. Por defecto, el aprobado para la portada. */
   title?: string
   description?: string
-  /** Titular del hero: Open Graph usa el mismo texto (CA-META-3). */
+  /** Titular del hero: Open Graph usa el mismo texto. */
   ogTitle?: string
   /**
-   * Fotograma de la demo con el texto ya pegado, 1200×630 (CA-META-4).
+   * Fotograma de la demo con el texto ya pegado, 1200×630.
    * Todavía no existe: llega con la sección de demo. Hasta entonces no se emite
    * la etiqueta, mejor que apuntar a un archivo que no está.
    */

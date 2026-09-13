@@ -3,11 +3,10 @@
 
 /* ============================================================================
    echo — landing
-   Los tokens son de docs/design/tokens.css (echo-ux, MAK-74) y se importan tal
-   cual: aquí no se inventa ningún valor. Lo que sigue son las clases de
-   componente de la maqueta normativa docs/design/mockups/landing.html, que es
-   lo único que no se puede expresar con utilidades sueltas (la demo animada,
-   la tabla que se vuelve tarjetas y los seis estados del formulario).
+   Los tokens viven en tokens.css y se importan tal cual: aquí no se inventa
+   ningún valor. Lo que sigue son las clases de componente que no se pueden
+   expresar con utilidades sueltas (la demo animada, la tabla que se vuelve
+   tarjetas y los seis estados del formulario).
    ========================================================================= */
 
 @layer base {
@@ -43,7 +42,7 @@
     margin: 0;
   }
 
-  /* Un único patrón de foco en toda la página (landing.md §2.5). El hueco de
+  /* Un único patrón de foco en toda la página. El hueco de
      2 px deja ver el papel, así que el anillo contrasta siempre. */
   :focus-visible {
     outline: var(--focus-width) solid var(--color-focus);
@@ -226,7 +225,7 @@
   }
 
   /* HUECO A: el marco fija la proporción y el tamaño; el contenido no. Meter
-     un <video> con la misma proporción no mueve un píxel (landing.md §4.6). */
+     un <video> con la misma proporción no mueve un píxel. */
   .demo__media {
     background: var(--color-paper-sunk);
     border: 1px solid var(--color-line);
@@ -563,7 +562,7 @@
   }
 
   /* Cambiar `display` mata la semántica de tabla en Chrome y Safari; los roles
-     explícitos del marcado sobreviven al cambio (landing.md §5.2). */
+     explícitos del marcado sobreviven al cambio. */
   @media (max-width: 639px) {
     table,
     thead,
@@ -627,7 +626,7 @@
 
   /* La altura está reservada desde el primer pintado mientras el formulario
      existe: ni el error de campo ni el de envío mueven el contenido de debajo.
-     En éxito y duplicado la caja SÍ se encoge (landing.md §6.4): no es un salto
+     En éxito y duplicado la caja SÍ se encoge: no es un salto
      de contenido, es que el formulario ya no está. */
   .form-card:has(form:not([hidden])) {
     min-height: 560px;
@@ -769,8 +768,7 @@
   }
 
   /* Protección de datos: visible junto al botón, no tras un enlace ni un
-     desplegable. Es lo que hace que no haga falta checkbox de consentimiento
-     (asesor-legal, MAK-79). */
+     desplegable. Es lo que hace que no haga falta checkbox de consentimiento. */
   .privacy-note {
     font-size: var(--text-small);
     line-height: 1.5;
@@ -798,7 +796,7 @@
   }
 
   /* El bloque recibe foco para que el lector de pantalla lo lea; el anillo
-     sobra en un texto no interactivo (landing.md §6.4). */
+     sobra en un texto no interactivo. */
   [tabindex="-1"]:focus {
     outline: none;
   }
@@ -931,7 +929,7 @@
     }
     /* En columna estrecha el titular baja de cuerpo: con el clamp() fluido,
        56 px dentro de 430 px son seis líneas que se comen el primer
-       viewport (landing.md §3.1). */
+       viewport. */
     h1 {
       font-size: 2.5rem;
     }
