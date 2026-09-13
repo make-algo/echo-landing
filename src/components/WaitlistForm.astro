@@ -29,18 +29,24 @@ const gracias = absoluteUrl('/gracias')
     novalidate
     data-activo={activo ? 'si' : 'no'}
   >
-    <!-- Redirección de vuelta para el envío sin JavaScript. -->
+    {/*
+      Redirección de vuelta para el envío sin JavaScript. Hipótesis a confirmar al crear
+      la cuenta: Formspree solo respetaría _next en los planes de pago, y con una cuenta
+      gratuita el envío sin JavaScript acabaría en la página de gracias de Formspree y no
+      en /gracias. Decidido no montar apaño: el correo se recoge igual en los dos casos.
+    */}
     <input type="hidden" name="_next" value={gracias} />
     <input type="hidden" name="_subject" value="Alta en la lista de espera de echo" />
 
-    <!--
+    {/*
       Honeypot: fuera de pantalla, sin foco por teclado y oculto al lector. No se usa
-      display:none, que algunos rellenadores detectan.
-    -->
+      display:none, que algunos rellenadores detectan. El nombre _gotcha es el campo
+      nativo de Formspree; la convención bot-field de Netlify no la mira nadie aquí.
+    */}
     <p class="hp" aria-hidden="true">
       <label>
         No rellenar
-        <input tabindex="-1" autocomplete="off" name="bot-field" />
+        <input tabindex="-1" autocomplete="off" name="_gotcha" />
       </label>
     </p>
 
@@ -96,8 +102,9 @@ const gracias = absoluteUrl('/gracias')
     {
       !activo && (
         <div class="alert alert--aviso" id="sin-endpoint" role="status">
-          El alta todavía no está operativa: estamos cerrando con quién guardará tu correo. El
-          formulario se puede leer y revisar, pero no envía nada.
+          El alta todavía no está operativa: nos falta cerrar el contrato de protección de datos
+          con Formspree, que es quien guardará tu correo. El formulario se puede leer y revisar,
+          pero no envía nada.
         </div>
       )
     }
@@ -109,17 +116,17 @@ const gracias = absoluteUrl('/gracias')
       respondiendo a cualquier correo.
     </p>
 
-    <!--
+    {/*
       Texto legal de protección de datos, visible junto al botón y no tras un enlace:
       es lo que hace que no haga falta checkbox de consentimiento. No se reescribe.
       Los huecos [...] los rellena un humano antes de publicar en dominio propio.
-    -->
+    */}
     <p class="privacy-note">
       <strong>Protección de datos:</strong> el responsable es <strong>Make Algo SL</strong>. Usamos
       tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para
-      ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa <span
-        class="gap">[proveedor por confirmar]</span
-      > con las garantías que explicamos en la <a href={url('/privacidad')}>política de privacidad</a
+      ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa
+      Formspree (EE. UU.) con las garantías que explicamos en la <a
+        href={url('/privacidad')}>política de privacidad</a
       >, donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier
       correo o escribiendo a <span class="gap">[email de contacto]</span>.
     </p>

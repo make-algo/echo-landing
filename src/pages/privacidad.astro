@@ -5,11 +5,10 @@ import Footer from '../components/Footer.astro'
 /**
  * Texto legal íntegro. No se reescribe ni se resume.
  *
- * Excepción declarada: el apartado «Quién más los trata» decía que Netlify presta
- * el formulario y el alojamiento. Ya no es cierto — el sitio se aloja en GitHub
- * Pages y el proveedor del formulario está sin decidir. Como ese párrafo lo está
- * reescribiendo en paralelo, aquí queda con la estructura correcta y los huecos
- * marcados, sin inventar afirmaciones jurídicas.
+ * El apartado «Quién más los trata» lleva el texto legal final: GitHub Pages como
+ * alojamiento y Formspree como encargado del formulario. Está en su versión interina,
+ * válida mientras el formulario esté inerte; el comentario que lo precede archiva la
+ * versión definitiva y la condición que la activa.
  */
 ---
 
@@ -54,13 +53,39 @@ import Footer from '../components/Footer.astro'
           lanzamiento general de echo. Después los suprimimos.
         </p>
 
+        {/*
+          El segundo párrafo (el de Formspree) es la versión interina, válida mientras el
+          formulario esté inerte. Al conectar PUBLIC_FORM_ENDPOINT hay que sustituirlo por
+          el definitivo, y solo entonces:
+
+            El formulario de lista de espera lo procesa Formspree, Inc. (Estados Unidos), que
+            recibe lo que envías y lo guarda cifrado en nuestro nombre como encargado del
+            tratamiento, con un contrato conforme al art. 28 RGPD. Esa transferencia a Estados
+            Unidos se ampara en las cláusulas contractuales tipo aprobadas por la Comisión
+            Europea (art. 46.2.c RGPD), que hemos suscrito con Formspree; puedes pedirnos copia
+            escribiendo a [email de contacto]. Fuera de esto, no cedemos tus datos a nadie
+            salvo obligación legal.
+
+          El párrafo de GitHub no cambia entre las dos versiones.
+        */}
         <h2>Quién más los trata</h2>
         <p>
-          El alojamiento de esta web lo presta <span class="gap">[alojamiento por confirmar]</span> y
-          el formulario lo procesa <span class="gap">[proveedor del formulario por confirmar]</span>,
-          que actúa como encargado del tratamiento con un contrato conforme al art. 28 RGPD.
-          <span class="gap">[Garantías de transferencia internacional, si el proveedor está fuera de
-          la UE]</span>. Fuera de esto, no cedemos tus datos a nadie salvo obligación legal.
+          Dos proveedores, cada uno para una cosa. El alojamiento de esta web lo presta
+          GitHub, Inc. (Estados Unidos) a través de su servicio GitHub Pages; como todo
+          alojamiento, trata los datos técnicos de tu visita (por ejemplo, la dirección IP)
+          para servir la página y protegerla. GitHub está certificada en el Marco de
+          Privacidad de Datos UE–EE. UU., la decisión de adecuación de la Comisión Europea
+          que ampara esa transferencia (art. 45 RGPD).
+        </p>
+        <p>
+          El formulario de lista de espera todavía no está activo y no recoge ningún dato.
+          Cuando lo activemos, lo procesará Formspree, Inc. (Estados Unidos) como encargado
+          del tratamiento, con un contrato conforme al art. 28 RGPD, y guardará cifrado lo
+          que envíes. Esa transferencia a Estados Unidos se amparará en las cláusulas
+          contractuales tipo aprobadas por la Comisión Europea (art. 46.2.c RGPD): no
+          conectaremos el formulario hasta tenerlas suscritas con Formspree, y podrás
+          pedirnos copia escribiendo a <span class="gap">[email de contacto]</span>. Fuera
+          de esto, no cedemos tus datos a nadie salvo obligación legal.
         </p>
 
         <h2>Tus derechos</h2>
