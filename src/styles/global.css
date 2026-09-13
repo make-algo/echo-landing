@@ -6,20 +6,15 @@
    Los tokens viven en tokens.css y se importan tal cual: aquí no se inventa
    ningún valor. Lo que sigue son las clases de componente que no se pueden
    expresar con utilidades sueltas (la demo animada, la tabla que se vuelve
-   tarjetas y los seis estados del formulario).
+   pares etiqueta/valor y los estados del formulario).
    ========================================================================= */
 
 @layer base {
   *,
   *::before,
-  *::after {
-    box-sizing: border-box;
-  }
+  *::after { box-sizing: border-box; }
 
-  html {
-    -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
-  }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
   body {
     margin: 0;
@@ -32,59 +27,35 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  p,
-  ul,
-  figure,
-  table {
-    margin: 0;
-  }
+  h1, h2, h3, p, ul, ol, li, figure, table { margin: 0; }
 
-  /* Un único patrón de foco en toda la página. El hueco de
-     2 px deja ver el papel, así que el anillo contrasta siempre. */
+  /* En una página con tan poco texto, cada viuda se ve. */
+  p { text-wrap: pretty; }
+
+  /* Un único patrón de foco en toda la página. El hueco de 2 px deja ver el
+     papel, así que el anillo contrasta siempre. */
   :focus-visible {
     outline: var(--focus-width) solid var(--color-focus);
     outline-offset: var(--focus-offset);
     border-radius: inherit;
   }
 
-  [hidden] {
-    display: none !important;
-  }
+  [hidden] { display: none !important; }
 }
 
 @layer components {
   .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
   }
 
   /* Enlace de salto: invisible hasta que recibe el foco. */
   .skip {
-    position: absolute;
-    left: -9999px;
-    top: 0;
-    z-index: 50;
-    background: var(--color-ink);
-    color: var(--color-paper);
-    padding: 12px 20px;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
+    position: absolute; left: -9999px; top: 0; z-index: 50;
+    background: var(--color-ink); color: var(--color-paper);
+    padding: 12px 20px; border-radius: var(--radius-xs); text-decoration: none;
   }
-
-  .skip:focus {
-    left: 16px;
-    top: 16px;
-  }
+  .skip:focus { left: 16px; top: 16px; }
 
   .wrap {
     max-width: var(--container-page);
@@ -92,978 +63,539 @@
     padding-inline: var(--gutter);
   }
 
-  .band {
-    background: var(--color-paper-sunk);
-  }
-
-  .section {
-    padding-block: var(--space-section);
-  }
+  /* La ÚNICA banda de la página es la de conversión. Cuatro alternancias con
+     dos beiges casi idénticos no se leían como estructura. */
+  .band { background: var(--color-paper-sunk); }
+  .ruled { border-top: 1px solid var(--color-line); }
+  .section { padding-block: var(--space-section); }
 
   h1 {
-    font-size: var(--text-display);
-    line-height: 1.08;
-    letter-spacing: -0.022em;
-    font-weight: 600;
-    text-wrap: balance;
+    font-size: var(--text-display); line-height: 1.08;
+    letter-spacing: -0.022em; font-weight: 600; text-wrap: balance;
   }
 
+  /* Los saltos del titular se deciden a mano a partir de 1024 px: en columna
+     estrecha salían cinco líneas dentadas con «Sin» colgando al final de una. */
+  .wide { display: none; }
+
   h2 {
-    font-size: var(--text-h2);
-    line-height: 1.15;
-    letter-spacing: -0.016em;
-    font-weight: 600;
+    font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.016em;
+    font-weight: 600; text-wrap: balance; max-width: 22ch;
   }
 
   h3 {
-    font-size: var(--text-h3);
-    line-height: 1.3;
-    letter-spacing: -0.008em;
-    font-weight: 600;
+    font-size: var(--text-h3); line-height: 1.3;
+    letter-spacing: -0.008em; font-weight: 600; text-wrap: balance;
   }
 
-  .lead {
-    font-size: var(--text-lead);
-    line-height: 1.45;
-    color: var(--color-ink-2);
-  }
+  a { color: var(--color-accent); text-underline-offset: 3px; }
 
-  .measure {
-    max-width: var(--container-measure);
-  }
+  .lead { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); }
+  .measure { max-width: var(--container-measure); }
 
-  .narrow {
-    max-width: var(--container-narrow);
+  /* --- Un solo eje ------------------------------------------------------
+     Todo arranca en la misma x: hero, rótulos, tabla, formulario y pie. En
+     una página sin ornamento lo único que sostiene la composición es que los
+     ejes no mientan. El rótulo de sección va en mono, pequeño, encima de su
+     propio contenido; las dos secciones cuyo titular es una afirmación —la
+     comparativa y el alta— llevan titular grande. Ese contraste es todo el
+     ritmo que hay. */
+  .rubric {
+    font: 400 var(--text-rubric) / 1.4 var(--font-mono);
+    letter-spacing: 0.02em; color: var(--color-ink-2); margin-bottom: 24px;
   }
+  @media (min-width: 640px) { .rubric { white-space: nowrap; } }
 
-  .sec-head {
-    margin-bottom: clamp(2rem, 1.4rem + 2.5vw, 3rem);
+  /* --- Cabecera --------------------------------------------------------
+     Sin ella, alguien que entra y se va a los tres segundos se va sin saber
+     cómo se llama el producto. */
+  .top { padding-block: 22px; }
+  .top .wrap {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
   }
-
-  .sec-head h2 + .lead {
-    margin-top: 12px;
+  .top__cta {
+    font-size: var(--text-small); color: var(--color-ink-2);
+    text-decoration-color: var(--color-line);
+  }
+  .top__cta:hover { color: var(--color-accent); }
+  .wordmark {
+    font: 500 1.25rem / 1 var(--font-mono);
+    letter-spacing: -0.02em; color: var(--color-ink);
   }
 
   /* --- Botón ------------------------------------------------------------ */
   .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 52px;
-    padding: 14px 28px;
-    border: 0;
-    border-radius: var(--radius-sm);
-    background: var(--color-accent);
-    color: var(--color-paper);
-    font: 500 var(--text-body) / 1.2 var(--font-sans);
-    text-decoration: none;
-    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 52px; padding: 14px 28px; border: 0;
+    border-radius: var(--radius-xs); background: var(--color-accent);
+    color: var(--color-paper); font: 500 var(--text-body) / 1.2 var(--font-sans);
+    text-decoration: none; cursor: pointer;
     transition: background var(--duration-fast) var(--ease-out);
   }
-
-  .btn:hover {
-    background: var(--color-accent-strong);
-  }
-
-  /* Deshabilitado mientras se envía: es momentáneo, por eso sigue siendo el botón
-     de siempre y el cursor dice «espera». */
-  .btn[disabled] {
-    opacity: 0.75;
-    cursor: progress;
-  }
-
-  /* Deshabilitado porque el alta no está operativa: no es momentáneo y no hay nada
-     que esperar. El botón se apaga para que nadie lo intente y el cursor lo confirma
-     si lo intenta igual. */
-  form[data-activo='no'] .btn[disabled] {
-    background: var(--color-paper-sunk);
-    border: 1px solid var(--color-line);
-    color: var(--color-ink-3);
-    opacity: 1;
-    cursor: not-allowed;
-  }
-
-  form[data-activo='no'] .btn[disabled]:hover {
-    background: var(--color-paper-sunk);
-  }
-
-  .btn--block {
-    width: 100%;
-  }
+  .btn:hover { background: var(--color-accent-strong); }
+  .btn[disabled] { opacity: 0.75; cursor: progress; }
+  .btn--submit { margin-top: 12px; }
 
   /* --- Primer viewport: hero + demo ------------------------------------- */
-  .first {
-    padding-block: clamp(2.5rem, 1.5rem + 4vw, 3.5rem) var(--space-section);
+  .first { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(3rem, 2rem + 3vw, 4rem); }
+  .first__grid { display: grid; gap: 32px; }
+  .hero__sub { max-width: 30rem; }
+  @media (max-width: 1023px) {
+    .hero__sub { font-size: var(--text-body); line-height: 1.55; text-wrap: initial; }
   }
-
-  .first__grid {
-    display: grid;
-    gap: clamp(2.5rem, 1.5rem + 4vw, 3.5rem);
-  }
-
-  .hero__sub {
-    margin-top: 24px;
-    max-width: 32rem;
-  }
-
-  .hero__cta {
-    margin-top: 32px;
-  }
-
+  .hero__cta { margin-top: 32px; }
   .hero__req {
-    margin-top: 16px;
-    font-size: var(--text-small);
-    line-height: 1.5;
-    color: var(--color-ink-3);
-    max-width: 28rem;
+    margin-top: 16px; font-size: var(--text-small); line-height: 1.5;
+    color: var(--color-ink-3); max-width: 26rem; text-wrap: balance;
+  }
+  .hero__req .sep { display: none; }
+  @media (min-width: 380px) {
+    .hero__req .br { display: none; }
+    .hero__req .sep { display: inline; }
   }
 
-  /* Por debajo de 400 px, «macOS 26 y Apple Silicon» baja a su propia línea. */
-  .hero__req .sep {
-    display: none;
-  }
-
-  @media (min-width: 400px) {
-    .hero__req .br {
-      display: none;
-    }
-    .hero__req .sep {
-      display: inline;
-    }
-  }
-
-  /* --- Demo ------------------------------------------------------------- */
-  .demo {
-    margin: 0;
-  }
-
-  .demo h2 {
-    margin-bottom: 16px;
-  }
-
-  /* HUECO A: el marco fija la proporción y el tamaño; el contenido no. Meter
-     un <video> con la misma proporción no mueve un píxel. */
+  /* --- Demo -------------------------------------------------------------
+     Un objeto único: ventana y barra dentro de un mismo marco, con un solo
+     borde y un solo radio. Sin sombra: la sombra difusa era el tic de
+     «captura bonita» y no separaba nada que el borde no separe mejor.
+     El contenedor reserva la altura, así que sustituir su contenido por un
+     <video> con la misma proporción no mueve un píxel del resto. */
+  .demo { margin: 0; }
   .demo__media {
-    background: var(--color-paper-sunk);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-demo);
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: flex; flex-direction: column; container-type: inline-size;
+    border: 1px solid var(--color-line); border-radius: var(--radius-md);
     overflow: hidden;
   }
-
-  .band .demo__media {
-    background: var(--color-paper);
-  }
-
-  .demo__notice {
-    margin-top: 12px;
-    font-size: var(--text-small);
-    color: var(--color-ink-3);
-  }
-
-  .demo__caption {
-    margin-top: 12px;
-    font-size: var(--text-small);
-    line-height: 1.5;
-    color: var(--color-ink-2);
-    max-width: var(--container-narrow);
-  }
+  .demo__foot { margin-top: 16px; max-width: 34rem; }
+  .demo__caption { font-size: var(--text-small); line-height: 1.5; color: var(--color-ink-2); }
 
   .win {
-    flex: 1;
-    background: var(--color-paper-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex: 1; background: var(--color-paper-raised); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 8px;
   }
-
   .win__bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--text-micro);
-    color: var(--color-ink-3);
+    display: flex; align-items: center; gap: 6px;
+    font-size: var(--text-micro); color: var(--color-ink-3);
   }
-
-  .win__dots {
-    display: flex;
-    gap: 5px;
-    margin-right: 6px;
-  }
-
-  .win__dots i {
-    width: 9px;
-    height: 9px;
-    border-radius: var(--radius-pill);
-    background: var(--color-line);
-    display: block;
-  }
-
   .win__field {
-    font-size: var(--text-micro);
-    color: var(--color-ink-3);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: var(--text-micro); color: var(--color-ink-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-
-  .win__field b {
-    font-weight: 500;
-    color: var(--color-ink-2);
-  }
-
-  .win__rule {
-    height: 1px;
-    background: var(--color-line);
-  }
-
+  .win__field b { font-weight: 500; color: var(--color-ink-2); }
+  .win__rule { height: 1px; background: var(--color-line); }
   .win__body {
-    flex: 1;
-    font-size: var(--text-small);
-    line-height: 1.55;
-    color: var(--color-ink);
-    padding-top: 4px;
+    flex: 1; font-size: var(--text-body); line-height: 1.55;
+    color: var(--color-ink); padding-top: 6px;
   }
-
   .pasted {
-    border-radius: var(--radius-xs);
-    box-decoration-break: clone;
-    padding: 1px 2px;
+    border-radius: var(--radius-xs); box-decoration-break: clone;
+    padding: 1px 2px; margin-inline: -2px;
   }
-
   .caret {
-    display: inline-block;
-    width: 1.5px;
-    height: 1.05em;
-    background: var(--color-ink);
-    vertical-align: -0.18em;
-    margin-left: 1px;
+    display: inline-block; width: 2px; height: 1.05em;
+    background: var(--color-accent); vertical-align: -0.18em; margin-left: 1px;
   }
-
-  .caret--start {
-    display: none;
-  }
+  .caret--start { display: none; margin-left: 0; }
 
   .hud {
-    background: var(--color-hud);
-    border-radius: var(--radius-lg);
-    padding: 12px 14px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 12px;
-    color: var(--color-hud-ink);
+    background: var(--color-hud); padding: 14px 18px; display: flex;
+    flex-wrap: wrap; align-items: center; gap: 10px 14px; color: var(--color-hud-ink);
   }
-
   .keycap {
-    flex: none;
-    font: 500 var(--text-micro) / 1 var(--font-mono);
-    color: var(--color-hud-ink);
-    background: #322d25;
-    border: 1px solid #4a443a;
-    border-radius: var(--radius-xs);
-    padding: 6px 8px;
+    flex: none; font: 500 var(--text-micro) / 1 var(--font-mono);
+    color: var(--color-hud-ink); background: none; border: 1px solid #4a443a;
+    border-radius: var(--radius-xs); padding: 6px 8px;
   }
-
-  .hud__status {
-    flex: none;
-    display: grid;
-    min-width: 9ch;
-  }
-
+  .hud__status { flex: none; display: grid; min-width: 9ch; }
   .hud__status > span {
-    grid-area: 1 / 1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--text-micro);
-    white-space: nowrap;
+    grid-area: 1 / 1; display: flex; align-items: center; gap: 6px;
+    font-size: var(--text-micro); white-space: nowrap;
   }
-
-  /* «Grabando» y «Puliendo» son texto real: el color nunca comunica solo. */
-  .st-rec {
-    color: var(--color-hud-rec);
-    opacity: 0;
-  }
-
+  .st-rec { color: var(--color-hud-rec); opacity: 0; }
   .st-rec i {
-    width: 8px;
-    height: 8px;
-    border-radius: var(--radius-pill);
-    background: var(--color-hud-rec);
-    display: block;
+    width: 8px; height: 8px; border-radius: var(--radius-pill);
+    background: var(--color-hud-rec); display: block;
   }
+  .st-pol { color: var(--color-hud-ink-2); opacity: 0; }
 
-  .st-pol {
-    color: var(--color-hud-ink-2);
-    opacity: 0;
-  }
-
+  /* La onda es tinta clara, no un color propio: el único estado que el color
+     señala en esta barra es «Grabando», y va siempre con su palabra. */
   .wave {
-    flex: none;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    height: 20px;
-    transform: scaleY(0.08);
+    flex: none; display: flex; align-items: center; gap: 3px;
+    height: 18px; transform: scaleY(0.08); opacity: 0;
   }
-
   .wave b {
-    display: block;
-    width: 3px;
-    height: 100%;
-    border-radius: 2px;
-    background: var(--color-hud-accent);
+    display: block; width: 3px; height: 100%;
+    border-radius: 2px; background: var(--color-hud-ink-2);
   }
-
   .hud__text {
-    flex: 1 0 100%;
-    min-width: 0;
-    font: 400 var(--text-micro) / 1.5 var(--font-mono);
-    color: var(--color-hud-ink-2);
+    flex: 1 0 100%; min-width: 0;
+    font: 400 var(--text-small) / 1.55 var(--font-mono); color: var(--color-hud-ink);
   }
 
+  /* El «antes» se distingue por el tachado y por el brillo del texto limpio,
+     NO bajándole la opacidad: a media opacidad daba ~2,6:1 sobre la barra
+     oscura, y es la mitad del argumento del producto. */
   .hud__text .f {
     text-decoration: line-through;
     text-decoration-color: var(--color-hud-ink-2);
-    opacity: 0.5;
   }
 
-  .tm {
-    display: inline-grid;
-    min-width: 3.2ch;
-  }
+  .tm { display: inline-grid; min-width: 3.2ch; }
+  .tm span { grid-area: 1 / 1; opacity: 0; }
+  .tm span:last-child { opacity: 1; }
 
-  .tm span {
-    grid-area: 1 / 1;
-    opacity: 0;
-  }
-
-  .tm span:last-child {
-    opacity: 1;
-  }
-
-  /* A partir de 640 px la proporción es 16:10. Por debajo la fija el
-     contenido con 380 px de altura mínima: un 16:10 a 320 px son 200 px de
-     alto y ahí no cabe legible lo que la demo tiene que demostrar. */
-  @media (min-width: 640px) {
-    .demo__media {
-      aspect-ratio: var(--demo-aspect);
-    }
-  }
-
+  @media (min-width: 640px) { .demo__media { aspect-ratio: 16 / 11; } }
   @media (max-width: 639px) {
-    .demo__media {
-      min-height: 380px;
+    .demo__media { min-height: 380px; }
+    .wave b:nth-child(n + 6) { display: none; }
+    .win__field--to { display: none; }
+  }
+
+  /* --- Argumentos: lista apilada, no tres tarjetas iguales -------------- */
+  .args { display: grid; gap: 48px; }
+  .arg h3 { margin-bottom: 8px; }
+  .arg p { color: var(--color-ink-2); max-width: var(--container-measure); font-size: var(--text-body); }
+  @media (min-width: 768px) {
+    .arg {
+      display: grid; grid-template-columns: 15rem minmax(0, 1fr);
+      column-gap: 2.5rem; align-items: start;
     }
-    .wave b:nth-child(n + 6) {
-      display: none;
-    }
-    .win__field--to {
-      display: none;
+    .arg h3 {
+      margin-bottom: 0; font-size: 1.625rem;
+      line-height: 1.2; letter-spacing: -0.018em;
     }
   }
 
-  /* --- Argumentos y pasos ----------------------------------------------- */
-  .cols {
-    display: grid;
-    gap: 32px;
-  }
-
-  .col {
-    border-top: 1px solid var(--color-line);
-    padding-top: 20px;
+  /* --- Pasos: una tira continua, no tres tarjetas ----------------------- */
+  .steps { list-style: none; padding: 0; display: grid; gap: 0; }
+  .steps li {
+    padding: 24px 0; border-top: 1px solid var(--color-line);
     max-width: var(--container-measure);
   }
-
-  .col h3 {
-    margin-bottom: 10px;
+  .steps li:last-child { border-bottom: 1px solid var(--color-line); }
+  .steps .n {
+    font: 400 var(--text-micro) / 1 var(--font-mono);
+    color: var(--color-ink-3); display: block; margin-bottom: 8px;
   }
-
-  .col p {
-    color: var(--color-ink-2);
-  }
-
-  .step h3 {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-  }
-
-  .step .n {
-    color: var(--color-accent);
-    font-weight: 600;
-  }
-
-  .step p {
-    color: var(--color-ink-2);
-    margin-top: 10px;
-  }
-
-  /* Las cifras suben a `ink`: es el único cuerpo que gana contraste en toda
-     la página, porque es el dato que el escéptico viene a buscar. */
-  .step .t {
-    color: var(--color-ink);
-    font-weight: 500;
+  .steps h3 { font-size: var(--text-body); font-weight: 600; }
+  .steps p { color: var(--color-ink-2); margin-top: 6px; font-size: var(--text-small); }
+  /* Las cifras suben a `ink`: es el dato que el escéptico viene a buscar. */
+  .steps .t { color: var(--color-ink); font-weight: 500; }
+  @media (min-width: 768px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr); column-gap: 3rem;
+      border-top: 1px solid var(--color-line);
+    }
+    .steps li { border-top: 0; padding: 20px 0 0; max-width: none; }
+    .steps li:last-child { border-bottom: 0; }
   }
 
   /* --- Comparativa ------------------------------------------------------ */
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: var(--container-measure);
-    text-align: left;
+  .cmp { margin-top: clamp(2rem, 1.4rem + 2.5vw, 3rem); }
+  table { border-collapse: collapse; width: 100%; text-align: left; table-layout: fixed; }
+  col.c-attr { width: 38%; }
+  col.c-os { width: 31%; }
+  col.c-echo { width: 31%; }
+  thead th, thead td {
+    font-size: var(--text-h3); font-weight: 600; color: var(--color-ink);
+    padding: 0 20px 12px 0; border-bottom: 1px solid var(--color-ink);
+    vertical-align: bottom;
   }
-
-  thead th {
-    font-size: var(--text-h3);
-    font-weight: 600;
-    color: var(--color-ink);
-    padding: 0 16px 12px 0;
-    border-bottom: 1px solid var(--color-border);
-  }
-
   tbody th {
-    font-weight: 500;
-    color: var(--color-ink);
-    padding: 14px 16px 14px 0;
-    vertical-align: top;
+    font-weight: 400; color: var(--color-ink-2); padding: 16px 20px 16px 0;
+    vertical-align: top; border-bottom: 1px solid var(--color-line);
   }
-
   tbody td {
-    color: var(--color-ink-2);
-    padding: 14px 16px 14px 0;
-    vertical-align: top;
+    color: var(--color-ink-2); padding: 16px 20px 16px 0;
+    vertical-align: top; border-bottom: 1px solid var(--color-line);
   }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  /* La columna «echo» no lleva fondo ni marcas de verificación: una tabla en
+     la que la columna propia está resaltada se lee como publicidad. */
+  .t-echo { color: var(--color-ink); font-weight: 500; }
+  .col-label { display: none; }
 
-  tbody tr {
-    border-bottom: 1px solid var(--color-line);
-  }
-
-  td.pend {
-    font-family: var(--font-mono);
-    font-style: italic;
-    color: var(--color-ink-3);
-    font-size: var(--text-small);
-  }
-
-  .col-label {
-    display: none;
-  }
-
-  /* La etiqueta de columna se escribe igual en las seis tarjetas: el mono y la
-     cursiva son del valor «(por anunciar)», no del rótulo. */
-  td.pend .col-label {
-    font-family: var(--font-sans);
-    font-style: normal;
-    font-size: var(--text-micro);
-  }
-
-  /* El cierre honesto es el párrafo más destacado de su sección: es lo que
-     compra la credibilidad de las seis filas de arriba. */
+  /* El cierre honesto es lo que compra la credibilidad de la tabla de
+     arriba, así que es lo más destacado de su sección. */
   .closer {
-    margin-top: 24px;
-    max-width: var(--container-measure);
-    border-left: 3px solid var(--color-accent);
-    padding-left: 20px;
-    font-size: var(--text-lead);
-    line-height: 1.45;
-    color: var(--color-ink);
+    margin-top: clamp(2rem, 1.4rem + 2.5vw, 3rem);
+    border-top: 1px solid var(--color-ink); padding-top: 24px;
+    font-size: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+    line-height: 1.35; letter-spacing: -0.012em; color: var(--color-ink);
   }
+  .closer span { display: block; max-width: var(--container-measure); text-wrap: pretty; }
 
-  /* Cambiar `display` mata la semántica de tabla en Chrome y Safari; los roles
-     explícitos del marcado sobreviven al cambio. */
+  /* Por debajo de 640 px la tabla pasa a pares etiqueta/valor. Los roles
+     explícitos del marcado sobreviven al cambio de `display`, que en Chrome y
+     Safari se lleva por delante la semántica de tabla. */
   @media (max-width: 639px) {
-    table,
-    thead,
-    tbody,
-    tr,
-    th,
-    td {
-      display: block;
-    }
-    thead {
-      display: none;
-    }
+    table, thead, tbody, tr, th, td, colgroup, col { display: block; }
+    colgroup { display: none; }
+    thead { display: none; }
     tbody tr {
-      border: 1px solid var(--color-line);
-      border-radius: var(--radius-md);
-      background: var(--color-paper);
-      padding: 16px;
-      margin-bottom: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px;
+      border-bottom: 1px solid var(--color-line); padding-block: 18px;
     }
     tbody th {
-      padding: 0 0 12px;
-      font-size: var(--text-h3);
-      font-weight: 600;
+      grid-column: 1 / -1; padding: 0 0 10px; font-size: var(--text-body);
+      font-weight: 600; color: var(--color-ink); border-bottom: 0;
     }
-    tbody td {
-      padding: 12px 0 0;
-      border-top: 1px solid var(--color-line);
-    }
+    tbody td { padding: 0; border-bottom: 0; }
     .col-label {
-      display: block;
-      font-size: var(--text-micro);
-      color: var(--color-ink-3);
-      margin-bottom: 2px;
+      display: block; font: 400 var(--text-micro) / 1.4 var(--font-mono);
+      color: var(--color-ink-3); margin-bottom: 2px;
     }
   }
 
-  /* --- Para quién es ---------------------------------------------------- */
-  /* Los dos párrafos con el mismo peso: el segundo es un filtro, no una
-     disculpa. Mismo tamaño, color, anchura, interlineado y fondo. */
-  .who {
-    display: grid;
-    gap: 32px;
+  /* --- Privacidad -------------------------------------------------------
+     Se lee como una explicación, no como un sello: ni una negrita, ni un
+     icono, ni una caja. */
+  .priv { display: grid; gap: 24px; }
+  .priv__main {
+    font-size: var(--text-lead); line-height: 1.5;
+    color: var(--color-ink); max-width: var(--container-measure);
+  }
+  .priv__notes {
+    display: grid; gap: 16px; color: var(--color-ink-2);
+    font-size: var(--text-body); max-width: var(--container-measure);
+  }
+  @media (min-width: 1024px) {
+    .priv { grid-template-columns: 6fr 5fr; column-gap: 3rem; align-items: start; }
+    .priv__main { font-size: var(--text-h3); line-height: 1.45; }
   }
 
-  .who p {
-    border-top: 1px solid var(--color-line);
-    padding-top: 20px;
-    color: var(--color-ink);
-    max-width: var(--container-measure);
+  /* --- Para quién es ----------------------------------------------------
+     Los dos párrafos con el mismo peso: el segundo es un filtro, no una
+     disculpa. */
+  .who { display: grid; gap: 28px; max-width: var(--container-measure); }
+  .who p { color: var(--color-ink); }
+  .who p + p { border-top: 1px solid var(--color-line); padding-top: 28px; }
+  @media (min-width: 1024px) {
+    .who {
+      grid-template-columns: 1fr 1fr; column-gap: 3rem;
+      max-width: none; align-items: start;
+    }
+    .who p { border-top: 1px solid var(--color-line); padding-top: 20px; max-width: 26rem; }
+    .who p + p { padding-top: 20px; }
   }
 
-  /* --- Formulario ------------------------------------------------------- */
-  .form-card {
-    max-width: var(--container-narrow);
-    margin-inline: auto;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    padding: clamp(1.5rem, 1rem + 2vw, 2rem);
+  /* --- Formulario -------------------------------------------------------
+     Sin tarjeta: la caja centrada rompía el eje de toda la página. La altura
+     está reservada mientras el formulario existe, así que ni el error de
+     campo ni el de envío mueven el contenido de debajo; en éxito y duplicado
+     sí se encoge, porque el formulario ya no está. */
+  .beta__body { max-width: var(--container-narrow); }
+  .beta__body:has(form:not([hidden])) { min-height: 480px; }
+  @media (min-width: 1024px) {
+    .beta__body {
+      max-width: none; display: grid; grid-template-columns: 7fr 5fr;
+      column-gap: 3rem; align-items: start;
+    }
+    .beta__body > form, .beta__body > .done {
+      grid-column: 1; grid-row: 1; max-width: 30rem;
+    }
+    .beta__body .legalnote {
+      grid-column: 2; grid-row: 1; align-self: end; margin-top: 0; max-width: 21rem;
+    }
   }
-
-  /* La altura está reservada desde el primer pintado mientras el formulario
-     existe: ni el error de campo ni el de envío mueven el contenido de debajo.
-     En éxito y duplicado la caja SÍ se encoge: no es un salto
-     de contenido, es que el formulario ya no está. */
-  .form-card:has(form:not([hidden])) {
-    min-height: 560px;
+  .beta .lead { max-width: var(--container-measure); margin-top: 16px; }
+  form { margin-top: 36px; }
+  .field { margin-bottom: 22px; }
+  .field > label {
+    display: block; font-size: var(--text-small); font-weight: 500;
+    color: var(--color-ink); margin-bottom: 8px;
   }
+  /* La marca «(opcional)» es texto, no un color ni la ausencia de asterisco. */
+  label .opt { font-weight: 400; color: var(--color-ink-3); }
 
-  .form-card h2 {
-    text-align: center;
+  input[type="email"], textarea {
+    width: 100%; font: 400 var(--text-body) / 1.5 var(--font-sans);
+    color: var(--color-ink); background: var(--color-paper-raised);
+    border: 1px solid var(--color-border); border-radius: var(--radius-xs);
+    padding: 12px 14px; min-height: 48px;
   }
+  /* El asa de redimensionado nativa se leía como descuido. */
+  textarea { min-height: 84px; resize: none; }
+  input::placeholder, textarea::placeholder { color: var(--color-ink-3); }
+  /* En foco, el anillo del patrón general Y el borde a acento. */
+  input:focus-visible, textarea:focus-visible { border-color: var(--color-accent); }
 
-  .form-card .lead {
-    text-align: center;
-    margin-top: 12px;
-  }
-
-  .form-card form {
-    margin-top: 28px;
-  }
-
-  .field {
-    margin-bottom: 20px;
-  }
-
-  /* Solo la etiqueta del campo: las de los radios son `.radio` y se maquetan
-     aparte. Sin el :not(), `.field label` gana por especificidad y las tumba. */
-  .field > label:not(.radio) {
-    display: block;
-    font-size: var(--text-small);
-    font-weight: 500;
-    color: var(--color-ink);
-    margin-bottom: 8px;
-  }
-
-  .field > label:not(.radio) .opt {
-    font-size: var(--text-micro);
-    font-weight: 400;
-    color: var(--color-ink-3);
-  }
-
-  .field input[type="email"],
-  .field textarea {
-    width: 100%;
-    font: 400 var(--text-body) / 1.5 var(--font-sans);
-    color: var(--color-ink);
-    background: var(--color-paper-raised);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    min-height: 48px;
-  }
-
-  .field textarea {
-    min-height: 84px;
-    resize: vertical;
-  }
-
-  .field input::placeholder,
-  .field textarea::placeholder {
-    color: var(--color-ink-3);
-  }
-
-  /* En foco, el anillo del patrón general Y el borde a acento: el borde solo
-     no basta en pantallas de poco contraste. */
-  .field input:focus-visible,
-  .field textarea:focus-visible {
-    border-color: var(--color-accent);
-  }
-
+  /* Radios nativos, sin caja: la caja no añadía nada que la etiqueta no dijera. */
   .radios {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    display: grid; grid-template-columns: auto auto;
+    justify-content: start; gap: 4px 32px;
   }
-
-  @media (min-width: 640px) {
-    .radios {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
+  @media (min-width: 640px) { .radios { display: flex; flex-wrap: wrap; gap: 4px 28px; } }
   .radio {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 48px;
-    padding: 0 12px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-paper-raised);
-    font-size: var(--text-small);
-    font-weight: 400;
-    margin: 0;
-    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 9px; min-height: 44px;
+    margin: 0; font-size: var(--text-small); font-weight: 400;
+    color: var(--color-ink); cursor: pointer;
   }
-
-  .radio input {
-    accent-color: var(--color-accent);
-    margin: 0;
-    width: 18px;
-    height: 18px;
-  }
-
-  /* La opción elegida se marca con borde y con el punto relleno: nunca solo
-     con color. */
-  .radio:has(input:checked) {
-    border: 2px solid var(--color-accent);
-    padding: 0 11px;
-  }
-
-  .radio:has(:focus-visible) {
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: var(--focus-offset);
-  }
+  .radio input { accent-color: var(--color-accent); margin: 0; width: 19px; height: 19px; }
 
   /* El hueco del error está reservado siempre: mostrarlo no mueve el botón. */
   .err {
-    display: block;
-    font-size: var(--text-small);
-    color: var(--color-error);
-    margin-top: 6px;
-    min-height: 1.5em;
+    display: block; font-size: var(--text-small); color: var(--color-error);
+    margin-top: 6px; min-height: 1.5em;
   }
+  .field--bad input[type="email"] { border-color: var(--color-error); border-width: 2px; }
 
-  .field--bad input[type="email"] {
-    border-color: var(--color-error);
-    border-width: 2px;
+  .legalnote {
+    font-size: var(--text-micro); line-height: 1.5;
+    color: var(--color-ink-3); margin-top: 24px; max-width: 30rem;
   }
-
-  .counter {
-    display: block;
-    font-size: var(--text-micro);
-    color: var(--color-ink-3);
-    margin-top: 6px;
-  }
-
-  .microcopy {
-    font-size: var(--text-small);
-    color: var(--color-ink-3);
-    margin-top: 16px;
-  }
-
-  /* Protección de datos: visible junto al botón, no tras un enlace ni un
-     desplegable. Es lo que hace que no haga falta checkbox de consentimiento. */
-  .privacy-note {
-    font-size: var(--text-small);
-    line-height: 1.5;
-    color: var(--color-ink-2);
-    margin-top: 16px;
-  }
-
-  .privacy-note a {
-    color: var(--color-accent);
-  }
+  /* Dato jurídico que todavía no existe: se marca como pendiente en vez de
+     publicarse como si fuera definitivo. No lleva el resaltado del correo del
+     visitante, que significa lo contrario: «relee lo que acabas de escribir». */
+  .pending { font-family: var(--font-mono); font-size: 0.92em; color: var(--color-ink-3); }
 
   .alert {
-    border-left: 3px solid var(--color-error);
-    background: var(--color-paper);
-    color: var(--color-error);
-    padding: 12px 14px;
-    margin-bottom: 16px;
+    border: 1px solid var(--color-error); border-radius: var(--radius-xs);
+    color: var(--color-error); padding: 12px 14px; margin-bottom: 20px;
     font-size: var(--text-body);
   }
 
-  /* No es un error: es un estado del producto. Lleva el acento, no el rojo. */
-  .alert--aviso {
-    border-left-color: var(--color-accent);
-    color: var(--color-ink);
+  /* El alta no operativa es una condición del bloque entero, no una respuesta
+     a algo que hayas hecho: va antes de escribir el correo, no después de
+     rellenarlo todo. Ni el rojo del error ni el acento: el acento se reserva
+     para el éxito, y un aviso permanente que lo gastara dejaría de señalar. */
+  .notice {
+    border: 1px solid var(--color-line); border-radius: var(--radius-xs);
+    background: var(--color-paper); color: var(--color-ink-2);
+    padding: 12px 14px; margin-bottom: 24px; font-size: var(--text-body);
   }
 
   /* El bloque recibe foco para que el lector de pantalla lo lea; el anillo
      sobra en un texto no interactivo. */
-  [tabindex="-1"]:focus {
-    outline: none;
-  }
+  [tabindex="-1"]:focus { outline: none; }
 
-  .done {
-    border-left: 3px solid var(--color-accent);
-    padding-left: 20px;
-  }
-
+  .done { margin-top: 36px; max-width: 30rem; }
   .done p:first-of-type {
-    font-size: var(--text-lead);
-    line-height: 1.45;
-    color: var(--color-ink);
+    font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink);
   }
-
-  .done p + p {
-    margin-top: 12px;
-    color: var(--color-ink-2);
-  }
-
+  .done p + p { margin-top: 16px; color: var(--color-ink-2); }
   .done .mail {
-    font-family: var(--font-mono);
-    font-weight: 500;
-    background: var(--color-accent-wash);
-    padding: 1px 5px;
-    border-radius: var(--radius-xs);
-    overflow-wrap: anywhere;
+    font-family: var(--font-mono); font-weight: 500;
+    background: var(--color-accent-wash); padding: 1px 5px;
+    border-radius: var(--radius-xs); overflow-wrap: anywhere;
   }
 
   /* Honeypot: fuera de pantalla, no con display:none, que algunos
      rellenadores detectan. */
-  .hp {
-    position: absolute;
-    left: -9999px;
-  }
+  .hp { position: absolute; left: -9999px; }
 
-  /* --- FAQ -------------------------------------------------------------- */
-  /* Sin acordeón: las respuestas a «¿se envía mi voz?» y «¿cuánto va a
-     costar?» no se esconden tras un clic. */
-  .faq {
-    display: grid;
-    gap: 0;
+  /* --- Preguntas --------------------------------------------------------
+     `<details>` nativo a una columna: nueve preguntas siempre abiertas
+     ocupaban dos pantallas y media, y a dos columnas los filetes nunca
+     cerraban a la misma altura. */
+  .faq { display: grid; gap: 0; border-bottom: 1px solid var(--color-line); }
+  .qa { border-top: 1px solid var(--color-line); }
+  .qa > summary {
+    padding: 16px 0; font-size: var(--text-body); font-weight: 500;
+    cursor: pointer; list-style: none; display: flex;
+    justify-content: space-between; gap: 16px; align-items: baseline;
+    max-width: 30rem;
   }
-
-  .qa {
-    border-top: 1px solid var(--color-line);
-    padding: 24px 0;
-    max-width: var(--container-measure);
+  .qa > summary::-webkit-details-marker { display: none; }
+  .qa > summary::after {
+    content: "+"; font: 400 var(--text-body) / 1 var(--font-mono);
+    color: var(--color-ink-3);
   }
-
-  .qa p {
-    color: var(--color-ink-2);
-    margin-top: 8px;
+  .qa[open] > summary::after { content: "–"; }
+  .qa > p {
+    color: var(--color-ink-2); padding-bottom: 18px;
+    font-size: var(--text-small); max-width: 32rem;
   }
 
   /* --- Pie -------------------------------------------------------------- */
   .footer {
-    border-top: 1px solid var(--color-line);
-    padding-block: 48px;
-    font-size: var(--text-small);
-    color: var(--color-ink-3);
+    border-top: 1px solid var(--color-line); padding-block: 36px;
+    font-size: var(--text-small); color: var(--color-ink-3);
   }
-
-  .legal {
-    margin-top: 10px;
-    font-size: var(--text-micro);
-  }
-
-  .legal a {
-    color: var(--color-ink-3);
-    text-underline-offset: 3px;
-  }
-
-  .legal a + a {
-    margin-left: 16px;
-  }
+  .legal { margin-top: 8px; }
+  .legal a { color: var(--color-ink-3); }
+  .legal a + a { margin-left: 20px; }
 
   /* --- Páginas de texto (legales, gracias, 404) ------------------------- */
-  .prose {
-    max-width: var(--container-measure);
-  }
+  .prose { max-width: var(--container-measure); }
+  .prose h2 { margin-top: 40px; font-size: var(--text-h3); }
+  .prose h2:first-of-type { margin-top: 32px; }
+  .prose p { margin-top: 12px; color: var(--color-ink-2); }
 
-  .prose h2 {
-    margin-top: 40px;
-    font-size: var(--text-h3);
-  }
-
-  .prose h2:first-of-type {
-    margin-top: 32px;
-  }
-
-  .prose p {
-    margin-top: 12px;
-    color: var(--color-ink-2);
-  }
-
-  .prose a {
-    color: var(--color-accent);
-  }
-
-  /* Los huecos que rellena un humano antes de publicar en dominio propio se
-     quedan VISIBLES, no se maquillan. */
-  .gap {
-    font-family: var(--font-mono);
-    font-size: var(--text-small);
-    background: var(--color-accent-wash);
-    color: var(--color-ink);
-    padding: 1px 5px;
-    border-radius: var(--radius-xs);
-  }
-
-  /* --- Tramos ----------------------------------------------------------- */
-  @media (min-width: 768px) {
-    .cols {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .who {
-      grid-template-columns: 1fr 1fr;
-    }
-    .faq {
-      grid-template-columns: 1fr 1fr;
-      column-gap: 48px;
-    }
-  }
-
+  /* --- Tramo ancho ------------------------------------------------------ */
   @media (min-width: 1024px) {
+    .wide { display: inline; }
+    h1 { text-wrap: initial; }
     .first__grid {
-      grid-template-columns: 5fr 7fr;
-      align-items: start;
+      grid-template-columns: 5fr 7fr; column-gap: 3rem;
+      row-gap: 40px; align-items: start;
     }
-    /* En columna estrecha el titular baja de cuerpo: con el clamp() fluido,
-       56 px dentro de 430 px son seis líneas que se comen el primer
-       viewport. */
-    h1 {
-      font-size: 2.5rem;
+    /* El titular ocupa el ancho de página; la demo y el resto del hero se
+       reparten debajo. */
+    .first__grid > h1 {
+      grid-column: 1 / -1; grid-row: 1;
+      font-size: clamp(2.75rem, 4vw, 3.625rem);
     }
-  }
-
-  @media (min-width: 1280px) {
-    h1 {
-      font-size: 3rem;
+    .hero__rest { grid-column: 1; grid-row: 2; }
+    .demo {
+      grid-column: 2; grid-row: 2; margin-top: 4px;
+      display: flex; flex-direction: column;
     }
+    .demo__media { flex: 1; aspect-ratio: auto; min-block-size: var(--demo-min-h); }
   }
 }
 
 /* ============================================================================
    Animación de la demo.
-   El estado BASE del marcado es el fotograma final (fase 6): sin animación
-   —prefers-reduced-motion, o sin JS, que aquí da igual porque todo es CSS— se
-   ve exactamente eso, con el texto limpio ya pegado y el bruto tachado.
-   La animación lo RECORRE; no lo construye. Solo se animan opacity y
-   transform: ninguna propiedad que provoque recálculo de diseño.
+   El estado BASE del marcado es el fotograma del texto ya pegado: sin
+   animación —prefers-reduced-motion, o sin CSS— se ve eso, con el texto real
+   del DOM seleccionable. La animación lo recorre; no lo construye.
+   El ciclo arranca con desfase negativo para que lo primero que se vea sea la
+   promesa cumplida y no el dictado sucio, y el resultado persiste durante el
+   reposo: no hay ni un fotograma de la demo sin texto visible.
+   Solo se animan opacity y transform: ninguna propiedad que provoque
+   recálculo de diseño.
    ========================================================================= */
 @media (prefers-reduced-motion: no-preference) {
   .demo__media * {
     animation-duration: var(--demo-cycle);
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+    animation-delay: var(--demo-start);
   }
-  .hud {
-    animation-name: hudWake;
-  }
-  .keycap {
-    animation-name: keyPress;
-  }
-  .st-rec {
-    animation-name: recOn;
-  }
-  .st-pol {
-    animation-name: polOn;
-  }
-  .wave {
-    animation-name: waveOn;
-  }
-  .wave b {
-    animation: bar 0.62s ease-in-out infinite alternate;
-  }
-  .wave b:nth-child(2) {
-    animation-delay: -0.5s;
-  }
-  .wave b:nth-child(3) {
-    animation-delay: -0.2s;
-  }
-  .wave b:nth-child(4) {
-    animation-delay: -0.38s;
-  }
-  .wave b:nth-child(5) {
-    animation-delay: -0.08s;
-  }
-  .wave b:nth-child(6) {
-    animation-delay: -0.28s;
-  }
-  .wave b:nth-child(7) {
-    animation-delay: -0.45s;
-  }
-  .hud__text .f {
-    animation-name: strike;
-  }
-  .pasted {
-    animation-name: paste;
-  }
-  .caret--end {
-    animation-name: caretEnd;
-  }
-  .caret--start {
-    display: inline-block;
-    animation-name: caretStart;
-  }
+  .keycap { animation-name: keyPress; }
+  .st-rec { animation-name: recOn; }
+  .st-pol { animation-name: polOn; }
+  .wave { animation-name: waveOn; }
+  .wave b { animation: bar 0.62s ease-in-out infinite alternate; }
+  .wave b:nth-child(2) { animation-delay: -0.5s; }
+  .wave b:nth-child(3) { animation-delay: -0.2s; }
+  .wave b:nth-child(4) { animation-delay: -0.38s; }
+  .wave b:nth-child(5) { animation-delay: -0.08s; }
+  .wave b:nth-child(6) { animation-delay: -0.28s; }
+  .wave b:nth-child(7) { animation-delay: -0.45s; }
+  .hud__text .f { animation-name: strike; }
+  .pasted { animation-name: paste; }
+  .caret--end { animation-name: caretEnd; }
+  .caret--start { display: inline-block; animation-name: caretStart; }
   /* Cinco fragmentos, no letra a letra: así aparece una transcripción en vivo. */
-  .s1 {
-    animation-name: f1;
-  }
-  .s2 {
-    animation-name: f2;
-  }
-  .s3 {
-    animation-name: f3;
-  }
-  .s4 {
-    animation-name: f4;
-  }
-  .s5 {
-    animation-name: f5;
-  }
-  .tm span:last-child {
-    opacity: 0;
-  }
-  .tm .t1 {
-    animation-name: tk1;
-  }
-  .tm .t2 {
-    animation-name: tk2;
-  }
-  .tm .t3 {
-    animation-name: tk3;
-  }
-  .tm .t4 {
-    animation-name: tk4;
-  }
+  .s1 { animation-name: f1; }
+  .s2 { animation-name: f2; }
+  .s3 { animation-name: f3; }
+  .s4 { animation-name: f4; }
+  .s5 { animation-name: f5; }
+  .tm span:last-child { opacity: 0; }
+  .tm .t1 { animation-name: tk1; }
+  .tm .t2 { animation-name: tk2; }
+  .tm .t3 { animation-name: tk3; }
+  .tm .t4 { animation-name: tk4; }
 }
 
-@keyframes hudWake {
-  0%, 7.8% { opacity: 0.55; }
-  11.6%, 92% { opacity: 1; }
-  100% { opacity: 0.55; }
-}
 @keyframes keyPress {
-  0%, 7.8% { transform: translateY(0); background: #322d25; }
-  8%, 50.4% { transform: translateY(2px); background: #4a443a; }
-  50.5%, 100% { transform: translateY(0); background: #322d25; }
+  0%, 7.8% { transform: translateY(0); background: transparent; }
+  8%, 50.4% { transform: translateY(2px); background: #3a352c; }
+  50.5%, 100% { transform: translateY(0); background: transparent; }
 }
 @keyframes recOn {
   0%, 11.5% { opacity: 0; }
@@ -1076,53 +608,61 @@
   61.1%, 100% { opacity: 0; }
 }
 @keyframes waveOn {
-  0%, 11.5% { transform: scaleY(0.08); }
-  12%, 47.3% { transform: scaleY(1); }
-  50.5%, 100% { transform: scaleY(0.08); }
+  0%, 11.5% { transform: scaleY(0.08); opacity: 0; }
+  12%, 47.3% { transform: scaleY(1); opacity: 1; }
+  50.5%, 100% { transform: scaleY(0.08); opacity: 0; }
 }
 @keyframes bar {
   from { transform: scaleY(0.25); }
   to { transform: scaleY(1); }
 }
 @keyframes strike {
-  0%, 50.4% { text-decoration-color: transparent; opacity: 1; }
-  61.1%, 100% { text-decoration-color: var(--color-hud-ink-2); opacity: 0.5; }
+  0%, 11% { text-decoration-color: var(--color-hud-ink-2); color: var(--color-hud-ink-2); }
+  11.05%, 50.4% { text-decoration-color: transparent; color: var(--color-hud-ink); }
+  61.1%, 100% { text-decoration-color: var(--color-hud-ink-2); color: var(--color-hud-ink-2); }
 }
 /* Aparece de golpe, con destello: echo PEGA, no teclea. Un efecto de máquina
    de escribir sería más vistoso y sería mentira. */
 @keyframes paste {
-  0%, 61% { opacity: 0; background: var(--color-accent-wash); }
-  61.1% { opacity: 0; background: var(--color-accent-wash); }
+  0%, 12.6% { opacity: 1; background: transparent; }
+  12.7%, 61% { opacity: 0; background: var(--color-accent-wash); }
   61.7% { opacity: 1; background: var(--color-accent-wash); }
   64.3% { opacity: 1; background: var(--color-accent-wash); }
   68.5%, 100% { opacity: 1; background: transparent; }
 }
 @keyframes caretEnd {
-  0%, 61% { opacity: 0; }
+  0%, 12.6% { opacity: 1; }
+  12.7%, 61% { opacity: 0; }
   61.1%, 100% { opacity: 1; }
 }
 @keyframes caretStart {
-  0%, 61% { opacity: 1; }
+  0%, 12.6% { opacity: 0; }
+  12.7%, 61% { opacity: 1; }
   61.1%, 100% { opacity: 0; }
 }
 @keyframes f1 {
-  0%, 12.5% { opacity: 0; }
+  0%, 11% { opacity: 1; }
+  11.05%, 12.5% { opacity: 0; }
   12.6%, 100% { opacity: 1; }
 }
 @keyframes f2 {
-  0%, 18.8% { opacity: 0; }
+  0%, 11% { opacity: 1; }
+  11.05%, 18.8% { opacity: 0; }
   18.9%, 100% { opacity: 1; }
 }
 @keyframes f3 {
-  0%, 26.2% { opacity: 0; }
+  0%, 11% { opacity: 1; }
+  11.05%, 26.2% { opacity: 0; }
   26.3%, 100% { opacity: 1; }
 }
 @keyframes f4 {
-  0%, 33.6% { opacity: 0; }
+  0%, 11% { opacity: 1; }
+  11.05%, 33.6% { opacity: 0; }
   33.7%, 100% { opacity: 1; }
 }
 @keyframes f5 {
-  0%, 41% { opacity: 0; }
+  0%, 11% { opacity: 1; }
+  11.05%, 41% { opacity: 0; }
   41.1%, 100% { opacity: 1; }
 }
 /* El contador enseña la espera real: 1,8 s, dentro del rango declarado. */
@@ -1150,14 +690,10 @@
 /* Quien pide menos movimiento no recibe ninguno: ni demo, ni desplazamiento
    suave, ni transiciones de más de 120 ms en toda la página. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation: none !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
   }
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
 }

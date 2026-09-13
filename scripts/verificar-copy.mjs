@@ -49,6 +49,11 @@ const INNEGOCIABLES = [
      dictas párrafos y te cansa editarlos después.`,
   ],
   [
+    'pie de la demo · una sola línea',
+    `Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la
+     beta.`,
+  ],
+  [
     'CA-INT-3 · para quién NO es',
     `No te va a servir si dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si
      tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no
@@ -74,6 +79,7 @@ const PROHIBIDAS = [
     ],
   ],
   ['CA-NEG-3 · contadores', ['personas en la lista', 'plazas restantes']],
+
 ]
 
 const fallos = []
@@ -103,6 +109,25 @@ else console.log(`ok  CA-META-1 · title (${title.length} caracteres)`)
 if (description.length === 0 || description.length > 155)
   fallos.push(`CA-META-2: la meta description mide ${description.length} caracteres`)
 else console.log(`ok  CA-META-2 · description (${description.length} caracteres)`)
+
+// --- CA-NEG-1 · ningún precio dentro de la comparativa. Se mira la tabla, no
+//     la página: «el dictado que trae macOS es bueno, es gratis y ha mejorado»
+//     es copy aprobado sobre el rival y tiene que seguir pasando. Lo que no
+//     puede volver es la fila «Precio — Gratis / Por anunciar», que enfrentaba
+//     un hecho del rival con un interrogante nuestro en la única pieza cuya
+//     función es ganar.
+const tabla = html.match(/<table[\s\S]*?<\/table>/)?.[0] ?? ''
+const precios = ['Precio', 'Gratis', 'Por anunciar'].filter((c) => tabla.includes(c))
+if (precios.length)
+  fallos.push(`CA-NEG-1: la comparativa vuelve a hablar de precio (${precios.join(', ')})`)
+else console.log('ok  CA-NEG-1 · ningún precio en la comparativa')
+
+// --- La entradilla anuncia «las cuatro cosas que no hace»: la tabla tiene que
+//     tener exactamente cuatro filas. Si se añade una quinta, hay que cambiar
+//     también el número de la entradilla, y hasta entonces esto falla.
+const filas = (html.match(/<tr[^>]*>\s*<th[^>]*scope="row"/g) ?? []).length
+if (filas !== 4) fallos.push(`La comparativa tiene ${filas} filas y la entradilla anuncia cuatro`)
+else console.log('ok  comparativa · cuatro filas, como dice la entradilla')
 
 // --- Sin recursos de terceros (CA-NEG-9), en TODAS las páginas construidas y en
 //     el CSS. Se miran solo los atributos de CARGA: un <a href> a un dominio ajeno
