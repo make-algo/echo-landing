@@ -1,0 +1,72 @@
+---
+/**
+ * Demo animada — «Así se ve». Especificación: docs/design/landing.md §4 (repo privado).
+ *
+ * Tres huecos independientes, para que el vídeo real entre sin rehacer la sección:
+ *  - `.demo__media` lleva la proporción y el tamaño; el contenido no los fija.
+ *    Sustituirlo por <video poster muted loop playsinline> no mueve un píxel.
+ *  - El aviso de recreación es un elemento aparte: el día del vídeo se borra esa línea.
+ *  - El <figcaption> es copy aprobado y no cambia nunca.
+ *
+ * El texto de dentro (campos del correo, «Grabando», «Puliendo», la frase dictada)
+ * es interfaz recreada, no copy de la página.
+ */
+---
+
+<figure class="demo">
+  <h2>Así se ve</h2>
+
+  <p class="sr-only">
+    Un dictado con muletillas convertido en un párrafo limpio dentro de un correo. Se mantiene
+    pulsada una tecla, echo transcribe lo dicho con sus muletillas y repeticiones, y al soltarla
+    pega en el correo el mismo texto ya limpio y puntuado.
+  </p>
+
+  <div class="demo__media">
+    <div class="win">
+      <div class="win__bar">
+        <span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span>Nuevo mensaje
+      </div>
+      <div class="win__field win__field--to"><b>Para:</b> equipo@</div>
+      <div class="win__field"><b>Asunto:</b> Deploy de la semana</div>
+      <div class="win__rule" aria-hidden="true"></div>
+      <div class="win__body">
+        <span class="caret caret--start" aria-hidden="true"></span><span class="pasted"
+          >Hacemos el deploy del backend en GitHub el jueves y lo comentamos en la daily.</span
+        ><span class="caret caret--end" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <!-- Es una recreación en bucle: anunciarla cada 19 s sería hostil con un lector. -->
+    <div class="hud" aria-live="off">
+      <span class="keycap" aria-hidden="true">⌥ espacio</span>
+      <span class="hud__status">
+        <span class="st-rec"><i aria-hidden="true"></i>Grabando</span>
+        <span class="st-pol">
+          Puliendo <span class="tm"
+            ><span class="t1">0,0</span><span class="t2">0,6</span><span class="t3">1,2</span><span
+              class="t4">1,8</span
+            ><span>1,8</span></span
+          > s
+        </span>
+      </span>
+      <span class="wave" aria-hidden="true"
+        ><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span
+      >
+      <span class="hud__text"
+        ><span class="s s1"><span class="f">eh… </span></span><span class="s s2"
+          ><span class="f">hacemos el deploy, </span>hacemos el deploy del backend en GitHub </span
+        ><span class="s s3"><span class="f">el martes, no, mejor </span>el jueves, </span><span
+          class="s s4"><span class="f">y eh, </span>lo comentamos </span
+        ><span class="s s5">en la daily</span></span
+      >
+    </div>
+  </div>
+
+  <p class="demo__notice">Recreación de la interfaz. El vídeo real llega con la beta.</p>
+
+  <figcaption class="demo__caption">
+    Mantienes una tecla, hablas, la sueltas. El texto aparece limpio en la app donde estabas
+    escribiendo.
+  </figcaption>
+</figure>

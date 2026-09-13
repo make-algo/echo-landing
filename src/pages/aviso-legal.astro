@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+
+/**
+ * Texto íntegro de asesor-legal (MAK-79). No se reescribe ni se resume.
+ * Los huecos [...] se quedan VISIBLES: los rellena un humano antes de publicar
+ * en dominio propio, y hasta entonces esta versión lleva noindex.
+ */
+---
+
+<Base title="Aviso legal — echo" path="/aviso-legal">
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Aviso legal</h1>
+
+        <p>
+          En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la
+          Sociedad de la Información y de Comercio Electrónico, se informa:
+        </p>
+
+        <p>
+          <strong>Titular del sitio:</strong> Make Algo SL<br />
+          <strong>NIF:</strong> B88875018<br />
+          <strong>Domicilio:</strong> <span class="gap">[dirección completa]</span>, Madrid, España<br
+          />
+          <strong>Email de contacto:</strong> <span class="gap">[email de contacto]</span><br />
+          <strong>Datos registrales:</strong> inscrita en el Registro Mercantil de Madrid, Tomo
+          <span class="gap">[__]</span>, Folio <span class="gap">[__]</span>, Hoja M-<span
+            class="gap">[__]</span
+          >. <em>(Si aún no está inscrita, sustituir por: «Sociedad en constitución».)</em>
+        </p>
+
+        <h2>Uso del sitio</h2>
+        <p>
+          Este sitio tiene carácter informativo: presenta el producto echo y permite apuntarse a su
+          lista de espera. El acceso es gratuito y no requiere registro.
+        </p>
+
+        <h2>Propiedad intelectual</h2>
+        <p>
+          Los contenidos de este sitio (textos, diseño, logotipos, código) pertenecen a Make Algo SL
+          o a sus licenciantes. No se permite su reproducción o distribución con fines comerciales
+          sin autorización.
+        </p>
+
+        <h2>Responsabilidad</h2>
+        <p>
+          Make Algo SL no garantiza la disponibilidad ininterrumpida del sitio ni se hace responsable
+          de los daños derivados de su uso o de la imposibilidad de usarlo, en los términos que
+          permite la ley.
+        </p>
+
+        <h2>Legislación aplicable</h2>
+        <p>
+          Este aviso se rige por la legislación española. Para cualquier controversia serán
+          competentes los juzgados y tribunales de Madrid, salvo que la normativa de consumidores
+          disponga otro fuero.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

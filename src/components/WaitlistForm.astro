@@ -1,0 +1,252 @@
+---
+import { absoluteUrl, formEndpoint, url } from '../lib/site'
+
+/**
+ * Lista de espera. Diseño: docs/design/landing.md §6. Copy: 02 §5.8. Comportamiento: 03 §9.
+ *
+ * Es un <form method="POST"> nativo: sin JavaScript el envío va al proveedor y este
+ * redirige a /gracias, que repite el bloque de éxito. Con JavaScript se intercepta y
+ * el estado se pinta en su sitio sin recargar.
+ *
+ * El destino vive en PUBLIC_FORM_ENDPOINT. Sin endpoint el formulario NO finge:
+ * avisa de que el alta no está operativa todavía y no deja enviar.
+ */
+const activo = formEndpoint !== ''
+const gracias = absoluteUrl('/gracias')
+---
+
+<div class="form-card">
+  <h2>Entrar en la beta privada</h2>
+  <p class="lead">
+    Vamos abriendo por tandas para poder atender a cada uno. Nos dices en qué lo usarías y te
+    escribimos cuando te toque.
+  </p>
+
+  <form
+    id="waitlist"
+    method="POST"
+    action={activo ? formEndpoint : undefined}
+    novalidate
+    data-activo={activo ? 'si' : 'no'}
+  >
+    <!-- Redirección de vuelta para el envío sin JavaScript. -->
+    <input type="hidden" name="_next" value={gracias} />
+    <input type="hidden" name="_subject" value="Alta en la lista de espera de echo" />
+
+    <!--
+      Honeypot: fuera de pantalla, sin foco por teclado y oculto al lector. No se usa
+      display:none, que algunos rellenadores detectan.
+    -->
+    <p class="hp" aria-hidden="true">
+      <label>
+        No rellenar
+        <input tabindex="-1" autocomplete="off" name="bot-field" />
+      </label>
+    </p>
+
+    <div class="field" id="field-email">
+      <label for="email">Tu correo</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        inputmode="email"
+        placeholder="tu@correo.com"
+        aria-describedby="email-error"
+      />
+      <span class="err" id="email-error" aria-live="polite"></span>
+    </div>
+
+    <div class="field">
+      <label for="uso">
+        ¿Para qué lo usarías? <span class="opt">(opcional)</span>
+      </label>
+      <textarea
+        id="uso"
+        name="uso"
+        rows="3"
+        maxlength="500"
+        placeholder="Prompts, correos, notas, documentación…"
+        aria-describedby="uso-contador"></textarea>
+      <!-- Solo a partir de 400 caracteres: un contador permanente en un campo
+           opcional sugiere que hay una longitud esperada. -->
+      <span class="counter" id="uso-contador" aria-live="polite"></span>
+    </div>
+
+    <div class="field">
+      <label id="sub-label" for="sub-1">
+        ¿Tienes Claude o ChatGPT de pago? <span class="opt">(opcional)</span>
+      </label>
+      <div class="radios" role="radiogroup" aria-labelledby="sub-label">
+        <label class="radio"
+          ><input type="radio" id="sub-1" name="sub" value="Claude" />Claude</label
+        >
+        <label class="radio"><input type="radio" name="sub" value="ChatGPT" />ChatGPT</label>
+        <label class="radio"><input type="radio" name="sub" value="Las dos" />Las dos</label>
+        <label class="radio"><input type="radio" name="sub" value="Ninguna" />Ninguna</label>
+      </div>
+    </div>
+
+    <div class="alert" id="send-error" role="alert" hidden>
+      No hemos podido guardar tu correo. Inténtalo otra vez en un momento.
+    </div>
+
+    {
+      !activo && (
+        <div class="alert alert--aviso" id="sin-endpoint" role="status">
+          El alta todavía no está operativa: estamos cerrando con quién guardará tu correo. El
+          formulario se puede leer y revisar, pero no envía nada.
+        </div>
+      )
+    }
+
+    <button class="btn btn--block" id="submit" type="submit" disabled={!activo}>Apuntarme</button>
+
+    <p class="microcopy">
+      Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
+      respondiendo a cualquier correo.
+    </p>
+
+    <!--
+      Texto de protección de datos de asesor-legal (MAK-79), visible junto al botón y no
+      tras un enlace: es lo que hace que no haga falta checkbox de consentimiento.
+      Los huecos [...] los rellena un humano antes de publicar en dominio propio.
+    -->
+    <p class="privacy-note">
+      <strong>Protección de datos:</strong> el responsable es <strong>Make Algo SL</strong>. Usamos
+      tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para
+      ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa <span
+        class="gap">[proveedor por confirmar]</span
+      > con las garantías que explicamos en la <a href={url('/privacidad')}>política de privacidad</a
+      >, donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier
+      correo o escribiendo a <span class="gap">[email de contacto]</span>.
+    </p>
+  </form>
+
+  <div id="ok" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
+    <p>
+      Apuntado. Te escribimos a <span class="mail" id="ok-mail">tu@correo.com</span> cuando abramos tu
+      tanda.
+    </p>
+    <p>Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.</p>
+  </div>
+
+  <div id="dup" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
+    <p>Ya estabas en la lista. Te escribimos cuando abramos tu tanda.</p>
+  </div>
+</div>
+
+<script>
+  // Mejora progresiva: sin este script el formulario sigue siendo un POST nativo
+  // que el proveedor redirige a /gracias.
+  const form = document.getElementById('waitlist') as HTMLFormElement | null
+  if (form) {
+    const ok = document.getElementById('ok')!
+    const dup = document.getElementById('dup')!
+    const sendError = document.getElementById('send-error')!
+    const emailError = document.getElementById('email-error')!
+    const fieldEmail = document.getElementById('field-email')!
+    const email = document.getElementById('email') as HTMLInputElement
+    const uso = document.getElementById('uso') as HTMLTextAreaElement
+    const contador = document.getElementById('uso-contador')!
+    const submit = document.getElementById('submit') as HTMLButtonElement
+    const activo = form.dataset.activo === 'si'
+
+    type Estado = 'reposo' | 'enviando' | 'error' | 'invalido' | 'exito' | 'duplicado'
+
+    function estado(s: Estado) {
+      form!.hidden = s === 'exito' || s === 'duplicado'
+      ok.hidden = s !== 'exito'
+      dup.hidden = s !== 'duplicado'
+      sendError.hidden = s !== 'error'
+
+      const malCorreo = s === 'invalido'
+      fieldEmail.classList.toggle('field--bad', malCorreo)
+      email.setAttribute('aria-invalid', String(malCorreo))
+      emailError.textContent = malCorreo ? 'Ese correo no parece válido. Revísalo.' : ''
+
+      // Pulsar dos veces no envía dos veces.
+      submit.disabled = s === 'enviando' || !activo
+      submit.textContent = s === 'enviando' ? 'Apuntando…' : 'Apuntarme'
+      form!.setAttribute('aria-busy', String(s === 'enviando'))
+
+      // El bloque recibe el foco para que el lector lo lea y el teclado no se
+      // quede en un botón que ya no existe.
+      if (s === 'exito') {
+        document.getElementById('ok-mail')!.textContent = email.value.trim() || 'tu@correo.com'
+        ;(ok as HTMLElement).focus()
+      }
+      if (s === 'duplicado') (dup as HTMLElement).focus()
+    }
+
+    const valido = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+    let intentado = false
+
+    // El contador solo aparece a partir de 400 caracteres.
+    uso.addEventListener('input', () => {
+      const quedan = 500 - uso.value.length
+      contador.textContent = uso.value.length >= 400 ? `Quedan ${quedan} caracteres` : ''
+    })
+
+    // El formato no se valida mientras se escribe por primera vez: solo al enviar
+    // o al salir del campo después de un intento fallido.
+    email.addEventListener('blur', () => {
+      if (!intentado) return
+      const v = email.value.trim()
+      if (v && !valido(v)) estado('invalido')
+    })
+
+    form.addEventListener('submit', async (e) => {
+      intentado = true
+      const v = email.value.trim()
+
+      if (!valido(v)) {
+        e.preventDefault()
+        estado('invalido')
+        email.focus()
+        return
+      }
+
+      // Los espacios al principio y al final se recortan antes de enviar.
+      email.value = v
+
+      // Sin endpoint no hay envío que interceptar: el botón ya está deshabilitado
+      // y aquí solo se corta por si acaso. Nunca se pinta un falso «apuntado».
+      if (!activo) {
+        e.preventDefault()
+        return
+      }
+
+      e.preventDefault()
+      estado('enviando')
+
+      try {
+        const respuesta = await fetch(form!.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form!),
+        })
+
+        // 409 es el duplicado en los proveedores que lo distinguen. Para el
+        // visitante no ha pasado nada malo: ya está dentro.
+        if (respuesta.status === 409) estado('duplicado')
+        else if (respuesta.ok) estado('exito')
+        else estado('error')
+      } catch {
+        estado('error')
+      }
+    })
+
+    // Afordancia de revisión: ?estado=exito|duplicado|error|invalido|enviando pinta
+    // cada estado sin necesidad de un endpoint vivo, para que echo-ux y echo-pm los
+    // puedan provocar en la versión de prueba. No afecta a un visitante normal.
+    const pedido = new URLSearchParams(location.search).get('estado')
+    const estadosRevisables: Estado[] = ['reposo', 'enviando', 'error', 'invalido', 'exito', 'duplicado']
+    if (pedido && (estadosRevisables as string[]).includes(pedido)) {
+      if (!email.value) email.value = 'ana.martinez@estudio.dev'
+      estado(pedido as Estado)
+    }
+  }
+</script>
