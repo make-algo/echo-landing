@@ -327,6 +327,6 @@ export const variantes = {
     },
     barra: { fichero: 'echo.landing', idiomas: 'es-ES + en' },
     atajos: { ir: 'g', comparativa: 'c', beta: 'b' },
-    plegado: (n: number) => `⋯ ${n} líneas`,
+    plegado: (n: number) => `⋯ ${n} ${n === 1 ? 'línea' : 'líneas'}`,
   },
 } as const
