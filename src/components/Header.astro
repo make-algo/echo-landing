@@ -1,0 +1,17 @@
+---
+import { url } from '../lib/site'
+
+/**
+ * Cabecera mínima: la marca en pantalla y un acceso permanente al alta.
+ * Sin navegación: la página tiene un objetivo y una barra de enlaces ofrecería
+ * salidas. Lo único que resuelve es que alguien que entra y se va a los tres
+ * segundos sepa cómo se llama el producto.
+ */
+---
+
+<header class="top">
+  <div class="wrap">
+    <span class="wordmark">echo</span>
+    <a class="top__cta" href={`${url('/')}#beta`}>Entrar en la beta privada</a>
+  </div>
+</header>

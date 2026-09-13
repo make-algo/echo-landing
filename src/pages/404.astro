@@ -1,16 +1,18 @@
 ---
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
 import { url } from '../lib/site'
 ---
 
 <Base title="Página no encontrada — echo" path="/404">
+  <Header />
   <main id="contenido" class="section">
     <div class="wrap">
       <div class="prose">
         <h1 style="font-size: var(--text-h2)">Esta página no existe</h1>
         <p>El enlace que has seguido no lleva a ninguna parte.</p>
-        <p><a href={url('/')} style="color: var(--color-accent)">Volver a la página de echo</a></p>
+        <p><a href={url('/')}>Volver a la página de echo</a></p>
       </div>
     </div>
   </main>
