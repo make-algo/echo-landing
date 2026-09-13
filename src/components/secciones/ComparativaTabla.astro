@@ -1,0 +1,56 @@
+---
+import { comparativa } from '../../content/copy'
+
+/**
+ * 5 · Comparación honesta con el dictado del Mac, en la composición del control.
+ *
+ * Cuatro filas, y el número no es casual: la entradilla anuncia «las cuatro
+ * cosas que no hace». `data-fila-comparativa` es lo que cuenta
+ * `scripts/verificar-copy.mjs` en las cuatro rutas, que ya no pueden depender de
+ * que exista una <table>.
+ *
+ * Los roles implícitos de la tabla se pierden al cambiar `display` en móvil, así
+ * que van explícitos: la relación fila/columna sigue viva para el lector de
+ * pantalla cuando la tabla pasa a pares.
+ */
+const { titulo, entradilla, columnas, filas, cierre } = comparativa
+---
+
+<section id="comparacion" class="section ruled">
+  <div class="wrap">
+    <h2>{titulo}</h2>
+    <p class="lead measure" style="margin-top: 16px">{entradilla}</p>
+
+    <div class="cmp">
+      <table role="table">
+        <colgroup><col class="c-attr" /><col class="c-os" /><col class="c-echo" /></colgroup>
+        <thead role="rowgroup">
+          <tr role="row">
+            <td role="cell"><span class="sr-only">{columnas.criterio}</span></td>
+            <th role="columnheader" scope="col">{columnas.macos}</th>
+            <th role="columnheader" scope="col" class="t-echo">{columnas.echo}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            filas.map((fila) => (
+              <tr role="row" data-fila-comparativa>
+                <th role="rowheader" scope="row">{fila.criterio}</th>
+                <td role="cell"
+                  ><span class="col-label" aria-hidden="true">{columnas.macos}</span>{fila.macos}</td
+                >
+                <td role="cell" class="t-echo"
+                  ><span class="col-label" aria-hidden="true">{columnas.echo}</span>{fila.echo}</td
+                >
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="closer">
+      <span>{cierre.concesion} {cierre.afirmacion}</span>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro'
+import Dicho from '../../components/demo/Dicho.astro'
+import Escrito from '../../components/demo/Escrito.astro'
+import Footer from '../../components/Footer.astro'
+import Header from '../../components/Header.astro'
+import Argumentos from '../../components/secciones/Argumentos.astro'
+import Beta from '../../components/secciones/Beta.astro'
+import ParaQuien from '../../components/secciones/ParaQuien.astro'
+import Pasos from '../../components/secciones/Pasos.astro'
+import Preguntas from '../../components/secciones/Preguntas.astro'
+import Privacidad from '../../components/secciones/Privacidad.astro'
+import { apertura, comparativa, demo, variantes } from '../../content/copy'
+import '../../styles/variante-b.css'
+
+/**
+ * Variante B — SUCIO CONTRA LIMPIO COMO IDENTIDAD.
+ *
+ * La página está plegada por la mitad de arriba abajo: a la izquierda lo que
+ * dices, a la derecha lo que se escribe. Todo aparece dos veces. La comparativa
+ * deja de ser una sección porque la página entera ya es la comparativa.
+ *
+ * El texto es el mismo de `/` y va literal. Lo único añadido son los rótulos de
+ * columna y la versión dictada en bruto del titular (`variantes.b`), que es
+ * interfaz —el «antes» del producto— y no sustituye al titular aprobado, que
+ * sigue entero al lado.
+ */
+const ogTitle = apertura.titular.join(' ')
+const v = variantes.b
+const { columnas } = comparativa
+---
+
+<Base ogTitle={ogTitle} path="/b/">
+  <Header />
+
+  <main id="contenido" class="ruta-b">
+    <!-- El fondo del pliegue es UNA sola pieza en este contenedor: una línea de
+         luz que recorre el tramo entero, sin costuras horizontales. -->
+    <div class="folded">
+      <!-- APERTURA. El visitante entiende el producto antes de leer,
+           comparando dos bloques de texto. -->
+      <div class="fold">
+        <div class="l">
+          <span class="tag">{v.ladoDicho}</span>
+          <p>
+            {
+              v.titularDictado.map((tramo) => (
+                <>{tramo.fuera && <s>{tramo.fuera}</s>}{tramo.queda}</>
+              ))
+            }
+          </p>
+        </div>
+        <div class="r">
+          <span class="tag">{v.ladoEscrito}</span>
+          <h1>{apertura.titular.join(' ')}</h1>
+          <p class="b-lead">{apertura.subtitulo}</p>
+          <p class="b-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
+          <p class="b-req">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
+        </div>
+      </div>
+
+      <!-- LA DEMO, A CABALLO DEL PLIEGUE: la barra de echo cae en la mitad
+           sucia y la ventana de la app en la limpia. -->
+      <figure class="fold demo-anim" id="demo">
+        <h2 class="sr-only">{demo.tituloOculto}</h2>
+        <div class="l">
+          <p class="sr-only">{demo.descripcion}</p>
+          <Dicho />
+        </div>
+        <div class="r">
+          <Escrito />
+          <figcaption class="b-req">{demo.pie}</figcaption>
+        </div>
+      </figure>
+
+      <!-- Secciones heredadas del control: viven en la mitad limpia, que es
+           donde vive la prosa compuesta. -->
+      <div class="fold">
+        <div class="l"></div>
+        <div class="r"><Argumentos /></div>
+      </div>
+      <div class="fold">
+        <div class="l"></div>
+        <div class="r"><Pasos /></div>
+      </div>
+
+      <!-- COMPARATIVA: el mismo pliegue, cuatro veces. -->
+      <div class="fold" id="comparacion">
+        <div class="l"></div>
+        <div class="r">
+          <h2>{comparativa.titulo}</h2>
+          <p class="b-lead">{comparativa.entradilla}</p>
+        </div>
+
+        {
+          comparativa.filas.map((fila) => (
+            <>
+              <p class="row-attr" data-fila-comparativa>{fila.criterio}</p>
+              <div class="l">
+                <p class="cell-os"><span class="sr-only">{columnas.macos}: </span>{fila.macos}</p>
+              </div>
+              <div class="r">
+                <p class="cell-echo"><span class="sr-only">{columnas.echo}: </span>{fila.echo}</p>
+              </div>
+            </>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- CIERRE: la columna sucia se acaba y la limpia sigue sola. Es el
+         argumento convertido en composición, y es también la costura: a partir
+         de aquí la página deja de estar plegada. -->
+    <div class="alone">
+      <p class="close">
+        {comparativa.cierre.concesion} <span class="plena">{comparativa.cierre.afirmacion}</span>
+      </p>
+      <p class="b-cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
+    </div>
+
+    <Privacidad />
+    <ParaQuien />
+    <Beta />
+    <Preguntas />
+  </main>
+
+  <Footer />
+</Base>

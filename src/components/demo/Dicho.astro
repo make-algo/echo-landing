@@ -1,0 +1,31 @@
+---
+import { demo } from '../../content/copy'
+
+/**
+ * La mitad «lo que dices» de la demo: la barra de echo con el dictado en bruto,
+ * con lo que se quita tachado. La máquina de estados no se reescribe en ninguna
+ * variante —los cinco tramos, «Grabando», «Puliendo», el contador— solo cambia
+ * dónde vive y de qué tamaño es.
+ *
+ * Es una recreación en bucle: anunciarla cada 19 s sería hostil con un lector.
+ */
+const { barra, dictado } = demo
+---
+
+<div class="hud" aria-live="off">
+  <span class="keycap" aria-hidden="true">{barra.tecla}</span>
+  <span class="hud__status">
+    <span class="st-rec"><i aria-hidden="true"></i>{barra.grabando}</span>
+    <span class="st-pol">
+      {barra.puliendo} <span class="tm">{
+        barra.tiempos.map((t, i) => <span class={i < 4 ? `t${i + 1}` : undefined}>{t}</span>)
+      }</span> {barra.unidad}
+    </span>
+  </span>
+  <span class="wave" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
+  <span class="hud__text">{
+    dictado.map((tramo, i) => (
+      <span class={`s s${i + 1}`}>{tramo.fuera && <span class="f">{tramo.fuera}</span>}{tramo.queda}</span>
+    ))
+  }</span>
+</div>

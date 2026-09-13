@@ -1,0 +1,326 @@
+/**
+ * Fuente única del copy de la landing (MAK-82).
+ *
+ * Todo el texto visible de `/`, `/a/`, `/b/` y `/c/` sale de aquí. El control y
+ * las tres variantes son cuatro composiciones distintas del MISMO texto: si una
+ * variante necesitara reescribir una frase para funcionar, la variante está mal
+ * planteada.
+ *
+ * Reglas al tocar este fichero:
+ * - El texto es de echo-launch y va literal. Ni una coma.
+ * - Los espacios duros van como ` ` dentro de la cadena, no como entidad:
+ *   así el texto es una sola cadena comparable y `scripts/verificar-copy.mjs`
+ *   puede exigirlo literal en las cuatro rutas.
+ * - Donde el control parte una frase en dos elementos (el cierre, el pie de la
+ *   demo), la frase vive aquí entera y partida en trozos contiguos. Ninguna
+ *   composición puede meter nada entre ellos: la comprobación de copy exige la
+ *   frase seguida en el HTML generado.
+ */
+
+/** Micro-texto de interfaz recreada dentro de la demo. No es copy de página. */
+export const demo = {
+  tituloOculto: 'Así se ve',
+  descripcion:
+    'Un dictado con muletillas convertido en un párrafo limpio dentro de un correo. Se mantiene pulsada una tecla, echo transcribe lo dicho con sus muletillas y repeticiones, y al soltarla pega en el correo el mismo texto ya limpio y puntuado.',
+  ventana: {
+    barra: 'Nuevo mensaje',
+    para: { etiqueta: 'Para:', valor: 'equipo@' },
+    asunto: { etiqueta: 'Asunto:', valor: 'Deploy de la semana' },
+    cuerpo: 'Hacemos el deploy del backend en GitHub el jueves y lo comentamos en la daily.',
+  },
+  barra: {
+    tecla: '⌥ espacio',
+    grabando: 'Grabando',
+    puliendo: 'Puliendo',
+    unidad: 's',
+    tiempos: ['0,0', '0,6', '1,2', '1,8', '1,8'],
+  },
+  /** Los cinco tramos del dictado. `fuera` es lo que echo quita (va tachado). */
+  dictado: [
+    { fuera: 'eh… ', queda: '' },
+    { fuera: 'hacemos el deploy, ', queda: 'hacemos el deploy del backend en GitHub ' },
+    { fuera: 'el martes, no, mejor ', queda: 'el jueves, ' },
+    { fuera: 'y eh, ', queda: 'lo comentamos ' },
+    { fuera: '', queda: 'en la daily' },
+  ],
+  /** CA · va literal y SEGUIDO: ninguna composición puede partirlo en dos cajas. */
+  pie: 'Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la beta.',
+} as const
+
+export const cabecera = {
+  marca: 'echo',
+  cta: 'Entrar en la beta privada',
+} as const
+
+export const apertura = {
+  /** Tres tramos: el control mete un salto manual entre ellos a partir de 1024 px. */
+  titular: [
+    'Habla y aparece escrito.',
+    'Sin muletillas, sin dictar la puntuación',
+    'y sin cambiar de idioma.',
+  ],
+  subtitulo:
+    'Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
+  cta: 'Entrar en la beta privada',
+  requisito: {
+    aviso: 'Sin descargable público todavía. Te escribimos cuando abramos tu tanda.',
+    maquina: 'macOS 26 y Apple Silicon.',
+  },
+} as const
+
+export const argumentos = {
+  rotulo: 'Qué hace distinto',
+  lista: [
+    {
+      titulo: 'Limpia el texto, no solo lo transcribe',
+      texto:
+        'Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta («el martes, no, mejor el jueves») y puntúa sola. También adapta el formato a donde estés escribiendo: párrafos y saludo en un correo, texto plano en un editor o una terminal.',
+    },
+    {
+      titulo: 'Español con inglés técnico en medio',
+      texto:
+        '«Hacemos el deploy del backend en GitHub» no se convierte en «depploy del Back and and Get Have». echo usa un modelo multilingüe que detecta el idioma solo y aguanta la mezcla dentro de la misma frase. 25 idiomas europeos.',
+    },
+    {
+      titulo: 'Sin cuotas por minuto',
+      texto:
+        'La transcripción corre en tu Mac, así que no hay servidor que pagar ni minutos que gastar. El pulido lo hace el CLI de Claude Code o el de Codex con tu propia sesión: consume tu cuota, no una nuestra. No te pedimos ninguna API key.',
+    },
+  ],
+} as const
+
+export const pasos = {
+  rotulo: 'Qué pasa cuando sueltas la tecla',
+  lista: [
+    {
+      n: '01',
+      titulo: 'Se transcribe en tu Mac.',
+      /** `dato` es la cifra que el escéptico viene a buscar: sube a tinta plena. */
+      partes: [
+        { dato: true, texto: 'Décimas de segundo.' },
+        { dato: false, texto: ' Modelo local, sin conexión.' },
+      ],
+    },
+    {
+      n: '02',
+      titulo: 'Se pule con tu suscripción.',
+      partes: [
+        { dato: false, texto: 'El texto transcrito pasa por Claude o ChatGPT, con tu sesión. ' },
+        { dato: true, texto: 'De 1,5 a 2,5 segundos.' },
+        {
+          dato: false,
+          texto:
+            ' Puedes dejarlo en «solo cuando haga falta», que es como viene: los dictados que ya salen limpios se pegan al instante.',
+        },
+      ],
+    },
+    {
+      n: '03',
+      titulo: 'Se pega donde estabas.',
+      partes: [
+        {
+          dato: false,
+          texto:
+            'En la app activa, con el formato que le corresponda. Y se queda en el portapapeles por si lo quieres pegar otra vez.',
+        },
+      ],
+    },
+  ],
+} as const
+
+export const comparativa = {
+  titulo: 'El dictado del Mac transcribe. echo escribe.',
+  entradilla:
+    'El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no hace, y son las cuatro razones por las que existe echo.',
+  columnas: { criterio: 'Criterio', macos: 'Dictado de macOS', echo: 'echo' },
+  /** Cuatro filas, y el número no es casual: la entradilla anuncia cuatro. */
+  filas: [
+    {
+      criterio: 'Muletillas y repeticiones',
+      macos: 'Las transcribe tal cual',
+      echo: 'Las quita',
+    },
+    {
+      criterio: 'Puntuación',
+      macos: 'La dictas tú, palabra por palabra',
+      echo: 'La pone sola',
+    },
+    {
+      criterio: 'Idiomas mezclados',
+      macos: 'Un idioma fijo por sesión',
+      echo: 'Detecta y mezcla, 25 idiomas',
+    },
+    {
+      criterio: 'Formato según la app',
+      macos: 'No lo cambia',
+      echo: 'Correo, chat o terminal, distinto',
+    },
+  ],
+  /**
+   * CA-INT-2. Va literal y seguido. Partido en dos porque B compone la segunda
+   * mitad en tinta plena, pero las dos mitades son contiguas en el HTML.
+   */
+  cierre: {
+    concesion: 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él.',
+    afirmacion: 'echo es para cuando dictas párrafos y te cansa editarlos después.',
+  },
+} as const
+
+export const privacidad = {
+  rotulo: 'Qué sale de tu Mac y qué no',
+  /** CA-INT-1 */
+  principal:
+    'Tu voz no sale nunca de tu Mac: la transcripción es local. Si activas el pulido, el texto transcrito —no el audio— se envía a Claude o a ChatGPT con tu propia cuenta, igual que si lo hubieras pegado tú en el chat. Si prefieres que no salga nada, desactiva el pulido: echo sigue funcionando.',
+  notas: [
+    'No tenemos servidores en medio: echo habla con el CLI que ya tienes instalado, no con una API nuestra.',
+    'No guardamos ni enviamos a ninguna parte lo que dictas. El audio solo se guarda en tu disco si tú lo activas para hacer pruebas.',
+  ],
+} as const
+
+export const paraQuien = {
+  rotulo: 'Para quién es',
+  parrafos: [
+    {
+      fuerte: 'Te va a servir si',
+      resto:
+        ' escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas más rápido de lo que tecleas. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
+    },
+    {
+      /** CA-INT-3 */
+      fuerte: 'No te va a servir si',
+      resto:
+        ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
+    },
+  ],
+} as const
+
+export const beta = {
+  titulo: 'Entrar en la beta privada',
+  entradilla:
+    'Vamos abriendo por tandas para poder atender a cada uno. Nos dices en qué lo usarías y te escribimos cuando te toque.',
+  sinEndpoint:
+    'El alta todavía no está operativa: nos falta cerrar el contrato de protección de datos con Formspree, que es quien guardará tu correo. El formulario se puede leer y revisar, pero no envía nada.',
+  email: {
+    etiqueta: 'Tu correo',
+    placeholder: 'tu@correo.com',
+    error: 'Ese correo no parece válido. Revísalo.',
+  },
+  uso: {
+    etiqueta: '¿Para qué lo usarías?',
+    opcional: '(opcional)',
+    placeholder: 'Prompts, correos, notas, documentación…',
+  },
+  sub: {
+    etiqueta: '¿Tienes Claude o ChatGPT de pago?',
+    opcional: '(opcional)',
+    opciones: ['Claude', 'ChatGPT', 'Las dos', 'Ninguna'],
+  },
+  errorEnvio: 'No hemos podido guardar tu correo. Inténtalo otra vez en un momento.',
+  boton: { reposo: 'Apuntarme', enviando: 'Apuntando…' },
+  /** CA-FORM-6 */
+  microcopy:
+    'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar respondiendo a cualquier correo.',
+  legal: {
+    titulo: 'Protección de datos:',
+    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE. UU.) con las garantías que explicamos en la ',
+    enlace: 'política de privacidad',
+    dos: ', donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a ',
+    pendiente: '[correo por definir]',
+    tres: '.',
+  },
+  ok: {
+    uno: 'Apuntado. Te escribimos a ',
+    dos: ' cuando abramos tu tanda.',
+    extra: 'Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.',
+  },
+  duplicado: 'Ya estabas en la lista. Te escribimos cuando abramos tu tanda.',
+} as const
+
+export const preguntas = {
+  rotulo: 'Preguntas',
+  lista: [
+    {
+      p: '¿Necesito pagar Claude?',
+      r: 'Vale Claude Pro o Max, y también ChatGPT Plus. No te pedimos que contrates nada nuevo, sino que lo que ya pagas haga una cosa más. Y si no tienes ninguna de las dos, echo funciona con el pulido desactivado: transcripción local y puntuación por voz.',
+    },
+    {
+      p: '¿Se envía mi voz a algún sitio?',
+      r: 'No. La transcripción es local siempre. Con el pulido activado sale el texto ya transcrito, no el audio, y va a tu propia cuenta de Claude o ChatGPT. Con el pulido desactivado no sale nada.',
+    },
+    {
+      p: '¿En qué se diferencia del dictado que ya trae el Mac?',
+      r: 'El de macOS transcribe literalmente: tus muletillas, y la puntuación la dictas tú. Va a un idioma fijo y no sabe en qué app estás escribiendo. Si dictas frases sueltas, te sobra con él.',
+    },
+    {
+      p: '¿Cuánto tarda?',
+      r: 'La transcripción, décimas de segundo. El pulido, entre 1,5 y 2,5 segundos con Claude. Por defecto solo se pule cuando hace falta, así que la mayoría de los dictados se pegan al instante.',
+    },
+    {
+      p: '¿Y si falla Claude o no tengo conexión?',
+      r: 'Se pega la transcripción en bruto y el menú te dice por qué. No pierdes el dictado.',
+    },
+    {
+      p: '¿Qué Mac necesito?',
+      r: 'macOS 26 (Tahoe) y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
+    },
+    {
+      p: '¿En qué idiomas funciona?',
+      r: '25 idiomas europeos, con detección automática y mezcla dentro de la misma frase.',
+    },
+    {
+      p: '¿Cuánto va a costar?',
+      r: 'Todavía no está decidido. Quien esté en la lista de espera lo sabrá antes que nadie y con condiciones de early-bird.',
+    },
+    {
+      p: '¿Cuándo puedo descargarlo?',
+      r: 'Estamos en beta privada por tandas. No damos fecha porque no la sabemos; te escribimos cuando te toque.',
+    },
+  ],
+} as const
+
+export const pie = {
+  linea: 'echo es una app de Make Algo SL. Dictado para macOS.',
+  avisoLegal: 'Aviso legal',
+  privacidad: 'Privacidad',
+} as const
+
+export const saltar = 'Saltar al contenido'
+
+/**
+ * Micro-texto que SOLO existe en las variantes: rótulos de interfaz que su idea
+ * organizadora necesita y que el control no tiene. No sustituye copy aprobado
+ * en ningún caso; se añade. Listado en la entrega para que lo apruebe
+ * echo-launch.
+ */
+export const variantes = {
+  a: {
+    estados: [
+      { n: '01', nombre: 'Dictando' },
+      { n: '02', nombre: 'Comparando' },
+      { n: '03', nombre: 'Escrito' },
+    ],
+    ladoEscrito: 'Lo que se escribe',
+    ladoDicho: 'Lo que dices',
+    pasadas: 'Misma frase, cuatro pasadas',
+    indice: 'Estado de la página',
+  },
+  b: {
+    ladoDicho: 'Lo que dices',
+    ladoEscrito: 'Lo que se escribe',
+    /**
+     * El titular, dictado en bruto. Es interfaz —el «antes» del producto—, no
+     * una reescritura del titular: el titular aprobado sigue entero al lado.
+     */
+    titularDictado: [
+      { fuera: 'eh… ', queda: 'habla' },
+      { fuera: 's', queda: ' y aparece escrito' },
+      { fuera: ', o sea', queda: ', sin muletillas, ' },
+      { fuera: 'sin tener que ir diciendo coma, punto, ', queda: 'sin dictar la puntuación ' },
+      { fuera: 'y eh, ', queda: 'y sin cambiar de idioma' },
+    ],
+  },
+  c: {
+    cabeceraDocumento: 'echo — dictado para Mac',
+    atajos: { ir: 'g', comparativa: 'c', beta: 'b' },
+  },
+} as const

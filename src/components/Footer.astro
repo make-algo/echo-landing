@@ -1,17 +1,18 @@
 ---
 import { url } from '../lib/site'
+import { pie } from '../content/copy'
 ---
 
 <footer class="footer">
   <div class="wrap">
-    <p>echo es una app de Make Algo SL. Dictado para macOS.</p>
+    <p>{pie.linea}</p>
     <!--
       Cookies no tiene página propia: esta web no usa cookies y la afirmación va
       publicada dentro de la política de privacidad, que es lo acordado en vez
       de una tercera página.
     -->
     <p class="legal">
-      <a href={url('/aviso-legal')}>Aviso legal</a><a href={url('/privacidad')}>Privacidad</a>
+      <a href={url('/aviso-legal')}>{pie.avisoLegal}</a><a href={url('/privacidad')}>{pie.privacidad}</a>
     </p>
   </div>
 </footer>

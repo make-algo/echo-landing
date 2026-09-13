@@ -1,5 +1,6 @@
 ---
 import { absoluteUrl, formEndpoint, url } from '../lib/site'
+import { beta } from '../content/copy'
 
 /**
  * Lista de espera.
@@ -22,6 +23,10 @@ const gracias = absoluteUrl('/gracias')
     action={activo ? formEndpoint : undefined}
     novalidate
     data-activo={activo ? 'si' : 'no'}
+    data-error-correo={beta.email.error}
+    data-boton-reposo={beta.boton.reposo}
+    data-boton-enviando={beta.boton.enviando}
+    data-correo-ejemplo={beta.email.placeholder}
   >
     <!-- Redirección de vuelta para el envío sin JavaScript. -->
     <input type="hidden" name="_next" value={gracias} />
@@ -43,15 +48,13 @@ const gracias = absoluteUrl('/gracias')
     {
       !activo && (
         <p class="notice" id="sin-endpoint" role="status">
-          El alta todavía no está operativa: nos falta cerrar el contrato de protección de datos
-          con Formspree, que es quien guardará tu correo. El formulario se puede leer y revisar,
-          pero no envía nada.
+          {beta.sinEndpoint}
         </p>
       )
     }
 
     <div class="field" id="field-email">
-      <label for="email">Tu correo</label>
+      <label for="email">{beta.email.etiqueta}</label>
       <input
         id="email"
         name="email"
@@ -59,7 +62,7 @@ const gracias = absoluteUrl('/gracias')
         required
         autocomplete="email"
         inputmode="email"
-        placeholder="tu@correo.com"
+        placeholder={beta.email.placeholder}
         aria-describedby="email-error"
       />
       <span class="err" id="email-error" aria-live="polite"></span>
@@ -67,14 +70,14 @@ const gracias = absoluteUrl('/gracias')
 
     <div class="field">
       <label for="uso">
-        ¿Para qué lo usarías? <span class="opt">(opcional)</span>
+        {beta.uso.etiqueta} <span class="opt">{beta.uso.opcional}</span>
       </label>
       <textarea
         id="uso"
         name="uso"
         rows="3"
         maxlength="500"
-        placeholder="Prompts, correos, notas, documentación…"
+        placeholder={beta.uso.placeholder}
         aria-describedby="uso-contador"></textarea>
       <!-- Solo a partir de 400 caracteres: un contador permanente en un campo
            opcional sugiere que hay una longitud esperada. -->
@@ -84,28 +87,31 @@ const gracias = absoluteUrl('/gracias')
 
     <div class="field">
       <label id="sub-label" for="sub-1">
-        ¿Tienes Claude o ChatGPT de pago? <span class="opt">(opcional)</span>
+        {beta.sub.etiqueta} <span class="opt">{beta.sub.opcional}</span>
       </label>
       <div class="radios" role="radiogroup" aria-labelledby="sub-label">
-        <label class="radio"
-          ><input type="radio" id="sub-1" name="sub" value="Claude" />Claude</label
-        >
-        <label class="radio"><input type="radio" name="sub" value="ChatGPT" />ChatGPT</label>
-        <label class="radio"><input type="radio" name="sub" value="Las dos" />Las dos</label>
-        <label class="radio"><input type="radio" name="sub" value="Ninguna" />Ninguna</label>
+        {
+          beta.sub.opciones.map((opcion, i) => (
+            <label class="radio"
+              ><input
+                type="radio"
+                id={i === 0 ? 'sub-1' : undefined}
+                name="sub"
+                value={opcion}
+              />{opcion}</label
+            >
+          ))
+        }
       </div>
     </div>
 
     <div class="alert" id="send-error" role="alert" hidden>
-      No hemos podido guardar tu correo. Inténtalo otra vez en un momento.
+      {beta.errorEnvio}
     </div>
 
-    <button class="btn btn--submit" id="submit" type="submit" disabled={!activo}>Apuntarme</button>
+    <button class="btn btn--submit" id="submit" type="submit" disabled={!activo}>{beta.boton.reposo}</button>
 
-    <p class="microcopy">
-      Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
-      respondiendo a cualquier correo.
-    </p>
+    <p class="microcopy">{beta.microcopy}</p>
   </form>
 
   <!--
@@ -115,24 +121,20 @@ const gracias = absoluteUrl('/gracias')
     dominio propio.
   -->
   <p class="legalnote" id="legalnote">
-    <strong>Protección de datos:</strong> el responsable es Make Algo SL. Usamos tu email solo para
-    avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin
-    newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE.&nbsp;UU.) con las
-    garantías que explicamos en la <a href={url('/privacidad')}>política de privacidad</a>,
-    donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo
-    o escribiendo a <span class="pending">[correo por definir]</span>.
+    <strong>{beta.legal.titulo}</strong>{beta.legal.uno}<a href={url('/privacidad')}
+      >{beta.legal.enlace}</a
+    >{beta.legal.dos}<span class="pending">{beta.legal.pendiente}</span>{beta.legal.tres}
   </p>
 
   <div id="ok" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
     <p>
-      Apuntado. Te escribimos a <span class="mail" id="ok-mail">tu@correo.com</span> cuando abramos tu
-      tanda.
+      {beta.ok.uno}<span class="mail" id="ok-mail">{beta.email.placeholder}</span>{beta.ok.dos}
     </p>
-    <p>Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.</p>
+    <p>{beta.ok.extra}</p>
   </div>
 
   <div id="dup" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
-    <p>Ya estabas en la lista. Te escribimos cuando abramos tu tanda.</p>
+    <p>{beta.duplicado}</p>
   </div>
 </div>
 
@@ -152,6 +154,9 @@ const gracias = absoluteUrl('/gracias')
     const contador = document.getElementById('uso-contador')!
     const submit = document.getElementById('submit') as HTMLButtonElement
     const activo = form.dataset.activo === 'si'
+    // Los textos de estado salen del mismo sitio que el resto del copy: el
+    // marcado los trae en data-*, para no duplicar una frase aprobada en JS.
+    const t = form.dataset as Record<string, string>
 
     type Estado = 'reposo' | 'enviando' | 'error' | 'invalido' | 'exito' | 'duplicado'
 
@@ -168,17 +173,17 @@ const gracias = absoluteUrl('/gracias')
       const malCorreo = s === 'invalido'
       fieldEmail.classList.toggle('field--bad', malCorreo)
       email.setAttribute('aria-invalid', String(malCorreo))
-      emailError.textContent = malCorreo ? 'Ese correo no parece válido. Revísalo.' : ''
+      emailError.textContent = malCorreo ? t.errorCorreo : ''
 
       // Pulsar dos veces no envía dos veces.
       submit.disabled = s === 'enviando' || !activo
-      submit.textContent = s === 'enviando' ? 'Apuntando…' : 'Apuntarme'
+      submit.textContent = s === 'enviando' ? t.botonEnviando : t.botonReposo
       form!.setAttribute('aria-busy', String(s === 'enviando'))
 
       // El bloque recibe el foco para que el lector lo lea y el teclado no se
       // quede en un botón que ya no existe.
       if (s === 'exito') {
-        document.getElementById('ok-mail')!.textContent = email.value.trim() || 'tu@correo.com'
+        document.getElementById('ok-mail')!.textContent = email.value.trim() || t.correoEjemplo
         ;(ok as HTMLElement).focus()
       }
       if (s === 'duplicado') (dup as HTMLElement).focus()

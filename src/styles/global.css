@@ -574,7 +574,7 @@
    recálculo de diseño.
    ========================================================================= */
 @media (prefers-reduced-motion: no-preference) {
-  .demo__media * {
+  .demo-anim * {
     animation-duration: var(--demo-cycle);
     animation-iteration-count: infinite;
     animation-timing-function: linear;

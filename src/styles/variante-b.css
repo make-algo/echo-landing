@@ -1,0 +1,189 @@
+/* ============================================================================
+   Variante B — SUCIO CONTRA LIMPIO COMO IDENTIDAD
+   El contraste que en el control ocurre una sola vez dentro de la demo se
+   convierte en el sistema de toda la página: está plegada por la mitad, a la
+   izquierda lo que dices y a la derecha lo que se escribe. Todo aparece dos
+   veces, así que se entiende el producto antes de leerlo.
+
+   Todo cuelga de `.ruta-b`. `src/styles/tokens.css` es del control y no se toca.
+   ========================================================================= */
+
+:root {
+  --b-pad: clamp(1.25rem, 2.4vw, 2.5rem);
+}
+
+.ruta-b {
+  --b-dirty: #e9e4da; /* mitad izquierda                                   */
+  --b-clean: #fdfcfa; /* mitad derecha                                     */
+  --b-accent: #8a3a1c; /* óxido: 9,6:1 / clean. Solo vive en lo limpio.    */
+
+  background: var(--b-clean);
+
+  /* El óxido es el color que queda cuando el petróleo del control se descarta
+     por ser el acento por defecto de cualquier producto software, y deja el
+     rojo libre para «Grabando», que es la regla que no se rompe. */
+  --color-accent: var(--b-accent);
+  --color-accent-strong: #6e2d14;
+  --color-accent-wash: #f1e2d9;
+  --color-line: #d6cfc3;
+  --color-ink-3: #5e584f;
+}
+
+/* --- EL PLIEGUE ---------------------------------------------------------
+   48/52 y no 50/50: un 50/50 se lee como un empate y aquí no lo hay, la mitad
+   limpia es más ancha y la página resuelve hacia la derecha.
+   El fondo es UNA sola pieza en el contenedor del tramo, no un fondo por
+   bloque: tiene que ser una línea de luz que recorre la página entera, sin
+   costuras horizontales, con secciones de altura desigual. */
+.ruta-b .folded {
+  background: linear-gradient(90deg, var(--b-dirty) 0 48%, var(--b-clean) 48% 100%);
+}
+
+/* No hay regla en el pliegue: el cambio de papel es todo el borde que hace
+   falta. Una línea de 1 px ahí lo convertiría en una tabla. */
+.ruta-b .fold {
+  display: grid;
+  grid-template-columns: 48fr 52fr;
+  align-items: start;
+}
+.ruta-b .fold > .l,
+.ruta-b .fold > .r {
+  padding: var(--b-pad);
+  min-width: 0;
+}
+
+/* Dentro del pliegue no hay contenedor centrado: el eje es el propio pliegue.
+   Fuera de él —las secciones heredadas— el contenedor del control sigue tal
+   cual: ese cambio de eje ES la costura, el punto en el que la página se
+   despliega y vuelve a ser el control. */
+.ruta-b .folded .wrap,
+.ruta-b .alone .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* La cabecera es la del control, pero en B se alinea con el pliegue: dejarla
+   centrada la haría flotar sobre el borde de la mitad sucia y se leería como un
+   descuadre, no como una decisión. */
+body:has(.ruta-b) .top .wrap {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: var(--b-pad);
+}
+.ruta-b .fold .section {
+  padding-block: clamp(2rem, 4vw, 3rem);
+}
+
+/* La izquierda habla en monoespaciada y se tacha; la derecha está compuesta.
+   No es decoración: es exactamente lo que el producto hace con tu texto. */
+.ruta-b .l,
+.ruta-b .l p {
+  font: 400 var(--text-small) / 1.7 var(--font-mono);
+  color: var(--color-ink-2);
+}
+.ruta-b .l s {
+  text-decoration-thickness: 1px;
+}
+.ruta-b .tag {
+  display: block;
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--color-ink-3);
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+}
+
+.ruta-b .b-lead {
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  color: var(--color-ink-2);
+  max-width: 48ch;
+  margin-top: 1.25rem;
+}
+.ruta-b .b-req {
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--color-ink-3);
+  margin-top: 1rem;
+}
+.ruta-b .b-cta {
+  margin-top: 1.5rem;
+}
+.ruta-b h1 {
+  font-size: clamp(1.875rem, 1.1rem + 2.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.024em;
+}
+
+/* La demo se sienta a caballo del pliegue: la barra de echo cae en la mitad
+   sucia y la ventana de la app en la limpia. Así la demo no es un ejemplo de
+   la página, es su diagrama. */
+.ruta-b .hud {
+  border-radius: 8px;
+}
+.ruta-b .win {
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  gap: 8px;
+}
+
+/* --- Comparativa: sin tabla. Cada criterio cruza el pliegue de lado a lado y
+       debajo cae el par. Que macOS caiga siempre en la mitad sucia no es un
+       apaño: es el sistema funcionando. ------------------------------------ */
+.ruta-b .row-attr {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--color-line);
+  padding: 1.25rem var(--b-pad) 0.25rem;
+  font: 400 var(--text-micro) / 1.45 var(--font-mono);
+  color: var(--color-ink-3);
+}
+.ruta-b .cell-os {
+  font: 400 var(--text-body) / 1.6 var(--font-mono);
+  color: var(--color-ink-2);
+}
+.ruta-b .cell-echo {
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+/* --- Cierre: la columna sucia se acaba y la limpia sigue sola. El argumento
+       convertido en composición: lo sucio deja de existir. ----------------- */
+.ruta-b .alone {
+  background: var(--b-clean);
+  padding: clamp(2.5rem, 5vw, 4.5rem) var(--b-pad);
+}
+.ruta-b .close {
+  font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+  max-width: 34ch;
+  color: var(--color-ink-2);
+}
+.ruta-b .close .plena {
+  color: var(--color-ink);
+}
+
+@media (max-width: 819px) {
+  /* El pliegue se pone de pie: sucio arriba, limpio debajo, par a par. Se
+     pierde la simultaneidad, que es inevitable en 390 px; la mono y el tachado
+     siguen haciendo el trabajo que hacían las columnas. */
+  .ruta-b .folded {
+    background: none;
+  }
+  .ruta-b .fold {
+    grid-template-columns: 1fr;
+  }
+  .ruta-b .fold > .l {
+    background: var(--b-dirty);
+  }
+  .ruta-b .fold > .r {
+    background: var(--b-clean);
+  }
+  .ruta-b .fold > .l:empty {
+    display: none;
+  }
+  .ruta-b .row-attr {
+    background: var(--b-dirty);
+    padding-bottom: 0.75rem;
+  }
+}
