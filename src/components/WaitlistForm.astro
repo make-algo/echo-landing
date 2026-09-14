@@ -1,275 +1,66 @@
 ---
-import { absoluteUrl, formEndpoint, url } from '../lib/site'
+import { url } from '../lib/site'
 import { beta } from '../content/copy'
 
 /**
  * Lista de espera.
  *
- * Es un <form method="POST"> nativo: sin JavaScript el envío va al proveedor y
- * este redirige a /gracias, que repite el bloque de éxito. Con JavaScript se
- * intercepta y el estado se pinta en su sitio sin recargar.
- *
- * El destino vive en PUBLIC_FORM_ENDPOINT. Sin endpoint el formulario NO finge:
- * avisa de que el alta no está operativa todavía y no deja enviar.
+ * No hay formulario ni backend propio: el botón es un enlace `mailto:` que
+ * abre el cliente de correo del visitante con el asunto y las dos preguntas
+ * ya escritas en el cuerpo. El envío lo hace su propio cliente de correo,
+ * esta página no guarda ni transmite nada.
  */
 interface Props {
   /**
    * Clase extra del bloque, para que cada variante lleve el alta a SU sistema
    * sin duplicar ni la lógica ni una sola palabra del texto legal. Lo que
-   * cambia es la piel; los campos, los estados y la redacción de protección de
-   * datos son los mismos en las cuatro rutas.
+   * cambia es la piel; el destino y la redacción de protección de datos son
+   * los mismos en las cuatro rutas.
    */
   clase?: string
 }
 
 const { clase = '' } = Astro.props
-const activo = formEndpoint !== ''
-const gracias = absoluteUrl('/gracias')
+
+const destino = 'info.makealgo@gmail.com'
+const asunto = 'Alta en la lista de espera de echo'
+const cuerpo = [
+  beta.uso.etiqueta,
+  '',
+  '',
+  `${beta.sub.etiqueta} (${beta.sub.opciones.join(' / ')})`,
+  '',
+  '',
+].join('\n')
+const mailto = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`
 ---
 
 <div class:list={['beta__body', clase]}>
-  <form
-    id="waitlist"
-    method="POST"
-    action={activo ? formEndpoint : undefined}
-    novalidate
-    data-activo={activo ? 'si' : 'no'}
-    data-error-correo={beta.email.error}
-    data-boton-reposo={beta.boton.reposo}
-    data-boton-enviando={beta.boton.enviando}
-    data-correo-ejemplo={beta.email.placeholder}
-  >
-    <!-- Redirección de vuelta para el envío sin JavaScript. -->
-    <input type="hidden" name="_next" value={gracias} />
-    <input type="hidden" name="_subject" value="Alta en la lista de espera de echo" />
-
-    <!--
-      Honeypot: fuera de pantalla, sin foco por teclado y oculto al lector. No se
-      usa display:none, que algunos rellenadores detectan. El nombre _gotcha es el
-      campo nativo de Formspree; la convención bot-field de Netlify no la mira
-      nadie aquí, así que con ella el antispam sería decorativo.
-    -->
-    <p class="hp" aria-hidden="true">
-      <label>
-        No rellenar
-        <input tabindex="-1" autocomplete="off" name="_gotcha" />
-      </label>
-    </p>
-
-    {
-      !activo && (
-        <p class="notice" id="sin-endpoint" role="status">
-          {beta.sinEndpoint}
-        </p>
-      )
-    }
-
-    <div class="field" id="field-email">
-      <label for="email">{beta.email.etiqueta}</label>
-      <div class="control">
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autocomplete="email"
-          inputmode="email"
-          placeholder={beta.email.placeholder}
-          aria-describedby="email-error"
-        />
-      </div>
-      <span class="err" id="email-error" aria-live="polite"></span>
-    </div>
-
-    <div class="field">
-      <label for="uso">
-        {beta.uso.etiqueta} <span class="opt">{beta.uso.opcional}</span>
-      </label>
-      <div class="control">
-        <textarea
-          id="uso"
-          name="uso"
-          rows="3"
-          maxlength="500"
-          placeholder={beta.uso.placeholder}
-          aria-describedby="uso-contador"></textarea>
-      </div>
-      <!-- Solo a partir de 400 caracteres: un contador permanente en un campo
-           opcional sugiere que hay una longitud esperada. -->
-      <span class="err" id="uso-contador" aria-live="polite" style="color: var(--color-ink-3)"
-      ></span>
-    </div>
-
-    <div class="field">
-      <label id="sub-label" for="sub-1">
-        {beta.sub.etiqueta} <span class="opt">{beta.sub.opcional}</span>
-      </label>
-      <div class="radios" role="radiogroup" aria-labelledby="sub-label">
-        {
-          beta.sub.opciones.map((opcion, i) => (
-            <label class="radio"
-              ><input
-                type="radio"
-                id={i === 0 ? 'sub-1' : undefined}
-                name="sub"
-                value={opcion}
-              />{opcion}</label
-            >
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="alert" id="send-error" role="alert" hidden>
-      {beta.errorEnvio}
-    </div>
-
-    <button class="btn btn--submit" id="submit" type="submit" disabled={!activo}>{beta.boton.reposo}</button>
+  <div class="beta__cta">
+    <a class="btn btn--submit" href={mailto}>{beta.boton}</a>
 
     <p class="microcopy">{beta.microcopy}</p>
-  </form>
 
-  <!--
-    Texto legal de protección de datos, visible junto al botón y no tras un
-    enlace: es lo que hace que no haga falta checkbox de consentimiento.
-    No se reescribe. Los huecos los rellena un humano antes de publicar en
-    dominio propio.
-  -->
-  <p class="legalnote fila-med" id="legalnote">
-    <strong>{beta.legal.titulo}</strong>{beta.legal.uno}<a href={url('/privacidad')}
-      >{beta.legal.enlace}</a
-    >{beta.legal.dos}<span class="pending">{beta.legal.pendiente}</span>{beta.legal.tres}
-  </p>
+    <!--
+      Texto legal de protección de datos, visible junto al botón y no tras un
+      enlace: es lo que hace que no haga falta checkbox de consentimiento.
+      No se reescribe. Los huecos los rellena un humano antes de publicar en
+      dominio propio.
 
-  <div id="ok" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
-    <p>
-      {beta.ok.uno}<span class="mail" id="ok-mail">{beta.email.placeholder}</span>{beta.ok.dos}
+      TODO: pendiente de revisión legal (ver issue de asesor-legal) — sigue
+      mencionando a Formspree como encargado del tratamiento, y ya no hay
+      formulario ni proveedor de por medio: es un mailto directo al buzón de
+      Make Algo.
+    -->
+    <p class="legalnote" id="legalnote">
+      <strong>{beta.legal.titulo}</strong>{beta.legal.uno}<a href={url('/privacidad')}
+        >{beta.legal.enlace}</a
+      >{beta.legal.dos}<span class="pending">{beta.legal.pendiente}</span>{beta.legal.tres}
     </p>
-    <p>{beta.ok.extra}</p>
-  </div>
 
-  <div id="dup" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
-    <p>{beta.duplicado}</p>
+    <div class="done">
+      <p>{beta.ok.texto}</p>
+      <p>{beta.ok.extra}</p>
+    </div>
   </div>
 </div>
-
-<script>
-  // Mejora progresiva: sin este script el formulario sigue siendo un POST nativo
-  // que el proveedor redirige a /gracias.
-  const form = document.getElementById('waitlist') as HTMLFormElement | null
-  if (form) {
-    const ok = document.getElementById('ok')!
-    const dup = document.getElementById('dup')!
-    const sendError = document.getElementById('send-error')!
-    const emailError = document.getElementById('email-error')!
-    const fieldEmail = document.getElementById('field-email')!
-    const legalnote = document.getElementById('legalnote')!
-    const email = document.getElementById('email') as HTMLInputElement
-    const uso = document.getElementById('uso') as HTMLTextAreaElement
-    const contador = document.getElementById('uso-contador')!
-    const submit = document.getElementById('submit') as HTMLButtonElement
-    const activo = form.dataset.activo === 'si'
-    // Los textos de estado salen del mismo sitio que el resto del copy: el
-    // marcado los trae en data-*, para no duplicar una frase aprobada en JS.
-    const t = form.dataset as Record<string, string>
-
-    type Estado = 'reposo' | 'enviando' | 'error' | 'invalido' | 'exito' | 'duplicado'
-
-    function estado(s: Estado) {
-      const terminado = s === 'exito' || s === 'duplicado'
-      form!.hidden = terminado
-      // Cuando el formulario ya no está, la letra legal tampoco: informa de un
-      // tratamiento que el visitante ya ha consentido.
-      legalnote.hidden = terminado
-      ok.hidden = s !== 'exito'
-      dup.hidden = s !== 'duplicado'
-      sendError.hidden = s !== 'error'
-
-      const malCorreo = s === 'invalido'
-      fieldEmail.classList.toggle('field--bad', malCorreo)
-      email.setAttribute('aria-invalid', String(malCorreo))
-      emailError.textContent = malCorreo ? t.errorCorreo : ''
-
-      // Pulsar dos veces no envía dos veces.
-      submit.disabled = s === 'enviando' || !activo
-      submit.textContent = s === 'enviando' ? t.botonEnviando : t.botonReposo
-      form!.setAttribute('aria-busy', String(s === 'enviando'))
-
-      // El bloque recibe el foco para que el lector lo lea y el teclado no se
-      // quede en un botón que ya no existe.
-      if (s === 'exito') {
-        document.getElementById('ok-mail')!.textContent = email.value.trim() || t.correoEjemplo
-        ;(ok as HTMLElement).focus()
-      }
-      if (s === 'duplicado') (dup as HTMLElement).focus()
-    }
-
-    const valido = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
-    let intentado = false
-
-    // El contador solo aparece a partir de 400 caracteres.
-    uso.addEventListener('input', () => {
-      const quedan = 500 - uso.value.length
-      contador.textContent = uso.value.length >= 400 ? `Quedan ${quedan} caracteres` : ''
-    })
-
-    // El formato no se valida mientras se escribe por primera vez: solo al
-    // enviar o al salir del campo después de un intento fallido.
-    email.addEventListener('blur', () => {
-      if (!intentado) return
-      const v = email.value.trim()
-      if (v && !valido(v)) estado('invalido')
-    })
-
-    form.addEventListener('submit', async (e) => {
-      intentado = true
-      const v = email.value.trim()
-
-      if (!valido(v)) {
-        e.preventDefault()
-        estado('invalido')
-        email.focus()
-        return
-      }
-
-      // Los espacios al principio y al final se recortan antes de enviar.
-      email.value = v
-
-      // Sin endpoint no hay envío que interceptar: el botón ya está
-      // deshabilitado. Nunca se pinta un falso «apuntado».
-      if (!activo) {
-        e.preventDefault()
-        return
-      }
-
-      e.preventDefault()
-      estado('enviando')
-
-      try {
-        const respuesta = await fetch(form!.action, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form!),
-        })
-
-        // 409 es el duplicado en los proveedores que lo distinguen. Para el
-        // visitante no ha pasado nada malo: ya está dentro.
-        if (respuesta.status === 409) estado('duplicado')
-        else if (respuesta.ok) estado('exito')
-        else estado('error')
-      } catch {
-        estado('error')
-      }
-    })
-
-    // Afordancia de revisión: ?estado=exito|duplicado|error|invalido|enviando
-    // pinta cada estado sin necesidad de un endpoint vivo, para poder revisarlos
-    // uno a uno en la versión de prueba. No afecta a un visitante normal.
-    const pedido = new URLSearchParams(location.search).get('estado')
-    const revisables = ['reposo', 'enviando', 'error', 'invalido', 'exito', 'duplicado']
-    if (pedido && revisables.includes(pedido)) {
-      if (!email.value) email.value = 'ana.martinez@estudio.dev'
-      estado(pedido as Estado)
-    }
-  }
-</script>

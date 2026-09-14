@@ -191,43 +191,31 @@ export const paraQuien = {
 export const beta = {
   titulo: 'Entrar en la beta privada',
   entradilla:
-    'Vamos abriendo por tandas para poder atender a cada uno. Nos dices en qué lo usarías y te escribimos cuando te toque.',
-  sinEndpoint:
-    'El alta todavía no está operativa: nos falta cerrar el contrato de protección de datos con Formspree, que es quien guardará tu correo. El formulario se puede leer y revisar, pero no envía nada.',
-  email: {
-    etiqueta: 'Tu correo',
-    placeholder: 'tu@correo.com',
-    error: 'Ese correo no parece válido. Revísalo.',
-  },
+    'Vamos abriendo por tandas para poder atender a cada uno. Escríbenos y cuéntanos en qué lo usarías; te avisamos cuando te toque.',
   uso: {
     etiqueta: '¿Para qué lo usarías?',
-    opcional: '(opcional)',
-    placeholder: 'Prompts, correos, notas, documentación…',
   },
   sub: {
     etiqueta: '¿Tienes Claude o ChatGPT de pago?',
-    opcional: '(opcional)',
     opciones: ['Claude', 'ChatGPT', 'Las dos', 'Ninguna'],
   },
-  errorEnvio: 'No hemos podido guardar tu correo. Inténtalo otra vez en un momento.',
-  boton: { reposo: 'Apuntarme', enviando: 'Apuntando…' },
+  boton: 'Escríbenos por email',
   /** CA-FORM-6 */
   microcopy:
     'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar respondiendo a cualquier correo.',
   legal: {
     titulo: 'Protección de datos:',
-    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE. UU.) con las garantías que explicamos en la ',
+    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE. UU.) con las garantías que explicamos en la ',
     enlace: 'política de privacidad',
     dos: ', donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a ',
     pendiente: '[correo por definir]',
     tres: '.',
   },
   ok: {
-    uno: 'Apuntado. Te escribimos a ',
-    dos: ' cuando abramos tu tanda.',
+    texto:
+      'Se abre tu programa de correo con el asunto y las preguntas ya escritas: rellénalas y dale a enviar.',
     extra: 'Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.',
   },
-  duplicado: 'Ya estabas en la lista. Te escribimos cuando abramos tu tanda.',
 } as const
 
 export const preguntas = {
