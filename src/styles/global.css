@@ -2,11 +2,13 @@
 @import "./tokens.css";
 
 /* ============================================================================
-   echo — landing
+   echo — base compartida por todas las páginas.
    Los tokens viven en tokens.css y se importan tal cual: aquí no se inventa
    ningún valor. Lo que sigue son las clases de componente que no se pueden
-   expresar con utilidades sueltas (la demo animada, la tabla que se vuelve
-   pares etiqueta/valor y los estados del formulario).
+   expresar con utilidades sueltas: la ventana de correo de la demo (compartida
+   por la landing), los estados del formulario de alta y las páginas de texto
+   (legales, gracias, 404). La piel propia de la landing en corrección vive en
+   `correccion.css`.
    ========================================================================= */
 
 @layer base {
@@ -63,31 +65,12 @@
     padding-inline: var(--gutter);
   }
 
-  /* --- La retícula ------------------------------------------------------
-     Doce columnas, un canal, DOS ejes. Antes no había retícula: cada sección
-     inventaba su proporción (15rem, 5fr/7fr, 6fr/5fr, 1fr/1fr, 7fr/5fr,
-     tres tercios) y la página tenía nueve arranques distintos leyéndola de
-     arriba abajo. Ahora todo bloque empieza en el eje A (línea 1) o en el
-     eje B (línea 6), y una columna de prosa mide siete columnas en los dos
-     casos. Quién se apoya en ella está declarado en un único sitio, al final
-     de esta hoja («Los bloques que van sobre la retícula»). Si una sección
-     nueva necesita dos columnas, se añade ahí; no se inventa una nueva
-     proporción. */
-
-  /* La ÚNICA banda de la página es la de conversión. Cuatro alternancias con
-     dos beiges casi idénticos no se leían como estructura. */
-  .band { background: var(--color-paper-sunk); }
-  .ruled { border-top: 1px solid var(--color-line); }
   .section { padding-block: var(--space-section); }
 
   h1 {
     font-size: var(--text-display); line-height: 1.08;
     letter-spacing: -0.022em; font-weight: 600; text-wrap: balance;
   }
-
-  /* Los saltos del titular se deciden a mano a partir de 1024 px: en columna
-     estrecha salían cinco líneas dentadas con «Sin» colgando al final de una. */
-  .wide { display: none; }
 
   h2 {
     font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.016em;
@@ -175,39 +158,9 @@
   .btn[disabled]:hover { background: var(--color-ink-3); }
   .btn--submit { margin-top: 4px; }
 
-  /* --- Primer viewport: hero + demo ------------------------------------- */
-  .first { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(3rem, 2rem + 3vw, 4rem); }
-  .first__grid { display: grid; gap: 32px; }
-  .hero__sub { max-width: 30rem; }
-  @media (max-width: 1023px) {
-    .hero__sub { font-size: var(--text-body); line-height: 1.55; text-wrap: initial; }
-  }
-  .hero__cta { margin-top: 32px; }
-  .hero__req {
-    margin-top: 16px; font-size: var(--text-small); line-height: 1.5;
-    color: var(--color-ink-3); max-width: 26rem; text-wrap: balance;
-  }
-  .hero__req .sep { display: none; }
-  @media (min-width: 380px) {
-    .hero__req .br { display: none; }
-    .hero__req .sep { display: inline; }
-  }
-
-  /* --- Demo -------------------------------------------------------------
-     Un objeto único: ventana y barra dentro de un mismo marco, con un solo
-     borde y un solo radio. Sin sombra: la sombra difusa era el tic de
-     «captura bonita» y no separaba nada que el borde no separe mejor.
-     El contenedor reserva la altura, así que sustituir su contenido por un
-     <video> con la misma proporción no mueve un píxel del resto. */
-  .demo { margin: 0; }
-  .demo__media {
-    display: flex; flex-direction: column; container-type: inline-size;
-    border: 1px solid var(--color-line); border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-  .demo__foot { margin-top: 16px; }
-  .demo__caption { font-size: var(--text-small); line-height: 1.5; color: var(--color-ink-2); }
-
+  /* --- La ventana de correo de la demo. Sin sombra: la sombra difusa era el
+     tic de «captura bonita» y no separaba nada que un borde o un filete no
+     separen mejor. Cada composición decide cómo la enmarca. */
   .win {
     flex: 1; background: var(--color-paper-raised); padding: 18px 20px;
     display: flex; flex-direction: column; gap: 8px;
@@ -236,214 +189,8 @@
   }
   .caret--start { display: none; margin-left: 0; }
 
-  .hud {
-    background: var(--color-hud); padding: 14px 18px; display: flex;
-    flex-wrap: wrap; align-items: center; gap: 10px 14px; color: var(--color-hud-ink);
-  }
-  .keycap {
-    flex: none; font: 500 var(--text-micro) / 1 var(--font-mono);
-    color: var(--color-hud-ink); background: none; border: 1px solid #4a443a;
-    border-radius: var(--radius-xs); padding: 6px 8px;
-  }
-  .hud__status { flex: none; display: grid; min-width: 9ch; }
-  .hud__status > span {
-    grid-area: 1 / 1; display: flex; align-items: center; gap: 6px;
-    font-size: var(--text-micro); white-space: nowrap;
-  }
-  .st-rec { color: var(--color-hud-rec); opacity: 0; }
-  .st-rec i {
-    width: 8px; height: 8px; border-radius: var(--radius-pill);
-    background: var(--color-hud-rec); display: block;
-  }
-  .st-pol { color: var(--color-hud-ink-2); opacity: 0; }
-
-  /* La onda es tinta clara, no un color propio: el único estado que el color
-     señala en esta barra es «Grabando», y va siempre con su palabra. */
-  .wave {
-    flex: none; display: flex; align-items: center; gap: 3px;
-    height: 18px; transform: scaleY(0.08); opacity: 0;
-  }
-  .wave b {
-    display: block; width: 3px; height: 100%;
-    border-radius: 2px; background: var(--color-hud-ink-2);
-  }
-  .hud__text {
-    flex: 1 0 100%; min-width: 0;
-    font: 400 var(--text-small) / 1.55 var(--font-mono); color: var(--color-hud-ink);
-  }
-
-  /* El «antes» se distingue por el tachado y por el brillo del texto limpio,
-     NO bajándole la opacidad: a media opacidad daba ~2,6:1 sobre la barra
-     oscura, y es la mitad del argumento del producto. */
-  .hud__text .f {
-    text-decoration: line-through;
-    text-decoration-color: var(--color-hud-ink-2);
-  }
-
-  .tm { display: inline-grid; min-width: 3.2ch; }
-  .tm span { grid-area: 1 / 1; opacity: 0; }
-  .tm span:last-child { opacity: 1; }
-
-  @media (min-width: 640px) { .demo__media { aspect-ratio: 16 / 11; } }
   @media (max-width: 639px) {
-    .demo__media { min-height: 380px; }
-    .wave b:nth-child(n + 6) { display: none; }
     .win__field--to { display: none; }
-  }
-
-  /* --- Argumentos: lista apilada, no tres tarjetas iguales -------------- */
-  .args { display: grid; gap: 48px; }
-  .arg h3 { margin-bottom: 8px; }
-  .arg p { color: var(--color-ink-2); max-width: var(--container-measure); font-size: var(--text-body); }
-  @media (min-width: 768px) {
-    .arg h3 {
-      grid-column: 1 / 6; margin-bottom: 0; font-size: 1.625rem;
-      line-height: 1.2; letter-spacing: -0.018em;
-    }
-    .arg p { grid-column: 6 / -1; max-width: none; }
-  }
-
-  /* --- Pasos: tres tiempos, no tres columnas ---------------------------
-     Los tres tramos de copy pesan muy distinto: el 02 tiene seis veces el
-     texto del 01. Puestos en tres columnas iguales, la retícula prometía una
-     simetría que el texto no cumple y el resultado era el de tres tarjetas
-     con los pies descuadrados. Aquí cada tiempo es una FILA de la retícula
-     de la página: el título en el eje A, la prosa en el eje B. La carga
-     desigual se convierte en filas de altura desigual, que es lo que una
-     secuencia de tres tiempos es de verdad. Las reglas finas los encadenan
-     en el orden en que ocurren.
-     El ordinal (01/02/03) se quitó (MAK-83): un crítico externo lo señaló
-     como firma de página generada, y el rótulo de la sección —«Qué pasa
-     cuando sueltas la tecla»— ya declara que esto es una secuencia; los tres
-     verbos reflejos encadenados («se transcribe» → «se pule» → «se pega»)
-     hacen el resto. El eje A se queda solo con el título: no necesita un
-     ancla añadida, la necesita un poco más de peso, porque ahora es lo único
-     que hay en su columna y tiene que sostenerla él solo. Sube un escalón,
-     de `text-body` a `text-h3` — el mismo tamaño que ya usan los títulos de
-     «Qué hace distinto» dos secciones más arriba, así que no es un tamaño
-     nuevo en la página. */
-  .steps { list-style: none; padding: 0; display: grid; gap: 0; }
-  /* Los filetes van SOLO entre tiempos. Cerrada por arriba y por abajo, la
-     sección se veía igual que el acordeón de preguntas del final: mismo
-     componente para argumentar y para responder. Abierta se lee como una
-     secuencia, que es lo que es. */
-  .steps li { padding: 24px 0; }
-  .steps li + li { border-top: 1px solid var(--color-line); }
-  .steps h3 { font-size: var(--text-body); font-weight: 600; }
-  .steps p {
-    color: var(--color-ink-2); margin-top: 6px;
-    font-size: var(--text-small); max-width: var(--container-measure);
-  }
-  /* Los tiempos suben a tinta plena: es el dato que el escéptico viene a
-     buscar. Sin el salto de grosor, que en mitad de un párrafo se leía como
-     una negrita suelta y no como una cifra. */
-  .steps .t { color: var(--color-ink); }
-  @media (min-width: 768px) {
-    .steps li { padding: 26px 0; }
-    .steps h3 { grid-column: 1 / 6; font-size: var(--text-h3); }
-    .steps p { grid-column: 6 / -1; margin-top: 0; max-width: none; }
-  }
-
-  /* --- Comparativa ------------------------------------------------------ */
-  .cmp { margin-top: clamp(2rem, 1.4rem + 2.5vw, 3rem); }
-  table { border-collapse: collapse; width: 100%; text-align: left; table-layout: fixed; }
-  /* La quiebra principal de la tabla —criterio | datos— cae en el eje B, como
-     cualquier otro par de la página. 43,1 % del ancho de contenido son las
-     cinco primeras columnas de la retícula más su calle. */
-  col.c-attr { width: 43.1%; }
-  col.c-os { width: 28.45%; }
-  col.c-echo { width: 28.45%; }
-  thead th, thead td {
-    font-size: var(--text-h3); font-weight: 600; color: var(--color-ink);
-    padding: 0 var(--grid-gap) 12px 0; border-bottom: 1px solid var(--color-ink);
-    vertical-align: bottom;
-  }
-  tbody th {
-    font-weight: 400; color: var(--color-ink-2); padding: 16px var(--grid-gap) 16px 0;
-    vertical-align: top; border-bottom: 1px solid var(--color-line);
-  }
-  tbody td {
-    color: var(--color-ink-2); padding: 16px var(--grid-gap) 16px 0;
-    vertical-align: top; border-bottom: 1px solid var(--color-line);
-  }
-  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
-  /* La columna «echo» no lleva fondo ni marcas de verificación: una tabla en
-     la que la columna propia está resaltada se lee como publicidad. */
-  .t-echo { color: var(--color-ink); font-weight: 500; }
-  .col-label { display: none; }
-
-  /* El cierre honesto es lo que compra la credibilidad de la tabla de
-     arriba, así que es lo más destacado de su sección. */
-  .closer {
-    margin-top: clamp(2rem, 1.4rem + 2.5vw, 3rem);
-    border-top: 1px solid var(--color-ink); padding-top: 24px;
-    font-size: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
-    line-height: 1.35; letter-spacing: -0.012em; color: var(--color-ink);
-  }
-  .closer span { display: block; max-width: var(--container-measure); text-wrap: pretty; }
-
-  /* Por debajo de 640 px la tabla pasa a pares etiqueta/valor. Los roles
-     explícitos del marcado sobreviven al cambio de `display`, que en Chrome y
-     Safari se lleva por delante la semántica de tabla. */
-  @media (max-width: 639px) {
-    table, thead, tbody, tr, th, td, colgroup, col { display: block; }
-    colgroup { display: none; }
-    thead { display: none; }
-    tbody tr {
-      display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px;
-      border-bottom: 1px solid var(--color-line); padding-block: 18px;
-    }
-    tbody th {
-      grid-column: 1 / -1; padding: 0 0 10px; font-size: var(--text-body);
-      font-weight: 600; color: var(--color-ink); border-bottom: 0;
-    }
-    tbody td { padding: 0; border-bottom: 0; }
-    .col-label {
-      display: block; font: 400 var(--text-micro) / 1.4 var(--font-mono);
-      color: var(--color-ink-3); margin-bottom: 2px;
-    }
-  }
-
-  /* --- Privacidad -------------------------------------------------------
-     Se lee como una explicación, no como un sello: ni una negrita, ni un
-     icono, ni una caja. */
-  .priv { display: grid; gap: 24px; }
-  .priv__main {
-    font-size: var(--text-lead); line-height: 1.5;
-    color: var(--color-ink); max-width: var(--container-measure);
-  }
-  .priv__notes {
-    display: grid; gap: 16px; color: var(--color-ink-2);
-    font-size: var(--text-body); max-width: var(--container-measure);
-  }
-  /* El eje B es SIEMPRE la segunda columna de un par; nada cuelga de él solo.
-     Las notas probaron a ir ahí y se leían como un sangrado sin causa, con un
-     hueco de media página a su izquierda. Van en el eje A, debajo, separadas
-     por el filete de la retícula: subordinadas por orden y por cuerpo, que es
-     como se subordina un texto. */
-  @media (min-width: 768px) {
-    .priv { row-gap: 0; }
-    .priv__main { grid-column: 1 / 8; max-width: none; }
-    .priv__notes {
-      max-width: none; border-top: 1px solid var(--color-line);
-      margin-top: 28px; padding-top: 28px;
-    }
-  }
-  @media (min-width: 1024px) {
-    .priv__main { font-size: var(--text-h3); line-height: 1.45; }
-  }
-
-  /* --- Para quién es ----------------------------------------------------
-     Los dos párrafos con el mismo peso: el segundo es un filtro, no una
-     disculpa. */
-  /* Mismo peso, mismo eje y misma medida: apilados. Puestos en dos columnas
-     de anchura distinta —como estaban— el segundo párrafo se leía como una
-     nota al pie del primero, que es justo lo contrario de lo que dice. */
-  .who { display: grid; gap: 28px; }
-  .who p { color: var(--color-ink); max-width: var(--container-measure); }
-  .who p + p { border-top: 1px solid var(--color-line); padding-top: 28px; }
-  @media (min-width: 768px) {
-    .who p { max-width: none; }
   }
 
   /* --- Formulario -------------------------------------------------------
@@ -462,7 +209,6 @@
     .beta__body { max-width: none; }
     .beta__body > form, .beta__body > .done { grid-column: 1 / 8; }
   }
-  .beta .lead { max-width: var(--container-measure); margin-top: 16px; }
   /* El aviso del alta abre el formulario, así que va agrupado con él: más aire
      por encima que por debajo. A 36/32 quedaba equidistante y no se sabía de
      qué bloque era. */
@@ -618,203 +364,11 @@
     .fila-med { grid-column: 1 / 8; max-width: none; }
   }
 
-  /* --- Los bloques que van sobre la retícula ----------------------------
-     Esta es la lista completa. Doce columnas, un canal, dos ejes:
-       eje A = línea 1   · títulos, rótulos, tablas, la columna de conversión
-       eje B = línea 6   · la demo y toda la prosa subordinada
-     Una columna de prosa son siete columnas (565 px al ancho máximo, la
-     medida de párrafo) tanto si arranca en A como en B. El hero entra en la
-     retícula a partir de 1024 px, no de 768: por debajo la demo no cabe al
-     lado del titular. */
-  @media (min-width: 768px) {
-    .arg,
-    .steps li,
-    .priv,
-    .who,
-    .beta__body {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--grid-gap);
-      align-items: start;
-    }
-    /* Las dos columnas de un tiempo comparten línea base, no borde superior.
-       Es la diferencia entre una fila compuesta y dos cajas puestas al lado. */
-    .steps li { align-items: baseline; }
-  }
-
   /* --- Páginas de texto (legales, gracias, 404) ------------------------- */
   .prose { max-width: var(--container-measure); }
   .prose h2 { margin-top: 40px; font-size: var(--text-h3); }
   .prose h2:first-of-type { margin-top: 32px; }
   .prose p { margin-top: 12px; color: var(--color-ink-2); }
-
-  /* --- Tramo ancho ------------------------------------------------------ */
-  @media (min-width: 1024px) {
-    .wide { display: inline; }
-    h1 { text-wrap: initial; }
-    .first__grid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--grid-gap); row-gap: 40px; align-items: start;
-    }
-    /* El titular ocupa el ancho de página; la demo y el resto del hero se
-       reparten debajo. */
-    .first__grid > h1 {
-      grid-column: 1 / -1; grid-row: 1;
-      max-width: none;
-      font-size: clamp(2.75rem, 4vw, 3.625rem);
-    }
-    .hero__rest { grid-column: 1 / 6; grid-row: 2; }
-    .demo {
-      grid-column: 6 / -1; grid-row: 2; margin-top: 4px;
-      display: flex; flex-direction: column;
-    }
-    .demo__media { flex: 1; aspect-ratio: auto; min-block-size: var(--demo-min-h); }
-  }
-}
-
-/* ============================================================================
-   Animación de la demo.
-   El estado BASE del marcado es el fotograma del texto ya pegado: sin
-   animación —prefers-reduced-motion, o sin CSS— se ve eso, con el texto real
-   del DOM seleccionable. La animación lo recorre; no lo construye.
-   El ciclo arranca con desfase negativo para que lo primero que se vea sea la
-   promesa cumplida y no el dictado sucio, y el resultado persiste durante el
-   reposo: no hay ni un fotograma de la demo sin texto visible.
-   Solo se animan opacity y transform: ninguna propiedad que provoque
-   recálculo de diseño.
-   ========================================================================= */
-@media (prefers-reduced-motion: no-preference) {
-  .demo-anim * {
-    animation-duration: var(--demo-cycle);
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-delay: var(--demo-start);
-  }
-  .keycap { animation-name: keyPress; }
-  .st-rec { animation-name: recOn; }
-  .st-pol { animation-name: polOn; }
-  .wave { animation-name: waveOn; }
-  .wave b { animation: bar 0.62s ease-in-out infinite alternate; }
-  .wave b:nth-child(2) { animation-delay: -0.5s; }
-  .wave b:nth-child(3) { animation-delay: -0.2s; }
-  .wave b:nth-child(4) { animation-delay: -0.38s; }
-  .wave b:nth-child(5) { animation-delay: -0.08s; }
-  .wave b:nth-child(6) { animation-delay: -0.28s; }
-  .wave b:nth-child(7) { animation-delay: -0.45s; }
-  .hud__text .f { animation-name: strike; }
-  .pasted { animation-name: paste; }
-  .caret--end { animation-name: caretEnd; }
-  /* El cursor de inicio solo existe mientras la demo se anima: fuera de
-     `.demo-anim` el marcado se queda en su fotograma final, que lleva un solo
-     cursor al final del texto pegado. Sin acotarlo aquí, las variantes que
-     reutilizan la ventana sin animarla pintaban dos cursores. */
-  .demo-anim .caret--start { display: inline-block; animation-name: caretStart; }
-  /* Cinco fragmentos, no letra a letra: así aparece una transcripción en vivo. */
-  .s1 { animation-name: f1; }
-  .s2 { animation-name: f2; }
-  .s3 { animation-name: f3; }
-  .s4 { animation-name: f4; }
-  .s5 { animation-name: f5; }
-  .tm span:last-child { opacity: 0; }
-  .tm .t1 { animation-name: tk1; }
-  .tm .t2 { animation-name: tk2; }
-  .tm .t3 { animation-name: tk3; }
-  .tm .t4 { animation-name: tk4; }
-}
-
-@keyframes keyPress {
-  0%, 7.8% { transform: translateY(0); background: transparent; }
-  8%, 50.4% { transform: translateY(2px); background: #3a352c; }
-  50.5%, 100% { transform: translateY(0); background: transparent; }
-}
-@keyframes recOn {
-  0%, 11.5% { opacity: 0; }
-  11.6%, 47.3% { opacity: 1; }
-  47.4%, 100% { opacity: 0; }
-}
-@keyframes polOn {
-  0%, 50.4% { opacity: 0; }
-  50.5%, 61% { opacity: 1; }
-  61.1%, 100% { opacity: 0; }
-}
-@keyframes waveOn {
-  0%, 11.5% { transform: scaleY(0.08); opacity: 0; }
-  12%, 47.3% { transform: scaleY(1); opacity: 1; }
-  50.5%, 100% { transform: scaleY(0.08); opacity: 0; }
-}
-@keyframes bar {
-  from { transform: scaleY(0.25); }
-  to { transform: scaleY(1); }
-}
-@keyframes strike {
-  0%, 11% { text-decoration-color: var(--color-hud-ink-2); color: var(--color-hud-ink-2); }
-  11.05%, 50.4% { text-decoration-color: transparent; color: var(--color-hud-ink); }
-  61.1%, 100% { text-decoration-color: var(--color-hud-ink-2); color: var(--color-hud-ink-2); }
-}
-/* Aparece de golpe, con destello: echo PEGA, no teclea. Un efecto de máquina
-   de escribir sería más vistoso y sería mentira. */
-@keyframes paste {
-  0%, 12.6% { opacity: 1; background: transparent; }
-  12.7%, 61% { opacity: 0; background: var(--color-accent-wash); }
-  61.7% { opacity: 1; background: var(--color-accent-wash); }
-  64.3% { opacity: 1; background: var(--color-accent-wash); }
-  68.5%, 100% { opacity: 1; background: transparent; }
-}
-@keyframes caretEnd {
-  0%, 12.6% { opacity: 1; }
-  12.7%, 61% { opacity: 0; }
-  61.1%, 100% { opacity: 1; }
-}
-@keyframes caretStart {
-  0%, 12.6% { opacity: 0; }
-  12.7%, 61% { opacity: 1; }
-  61.1%, 100% { opacity: 0; }
-}
-@keyframes f1 {
-  0%, 11% { opacity: 1; }
-  11.05%, 12.5% { opacity: 0; }
-  12.6%, 100% { opacity: 1; }
-}
-@keyframes f2 {
-  0%, 11% { opacity: 1; }
-  11.05%, 18.8% { opacity: 0; }
-  18.9%, 100% { opacity: 1; }
-}
-@keyframes f3 {
-  0%, 11% { opacity: 1; }
-  11.05%, 26.2% { opacity: 0; }
-  26.3%, 100% { opacity: 1; }
-}
-@keyframes f4 {
-  0%, 11% { opacity: 1; }
-  11.05%, 33.6% { opacity: 0; }
-  33.7%, 100% { opacity: 1; }
-}
-@keyframes f5 {
-  0%, 11% { opacity: 1; }
-  11.05%, 41% { opacity: 0; }
-  41.1%, 100% { opacity: 1; }
-}
-/* El contador enseña la espera real: 1,8 s, dentro del rango declarado. */
-@keyframes tk1 {
-  0%, 50.4% { opacity: 0; }
-  50.5%, 53.1% { opacity: 1; }
-  53.2%, 100% { opacity: 0; }
-}
-@keyframes tk2 {
-  0%, 53.1% { opacity: 0; }
-  53.2%, 55.8% { opacity: 1; }
-  55.9%, 100% { opacity: 0; }
-}
-@keyframes tk3 {
-  0%, 55.8% { opacity: 0; }
-  55.9%, 58.4% { opacity: 1; }
-  58.5%, 100% { opacity: 0; }
-}
-@keyframes tk4 {
-  0%, 58.4% { opacity: 0; }
-  58.5%, 61% { opacity: 1; }
-  61.1%, 100% { opacity: 0; }
 }
 
 /* Quien pide menos movimiento no recibe ninguno: ni demo, ni desplazamiento

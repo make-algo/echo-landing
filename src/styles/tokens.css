@@ -31,14 +31,6 @@
 
   --color-error:        #A32116; /* texto de error         7,22:1 / paper  */
 
-  /* Superficie oscura: la barra de echo dentro de la demo */
-  --color-hud:          #1F1C17;
-  --color-hud-ink:      #FBFAF8; /* 16,28:1 sobre hud                      */
-  --color-hud-ink-2:    #A8A29A; /*  6,71:1 sobre hud                      */
-  --color-hud-rec:      #FF6B5E; /*  6,08:1 sobre hud                      */
-  /* No hay color propio para la onda: es tinta clara. El único estado que
-     el color señala en la barra es «Grabando», y va siempre con su palabra. */
-
   /* --- Tipografía --------------------------------------------------------
      Cero fuentes descargadas: 0 KB, 0 CLS, y en el Mac del visitante la
      landing usa exactamente la misma tipografía que la app que le vamos a
@@ -107,10 +99,7 @@
   --grid-gap:          2rem;
 
   /* --- Radios: cortos. Es una herramienta, no una app de bienestar. ------ */
-  /* DOS radios y ninguno más. Antes había cuatro y no significaban nada.   */
   --radius-xs:     0.25rem;   /*  4 px — controles: botón, campo, tecla    */
-  --radius-md:     0.75rem;   /* 12 px — marco de la demo                  */
-  --radius-pill:   999px;     /* SOLO el punto de grabación de la demo      */
 
   /* --- Foco: un único patrón en toda la página -------------------------- */
   --focus-width:   2px;
@@ -126,15 +115,4 @@
   --ease-out:      cubic-bezier(0.22, 0.61, 0.36, 1);
   --duration-fast: 120ms;   /* respuesta de control                        */
   --duration-base: 240ms;   /* cambio de estado                            */
-  --demo-cycle:    19s;     /* ciclo completo de la demo                   */
-
-  /* --- Demo -------------------------------------------------------------- */
-  --demo-start:     -13s;   /* desfase negativo del ciclo: la demo arranca
-                                en el fotograma del texto ya pegado, para
-                                que lo primero que se vea sea la promesa
-                                cumplida y no el dictado sucio. Cae dentro
-                                del tramo en el que el resultado se sostiene,
-                                con el destello ya terminado.               */
-  --demo-min-h:    20rem;   /* ≥1024 px la demo estira con la columna;
-                                por debajo, 380 px de altura mínima.        */
 }

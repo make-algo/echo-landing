@@ -1,6 +1,8 @@
 /* ============================================================================
-   /b/ — CORRECCIÓN · la página es una galerada que se limpia sola según bajas
+   LA LANDING · la página es una galerada que se limpia sola según bajas
    Material: las marcas de corrección, llevadas hasta que organizan la página.
+   Ganadora de MAK-82 por decisión de Álvaro en MAK-71; propagada a la raíz y
+   pulida en MAK-85.
 
    Regla que rompe, con nombre y apellido: «el texto de una página no se tacha
    ni se tapa: la legibilidad es sagrada».
@@ -72,17 +74,37 @@
 }
 
 /* --- LA GRAMÁTICA DE MARCAS. Tres, y las tres con la MISMA regla geométrica.
-       El tachado es `line-through` nativo: una sola regla, altura óptica de la
-       fuente, grosor proporcional al cuerpo, y se pega al borde exacto de la
-       palabra incluso cuando la frase cambia de renglón. Un filete absoluto y
-       girado se despega en cuanto el texto se parte, y eso era justo lo que se
-       veía mal. ------------------------------------------------------------ */
+       El tachado es, EN CSS, `line-through` nativo: robusto, se pega al borde
+       exacto de la palabra incluso cuando la frase cambia de renglón, y es lo
+       que se ve si JavaScript no corre. Un crítico a ciegas lo leyó como «CSS
+       de manual, no intención editorial» — un filete absoluto y girado a
+       posición fija se despega en cuanto el texto se parte, así que la
+       corrección no es volver a eso, es medir: `correccion/tachado.ts` mide el
+       rectángulo real de cada línea visual (`getClientRects()`) y dibuja ahí
+       un trazo SVG con imperfección orgánica determinista. Progresivo: solo
+       cuando el trazo medido termina de dibujarse, el elemento recibe
+       `.tach--medido`, y ESA clase es la que apaga el `line-through` nativo —
+       nunca doble trazo, nunca sin marcar. ----------------------------------- */
 .ruta-correccion .tach {
   color: var(--c-ink-2);
   text-decoration: line-through;
   text-decoration-color: var(--c-rojo);
   text-decoration-thickness: 0.07em;
   text-underline-offset: 0;
+}
+.ruta-correccion .tach--medido {
+  text-decoration: none;
+}
+.ruta-correccion .tachado-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.ruta-correccion .tachado-overlay path {
+  fill: none;
+  stroke: var(--c-rojo);
+  stroke-linecap: round;
 }
 
 /* La inserción: lo que la mano escribe encima, con su llamada. */
@@ -200,10 +222,17 @@
     top: 2rem;
   }
 }
+/* La ventana de correo entra en el sistema de papel: era una caja blanca con
+   borde propio, «sacada de un wireframe de Figma» según la tanda a ciegas —
+   ni una sola caja y un único acento rojo es la regla de esta dirección, y
+   una tarjeta UI importada rompía las dos. Ahora es una hoja más del mismo
+   documento, separada por el mismo filete de 6 px que ya marca cambios de
+   acto (MAK-85, punto 2.2). */
 .ruta-correccion .win {
-  border: 2px solid var(--c-ink);
-  background: var(--color-paper-raised);
-  padding: 0;
+  background: var(--c-paper);
+  border: 0;
+  border-top: 6px solid var(--c-ink);
+  padding: 1.25rem 0 0;
   gap: 0;
 }
 .ruta-correccion .win__bar,
@@ -216,7 +245,8 @@
   border-bottom: 1px solid var(--color-line);
 }
 .ruta-correccion .win__rule {
-  display: none;
+  display: block;
+  background: var(--c-ink);
 }
 .ruta-correccion .win__body {
   padding: 0.9rem 0.85rem 2rem;
@@ -328,6 +358,19 @@
   font-size: 1.1875rem;
   font-weight: 500;
 }
+/* El campo se reconoce como rellenable sin abrir el inspector: el subrayado
+   se engrosa y se pone rojo al pasar el ratón o enfocar — la misma señal
+   («rojo es que esto está vivo») que ya usa el resto del sistema, no una
+   caja nueva (MAK-85, punto 3). */
+.ruta-correccion input[type='email']:hover,
+.ruta-correccion textarea:hover {
+  border-bottom-color: var(--c-rojo);
+}
+.ruta-correccion input:focus-visible,
+.ruta-correccion textarea:focus-visible {
+  border-bottom-width: 6px;
+  border-bottom-color: var(--c-rojo);
+}
 .ruta-correccion textarea {
   font-weight: 400;
   font-size: 1.0625rem;
@@ -356,11 +399,58 @@
 .ruta-correccion .qa > summary {
   font-weight: 700;
 }
+/* El indicador deja el `+`/`–` genérico de framework que ya señaló la tanda a
+   ciegas y pasa a ser el mismo glifo que la página enseñó en la apertura: el
+   `^` de `.ins`, rotado según esté plegada o no (MAK-85, punto 2.3). */
+.ruta-correccion .qa > summary::after {
+  content: '^';
+  color: var(--c-rojo);
+  font: 700 1rem / 1 var(--font-mono);
+  transform: rotate(180deg);
+  transition: transform 0.15s ease;
+}
+.ruta-correccion .qa[open] > summary::after {
+  transform: rotate(0deg);
+}
 .ruta-correccion .footer {
   border-top: 6px solid var(--c-ink);
   padding-left: calc(var(--c-m) + var(--c-banda));
   padding-right: var(--c-m);
   color: var(--c-ink-2);
+}
+
+/* --- EL HUECO DEL ESCRITORIO. Fuera de la apertura (con su columna fija) y de
+       la demo (ancho completo), el resto de la página es una sola columna de
+       prosa: en 1440 px eso deja el lado derecho vacío en los actos más largos
+       en vertical. Ninguna tramo de la página es aire sin trabajo, así que ese
+       hueco lleva una nota de margen real —texto que se lee en voz alta igual
+       que el resto, no decoración— en el mismo vocabulario mono-rojo de
+       `.rubric`/`.nota`. Descartado: un contador animado por scroll (JS extra,
+       riesgo de jank, y la densidad de marcas que ya baja acto a acto cuenta
+       esa historia sin necesitar un número que se mueva) y estirar la ventana
+       de correo del Acto 2 en `sticky` el resto de la página (queda flotando
+       sin relación con el texto de al lado). MAK-85, punto 2.4. --------------- */
+@media (min-width: 1024px) {
+  .ruta-correccion .acto--margen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+  /* La regla negra sigue cruzando el acto entero, no solo la columna de prosa. */
+  .ruta-correccion .acto--margen > .regla {
+    grid-column: 1 / -1;
+  }
+  .ruta-correccion .margen {
+    grid-column: 2;
+    align-self: start;
+    position: sticky;
+    top: 2rem;
+    font: 400 var(--text-small) / 1.5 var(--font-mono);
+    color: var(--c-rojo);
+    max-width: 14ch;
+    text-align: right;
+  }
 }
 
 @media (max-width: 819px) {
