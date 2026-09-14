@@ -205,7 +205,7 @@ export const beta = {
     'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar respondiendo a cualquier correo.',
   legal: {
     titulo: 'Protección de datos:',
-    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa Formspree (EE. UU.) con las garantías que explicamos en la ',
+    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas del correo, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. Tu mensaje nos llega directo al buzón, sin proveedor de formularios de por medio; los detalles y tus derechos, en la ',
     enlace: 'política de privacidad',
     dos: ', donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a ',
     pendiente: '[correo por definir]',
