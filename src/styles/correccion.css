@@ -239,6 +239,165 @@
   padding: 1.25rem 0 0;
   gap: 0;
 }
+
+/* --- EL CICLO: se dicta, se corrige, se pega — en bucle, sin esperar al scroll
+       (MAK-113, recupera la mecánica de docs/design/landing.md §4 sobre la piel
+       actual). Las dos capas ocupan la MISMA celda de grid: el alto de la caja
+       lo fija la más alta de las dos, así el cambio de una a otra es un cruce
+       de opacidad sin robarle ni un píxel al layout (CLS 0, ninguna capa se
+       saca del árbol). Solo `transform`/`opacity` se animan.
+
+       El bruto usa el MISMO chrome de ventana (`.win`) que `<Escrito />` y el
+       MISMO tachado/inserción ya aprobados de la apertura (`.tach`/`.ins` de la
+       columna izquierda) — ninguna palabra nueva. Sus marcas llevan clase
+       propia (`.ciclo__tach`/`.ciclo__ins`, no `.tach`/`.ins`) para que
+       `correccion/tachado.ts` nunca las mida: medir en cada fotograma habría
+       metido JS de más durante el movimiento (spec MAK-113 §5), así que aquí
+       el trazo es `text-decoration` plano siempre, no solo mientras anima.
+
+       Sin JS y con `prefers-reduced-motion` no hace falta ninguna regla extra:
+       el apagón global de animaciones (ver `global.css`) basta, porque el
+       valor base (no animado) de cada capa YA es el fotograma de reposo — el
+       bruto en `opacity: 0` y el final en `opacity: 1` — que es exactamente lo
+       que se ve hoy sin este cambio. */
+.ciclo {
+  display: grid;
+}
+.ciclo > * {
+  grid-area: 1 / 1;
+}
+.ciclo__bruto {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: ciclo-bruto 18s ease-in-out infinite;
+}
+.ciclo__final {
+  transform-origin: 50% 40%;
+  animation: ciclo-final 18s ease-in-out infinite;
+}
+.ciclo__caret {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  vertical-align: -0.15em;
+  /* Tinta, no rojo: el rojo en esta página tiene una única gramática —
+     corrección— y un cursor de dictado no corrige nada. */
+  background: var(--c-ink);
+  margin-right: 0.15em;
+  opacity: 0;
+  animation: ciclo-caret 18s ease-in-out infinite;
+}
+.ciclo__texto {
+  font-size: 1.0625rem;
+}
+.ciclo__tach,
+.ciclo__ins {
+  animation: ciclo-marca 18s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+/* Mismo dibujo que `.tach`/`.ins`, deliberadamente sin compartir selector con
+   ellos (ver nota de arriba: esto es lo que las excluye de tachado.ts). */
+.ciclo__tach {
+  color: var(--c-ink-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--c-rojo);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0;
+}
+.ciclo__ins {
+  color: var(--c-rojo);
+  font: 500 0.72em / 1.2 var(--font-mono);
+  letter-spacing: 0;
+  vertical-align: 0.05em;
+  margin-inline: 0.3em;
+}
+.ciclo__ins::before {
+  content: '^';
+  margin-right: 0.25em;
+  font-weight: 700;
+}
+
+/* Fases, en % de los 18 s del ciclo: reposo (el fotograma final sostenido) →
+   se dicta (el bruto sube y aparece) → se corrige en movimiento (las marcas
+   se activan con vaivén, siempre `text-decoration` plano) → se pega de golpe
+   con un destello (nunca letra a letra: echo pega, no teclea) → se sostiene →
+   reinicia. 0 % y 100 % son el mismo fotograma para que el bucle no salte. */
+@keyframes ciclo-bruto {
+  0%,
+  14% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  22% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  64%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes ciclo-final {
+  0%,
+  12% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  17% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  62% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  /* El destello: un breve rebote por encima de 1 marca el instante del
+     pegado, no un fundido cualquiera — es el golpe, no la aparición. */
+  66% {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+  72%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes ciclo-caret {
+  0%,
+  15% {
+    opacity: 0;
+  }
+  18%,
+  20%,
+  22%,
+  58% {
+    opacity: 1;
+  }
+  19%,
+  21% {
+    opacity: 0;
+  }
+  60%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ciclo-marca {
+  0%,
+  35% {
+    opacity: 0.3;
+  }
+  45%,
+  100% {
+    opacity: 1;
+  }
+}
 .ruta-correccion .win__bar,
 .ruta-correccion .win__field {
   padding: 0.4rem 0.85rem;

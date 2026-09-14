@@ -63,9 +63,35 @@ const titular = apertura.titular.join(' ')
         </div>
 
         <!-- El producto, en el primer pantallazo. Una página que promete
-             «hablas y aparece escrito» no puede enseñar cero. -->
-        <div class="apertura__prod" aria-hidden="true">
-          <Escrito />
+             «hablas y aparece escrito» no puede enseñar cero: se ve dictarse,
+             corregirse y pegarse solo, en bucle, sin esperar al scroll
+             (MAK-113). `<Escrito />` es el fotograma final del ciclo — su
+             marcado no cambia, solo se le superpone el bruto mientras dicta. -->
+        <div class="apertura__prod ciclo" aria-hidden="true">
+          <div class="ciclo__bruto win">
+            <div class="win__bar">{demo.ventana.barra}</div>
+            <div class="win__field win__field--to">
+              <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor}
+            </div>
+            <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
+            <div class="win__rule"></div>
+            <div class="win__body">
+              <span class="ciclo__caret"></span><span class="ciclo__texto"
+                ><span class="ciclo__tach" style="--d: 0s">eh…</span> hablas y aparece escrito<span
+                  class="ciclo__tach"
+                  style="--d: .5s">, o sea</span
+                >, sin muletillas, <span class="ciclo__tach" style="--d: 1s"
+                  >sin ir diciendo coma, punto,</span
+                ><span class="ciclo__ins" style="--d: 1.2s">{v.insercion}</span> <span
+                  class="ciclo__tach"
+                  style="--d: 1.6s">y eh,</span
+                > sin cambiar de idioma</span
+              >
+            </div>
+          </div>
+          <div class="ciclo__final">
+            <Escrito />
+          </div>
         </div>
       </div>
     </section>
