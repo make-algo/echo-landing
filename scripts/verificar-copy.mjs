@@ -252,10 +252,10 @@ for (const [ruta, fichero] of RUTAS) {
     if (!h2s.some((h) => h.includes(rotulo))) mal(ruta, `el rótulo «${rotulo}» no es un <h2>`)
   }
 
-  // --- CA-ENV-3 · el honeypot tiene que llamarse como el campo nativo del
-  //     proveedor. Con otro nombre el antispam no hace nada y no se nota hasta
-  //     que llega el spam.
-  if (!/name="_gotcha"/.test(html)) mal(ruta, 'CA-ENV-3: el honeypot no se llama _gotcha')
+  // --- El alta es un mailto directo: nada de formulario, y al buzón correcto.
+  if (!/href="mailto:info\.makealgo@gmail\.com\?/.test(html))
+    mal(ruta, 'el enlace de la lista de espera no apunta a info.makealgo@gmail.com')
+  if (/<form\b/i.test(html)) mal(ruta, 'sigue habiendo un <form> en la página del alta')
 
   // --- El sitio no puede contradecirse sobre quién procesa el formulario.
   if (/proveedor por (decidir|confirmar)/.test(html))
