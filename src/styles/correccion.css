@@ -108,23 +108,24 @@
 }
 
 /* La inserción: lo que la mano escribe encima, con su llamada.
-   Va en su propia línea siempre: como bloque de ~24 caracteres compite por el
-   ancho de la columna de `.sucio` en cualquier viewport (no solo en móvil), un
-   inline-block que a veces cabe y a veces no deja el `^` de la llamada
-   colgando bajo una línea huérfana, desconectado de dónde sigue la frase
-   (MAK-106). Una sola línea propia, siempre, es lo único que no depende de
-   dónde caiga el salto. */
+   Va pegada al final de lo tachado que sustituye, como texto corrido: la caja
+   propia (inline-block, MAK-85) partía como unidad atómica y a veces le tocaba
+   saltar sola de línea, dejando el `^` huérfano lejos de la frase; el bloque
+   propio que la sustituyó (MAK-106, primera vuelta) resolvía el huérfano pero
+   arrancaba siempre al margen izquierdo, así que la llamada quedaba flotando
+   sin nada encima que anotar. Como texto en línea normal, sin caja ni posición
+   absoluta, el `^` va siempre delante de su corrección y las dos van siempre
+   detrás de lo que corrigen, se parta la frase donde se parta. */
 .ruta-correccion .ins {
-  display: block;
-  position: relative;
   color: var(--c-rojo);
   font: 500 0.3em / 1.2 var(--font-mono);
   letter-spacing: 0;
-  margin: 0.2em 0 0.3em;
+  vertical-align: 0.15em;
+  margin-inline: 0.35em;
 }
 .ruta-correccion .ins::before {
   content: '^';
-  margin-right: 0.4em;
+  margin-right: 0.3em;
   font-weight: 700;
 }
 
