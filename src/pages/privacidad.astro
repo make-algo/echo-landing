@@ -2,15 +2,6 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
-
-/**
- * Texto legal íntegro. No se reescribe ni se resume.
- *
- * El apartado «Quién más los trata» lleva el texto legal final: GitHub Pages como
- * alojamiento y Formspree como encargado del formulario. Está en su versión interina,
- * válida mientras el formulario esté inerte; el comentario que lo precede archiva la
- * versión definitiva y la condición que la activa.
- */
 ---
 
 <Base title="Política de privacidad — echo" path="/privacidad">
@@ -28,9 +19,11 @@ import Header from '../components/Header.astro'
 
         <h2>Qué datos recogemos</h2>
         <p>
-          Los que nos das en el formulario de lista de espera: tu email (obligatorio) y, si quieres
-          contestar, para qué usarías echo y si tienes Claude o ChatGPT de pago (ambas opcionales).
-          No recogemos nada más: esta web no usa cookies ni analítica de terceros.
+          Los que nos mandas al escribirnos para entrar en la lista de espera: tu dirección de
+          correo y lo que cuentes en el mensaje. El correo sale con el asunto ya puesto y dos
+          preguntas opcionales en el cuerpo —para qué usarías echo y si tienes Claude o ChatGPT de
+          pago—, pero decides tú qué contestas y qué añades. No recogemos nada más: no hay
+          formulario ni base de datos detrás, y esta web no usa cookies ni analítica de terceros.
         </p>
 
         <h2>Para qué los usamos</h2>
@@ -43,8 +36,9 @@ import Header from '../components/Header.astro'
 
         <h2>Con qué base legal</h2>
         <p>
-          Tu consentimiento (art. 6.1.a RGPD), que nos das al enviar el formulario. Puedes retirarlo
-          cuando quieras respondiendo a cualquier correo nuestro o escribiendo a
+          Tu consentimiento (art. 6.1.a RGPD), que nos das con el propio acto de enviarnos el
+          correo pidiendo entrar en la lista. Puedes retirarlo cuando quieras respondiendo a
+          cualquier correo nuestro o escribiendo a
           <span class="gap">[email de contacto]</span>; retirarlo no afecta a lo tratado hasta ese
           momento.
         </p>
@@ -52,28 +46,10 @@ import Header from '../components/Header.astro'
         <h2>Cuánto tiempo los guardamos</h2>
         <p>
           Hasta que entres en tu tanda o pidas la baja y, como máximo, 12 meses después del
-          lanzamiento general de echo. Después los suprimimos.
+          lanzamiento general de echo. Después suprimimos tu correo de alta y cualquier copia de
+          trabajo.
         </p>
 
-        {/*
-          El segundo párrafo (el de Formspree) es la versión interina, válida mientras el
-          formulario esté inerte. Al conectar PUBLIC_FORM_ENDPOINT hay que sustituirlo por
-          el definitivo, y solo entonces:
-
-            El formulario de lista de espera lo procesa Formspree, Inc. (Estados Unidos), que
-            recibe lo que envías y lo guarda cifrado en nuestro nombre como encargado del
-            tratamiento, con un contrato conforme al art. 28 RGPD. Esa transferencia a Estados
-            Unidos se ampara en las cláusulas contractuales tipo aprobadas por la Comisión
-            Europea (art. 46.2.c RGPD), que hemos suscrito con Formspree; puedes pedirnos copia
-            escribiendo a [email de contacto]. Fuera de esto, no cedemos tus datos a nadie
-            salvo obligación legal.
-
-          El párrafo de GitHub no cambia entre las dos versiones.
-        */}
-        <!-- TODO: pendiente de revisión legal, ver issue de asesor-legal — MAK-103
-             cambió el alta a un mailto directo: ya no hay formulario ni
-             Formspree de por medio, así que el párrafo de abajo deja de ser
-             cierto y necesita una base legal nueva. -->
         <h2>Quién más los trata</h2>
         <p>
           Dos proveedores, cada uno para una cosa. El alojamiento de esta web lo presta
@@ -84,14 +60,13 @@ import Header from '../components/Header.astro'
           que ampara esa transferencia (art. 45 RGPD).
         </p>
         <p>
-          El formulario de lista de espera todavía no está activo y no recoge ningún dato.
-          Cuando lo activemos, lo procesará Formspree, Inc. (Estados Unidos) como encargado
-          del tratamiento, con un contrato conforme al art. 28 RGPD, y guardará cifrado lo
-          que envíes. Esa transferencia a Estados Unidos se amparará en las cláusulas
-          contractuales tipo aprobadas por la Comisión Europea (art. 46.2.c RGPD): no
-          conectaremos el formulario hasta tenerlas suscritas con Formspree, y podrás
-          pedirnos copia escribiendo a <span class="gap">[email de contacto]</span>. Fuera
-          de esto, no cedemos tus datos a nadie salvo obligación legal.
+          Tu alta nos llega por correo electrónico directamente a un buzón de Make Algo SL: no hay
+          ningún proveedor de formularios de por medio y nadie recibe ni almacena tu mensaje en
+          nuestro nombre, salvo el servicio de correo sobre el que funciona ese buzón, que presta
+          Google (Estados Unidos). Google está certificada en el Marco de Privacidad de Datos
+          UE–EE. UU., la decisión de adecuación de la Comisión Europea que ampara esa transferencia
+          (art. 45 RGPD). El envío del mensaje lo hace tu propio programa de correo, con tu
+          proveedor. Fuera de esto, no cedemos tus datos a nadie salvo obligación legal.
         </p>
 
         <h2>Tus derechos</h2>
