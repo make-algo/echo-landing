@@ -27,12 +27,12 @@
  * mienta, y por eso no hay una versión estática de reserva que adivine.
  */
 
-import { variantes } from '../../content/copy'
+import { editor } from '../../content/copy'
 
 /** Todo lo que se numera, en el orden en que debe leerse la página. Los del
  *  formulario son selectores compuestos porque `WaitlistForm.astro` es
- *  compartido con el control y las otras variantes: no lleva marcado propio
- *  de esta ruta, así que se identifica por su forma, no por una clase. */
+ *  compartido con otras páginas de la landing: no lleva marcado propio de
+ *  esta ruta, así que se identifica por su forma, no por una clase. */
 const SELECTOR = [
   '.ln-num',
   '.beta__body .field > label',
@@ -101,7 +101,7 @@ function medirBadgesFaq(raiz: ParentNode): void {
     // El texto sale de la misma fuente que el resto del micro-texto de esta
     // variante, singular/plural incluido: no se compone a mano en la hoja de
     // estilos, que solo sabe pintar `attr(data-badge)`.
-    resumen.querySelector<HTMLElement>('.q')?.setAttribute('data-badge', variantes.editor.plegado(n))
+    resumen.querySelector<HTMLElement>('.q')?.setAttribute('data-badge', editor.plegado(n))
   }
 }
 

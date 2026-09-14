@@ -74,12 +74,6 @@
   --text-micro:     0.875rem;    /* 14 px — SUELO ABSOLUTO. Nada más bajo. */
   --text-micro--line-height: 1.45;
 
-  --text-rubric:    0.8125rem;   /* 13 px — rótulo de sección, en mono.
-                                    Excepción única al suelo de 14 px: no es
-                                    texto de lectura, es una etiqueta.      */
-  --text-rubric--line-height: 1.4;
-  --text-rubric--letter-spacing: 0.02em;
-
   --text-mono:      0.9375rem;
   --text-mono--line-height: 1.55;
 
@@ -135,6 +129,4 @@
                                 cumplida y no el dictado sucio. Cae dentro
                                 del tramo en el que el resultado se sostiene,
                                 con el destello ya terminado.               */
-  --demo-min-h:    20rem;   /* ≥1024 px la demo estira con la columna;
-                                por debajo, 380 px de altura mínima.        */
 }

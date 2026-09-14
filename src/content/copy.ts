@@ -1,10 +1,7 @@
 /**
- * Fuente única del copy de la landing (MAK-82).
+ * Fuente única del copy de la landing (MAK-82, propagada a la raíz en MAK-85).
  *
- * Todo el texto visible de `/`, `/a/`, `/b/` y `/c/` sale de aquí. El control y
- * las tres variantes son cuatro composiciones distintas del MISMO texto: si una
- * variante necesitara reescribir una frase para funcionar, la variante está mal
- * planteada.
+ * Todo el texto visible de `/` sale de aquí.
  *
  * Reglas al tocar este fichero:
  * - El texto es de echo-launch y va literal. Ni una coma.
@@ -284,49 +281,21 @@ export const pie = {
 export const saltar = 'Saltar al contenido'
 
 /**
- * Micro-texto que SOLO existe en las variantes de la segunda tanda. Son rótulos
- * de interfaz que la idea organizadora de cada dirección necesita y que el
- * control no tiene. Ninguno sustituye copy aprobado: todos se añaden. Listado en
- * la entrega para que lo apruebe echo-launch.
+ * Micro-texto de interfaz que la idea organizadora de la landing —un búfer de
+ * texto abierto en un editor— necesita y que el copy de producto no tiene.
+ * Ninguno sustituye copy aprobado: todos se añaden.
  */
-export const variantes = {
-  /** /a/ — la página es una grabación que recorres con un cabezal. */
-  onda: {
-    grabando: 'grabando · ⌥ espacio mantenido',
-    /**
-     * Rótulos de los silencios. La duración NO se escribe aquí: sale de los
-     * huecos reales de la envolvente (`src/lib/onda.ts`), porque si el número
-     * se elige a ojo la pista vuelve a ser decoración con coartada.
-     */
-    silencio: 'silencio',
-    pulido: 'tecla soltada · pulido',
-    fin: 'fin de la grabación',
-    segundos: 's',
-    pista: 'Pista de la grabación',
+export const editor = {
+  comentarios: {
+    cabecera: '# echo — dictado para Mac',
+    demo: '# la demo',
+    comparativa: '# la comparativa',
+    preguntas: '# preguntas',
+    correo: '# tu correo',
+    uso: '# en qué lo usarías',
+    suscripcion: '# claude o chatgpt de pago',
   },
-
-  /** /b/ — la página es una galerada que se limpia sola según bajas. */
-  correccion: {
-    capaSucia: 'dictado en bruto · sin editar',
-    capaLimpia: 'pegado en tu app · ya editado',
-    grabando: '⌥ espacio mantenido · grabando',
-    /** La corrección que la mano escribe encima del dictado de la apertura. */
-    insercion: 'sin dictar la puntuación',
-  },
-
-  /** /c/ — la página es un búfer de texto abierto en un editor. */
-  editor: {
-    comentarios: {
-      cabecera: '# echo — dictado para Mac',
-      demo: '# la demo',
-      comparativa: '# la comparativa',
-      preguntas: '# preguntas',
-      correo: '# tu correo',
-      uso: '# en qué lo usarías',
-      suscripcion: '# claude o chatgpt de pago',
-    },
-    barra: { fichero: 'echo.landing', idiomas: 'es-ES + en' },
-    atajos: { ir: 'g', comparativa: 'c', beta: 'b' },
-    plegado: (n: number) => `⋯ ${n} ${n === 1 ? 'línea' : 'líneas'}`,
-  },
+  barra: { fichero: 'echo.landing', idiomas: 'es-ES + en' },
+  atajos: { ir: 'g', comparativa: 'c', beta: 'b' },
+  plegado: (n: number) => `⋯ ${n} ${n === 1 ? 'línea' : 'líneas'}`,
 } as const

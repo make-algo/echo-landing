@@ -1,65 +1,232 @@
 ---
 import Base from '../layouts/Base.astro'
-import Demo from '../components/Demo.astro'
+import Dicho from '../components/demo/Dicho.astro'
+import Escrito from '../components/demo/Escrito.astro'
 import Footer from '../components/Footer.astro'
-import Header from '../components/Header.astro'
-import Argumentos from '../components/secciones/Argumentos.astro'
-import Beta from '../components/secciones/Beta.astro'
-import ComparativaTabla from '../components/secciones/ComparativaTabla.astro'
-import ParaQuien from '../components/secciones/ParaQuien.astro'
-import Pasos from '../components/secciones/Pasos.astro'
-import Preguntas from '../components/secciones/Preguntas.astro'
-import Privacidad from '../components/secciones/Privacidad.astro'
-import { apertura } from '../content/copy'
+import WaitlistForm from '../components/WaitlistForm.astro'
+import '../styles/editor.css'
+import {
+  apertura,
+  argumentos,
+  beta,
+  comparativa,
+  demo,
+  editor,
+  paraQuien,
+  pasos,
+  preguntas,
+  privacidad,
+} from '../content/copy'
 
 /**
- * El control: las diez secciones de la landing, en su orden definitivo.
+ * La landing: la página es un búfer de texto abierto en un editor (MAK-82,
+ * ganadora de las seis direcciones; propagada a la raíz en MAK-85).
  *
- * Todo el texto visible sale de `src/content/copy.ts` y va literal; esta página
- * decide la composición, no las palabras. `/a/`, `/b/` y `/c/` reordenan la
- * misma fuente con otra idea organizadora y heredan de aquí los componentes de
- * sección.
+ * Lo que salva esta dirección del tópico «landing con estética de terminal» es
+ * que el formulario y las preguntas están DE VERDAD dentro del búfer: el alta
+ * se escribe en una línea con su marca de entrada y las preguntas se despliegan
+ * como plegado de código real —con teclado, `aria-expanded` y un contador de
+ * líneas que es una medida, no un adorno—.
+ *
+ * Y el canal de numeración no miente: cada `.ln-num` lo cuenta
+ * `src/components/editor/numeracion.ts` MIDIENDO su alto real dividido por su
+ * propio interlineado, nunca adivinando un ancho de columna. El detalle está
+ * en ese fichero.
+ *
+ * Los cinco rótulos de sección se ven como comentarios `#` del búfer pero son
+ * `<h2>` en el marcado: la apariencia es CSS, la semántica es la etiqueta.
  */
-const ogTitle = apertura.titular.join(' ')
+const titular = apertura.titular.join(' ')
+const v = editor
 ---
 
-<Base ogTitle={ogTitle}>
-  <Header />
+<Base ogTitle={titular}>
+  <main id="contenido" class="ruta-editor">
+    <div class="buf" id="buf">
+      <p class="ln-num com">{v.comentarios.cabecera}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-  <main id="contenido">
-    <!-- 1 + 2 · El titular ocupa el ancho de página; hero y demo se reparten
-         debajo a partir de 1024 px. El orden del DOM no cambia con el ancho. -->
-    <div class="first wrap">
-      <div class="first__grid">
-        <h1>
-          {apertura.titular[0]}<br class="wide" /> {apertura.titular[1]}<br class="wide" /> {
-            apertura.titular[2]
-          }
-        </h1>
+      <h1 class="ln-num">{titular}</h1>
+      <p class="ln-num com vacia">&nbsp;</p>
+      <p class="ln-num txt i1">{apertura.subtitulo}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      <p class="ln-num i1"><a class="sel-cta" href="#beta">{apertura.cta}</a></p>
+      <p class="ln-num txt i1">{apertura.requisito.aviso} {apertura.requisito.maquina}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-        <div class="hero__rest">
-          <p class="lead hero__sub">{apertura.subtitulo}</p>
-          <p class="hero__cta"><a class="btn" href="#beta">{apertura.cta}</a></p>
-          <p class="hero__req">
-            {apertura.requisito.aviso}<span class="sep"> · </span><br class="br" />{
-              apertura.requisito.maquina
-            }
-          </p>
+      <!-- LA DEMO, pieza central: el panel oscuro y la ventana clara separados
+           para que se lean como antes → después. `data-fijo`: es un objeto
+           incrustado, no texto que fluye, así que cuenta como una sola línea
+           por alto que renderice. -->
+      <p class="ln-num com">{v.comentarios.demo}</p>
+      <figure class="ln-num i1 demo-anim" id="demo" data-fijo>
+        <h2 class="sr-only">{demo.tituloOculto}</h2>
+        <p class="sr-only">{demo.descripcion}</p>
+        <div class="demo-par">
+          <Dicho />
+          <Escrito />
         </div>
+      </figure>
+      <p class="ln-num txt i1">{demo.pie}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-        <Demo />
+      <h2 class="ln-num com">{argumentos.rotulo.toLowerCase()}</h2>
+      {
+        argumentos.lista.map((a) => (
+          <>
+            <h3 class="ln-num i1">{a.titulo}</h3>
+            <p class="ln-num txt i2">{a.texto}</p>
+            <p class="ln-num com vacia">&nbsp;</p>
+          </>
+        ))
+      }
+
+      <h2 class="ln-num com">{pasos.rotulo.toLowerCase()}</h2>
+      {
+        pasos.lista.map((paso) => (
+          <>
+            <h3 class="ln-num i1">{paso.titulo}</h3>
+            <p class="ln-num txt i2">
+              {paso.partes.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}
+            </p>
+          </>
+        ))
+      }
+      <p class="ln-num com vacia">&nbsp;</p>
+
+      <!-- LA COMPARATIVA ES UN DIFF. El signo lleva el significado, no el
+           color: funciona en monocromo y para quien no distingue colores. -->
+      <p class="ln-num com" id="comparacion">{v.comentarios.comparativa}</p>
+      <h2 class="ln-num">{comparativa.titulo}</h2>
+      <p class="ln-num txt i1">{comparativa.entradilla}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      {
+        comparativa.filas.map((fila) => (
+          <>
+            <p class="ln-num hunk" data-fila-comparativa>
+              @@ {fila.criterio} @@
+            </p>
+            <p class="ln-num dl dl--del">
+              <span aria-hidden="true">−</span>
+              <span class="v2">
+                <span class="sr-only">{comparativa.columnas.macos}: </span>
+                {fila.macos}
+              </span>
+            </p>
+            <p class="ln-num dl dl--add">
+              <span aria-hidden="true">+</span>
+              <span class="v2">
+                <span class="sr-only">{comparativa.columnas.echo}: </span>
+                {fila.echo}
+              </span>
+            </p>
+          </>
+        ))
+      }
+      <p class="ln-num com vacia">&nbsp;</p>
+
+      <h2 class="ln-num">{comparativa.cierre.concesion} {comparativa.cierre.afirmacion}</h2>
+      <p class="ln-num com vacia">&nbsp;</p>
+
+      <h2 class="ln-num com" id="privacidad">{privacidad.rotulo.toLowerCase()}</h2>
+      <p class="ln-num txt i1">{privacidad.principal}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      {privacidad.notas.map((n) => <p class="ln-num txt i1">{n}</p>)}
+      <p class="ln-num com vacia">&nbsp;</p>
+
+      <h2 class="ln-num com">{paraQuien.rotulo.toLowerCase()}</h2>
+      {
+        paraQuien.parrafos.map((p) => (
+          <p class="ln-num txt i1">
+            <strong>{p.fuerte}</strong>
+            {p.resto}
+          </p>
+        ))
+      }
+      <p class="ln-num com vacia">&nbsp;</p>
+
+      <!-- LAS PREGUNTAS SON PLEGADO DE CÓDIGO, no un acordeón: cada una es un
+           <details> real, con teclado y `aria-expanded` sincronizado por el
+           script de más abajo. El contador «N líneas» de cada etiqueta plegada
+           es la misma medida que usa el canal, calculada al vuelo. -->
+      <h2 class="ln-num com" id="preguntas">{v.comentarios.preguntas}</h2>
+      <div class="faq">
+        {
+          preguntas.lista.map((q) => (
+            <details class="qa" open={q.p === '¿Se envía mi voz a algún sitio?' || undefined}>
+              <summary class="ln-num">
+                <span class="tri" aria-hidden="true">▸</span>
+                <span class="q">{q.p}</span>
+              </summary>
+              <p class="ln-num txt i1">{q.r}</p>
+            </details>
+          ))
+        }
       </div>
-    </div>
+      <p class="ln-num com vacia">&nbsp;</p>
 
-    <Argumentos />
-    <Pasos />
-    <ComparativaTabla />
-    <Privacidad />
-    <ParaQuien />
-    <Beta />
-    <Preguntas />
+      <!-- EL ALTA ES ESCRIBIR EN EL BÚFER. Ni una sola caja. -->
+      <p class="ln-num com" id="beta">{beta.titulo.toLowerCase()}</p>
+      <p class="ln-num txt i1">{beta.entradilla}</p>
+      <p class="ln-num com vacia">&nbsp;</p>
+      <WaitlistForm />
+    </div>
   </main>
 
-  <!-- 10 · Pie -->
   <Footer />
+
+  <!-- La barra de estado, con valores reales: el fichero, los dos idiomas que
+       echo mezcla dentro de una frase, y los atajos que de verdad funcionan. -->
+  <div class="ruta-editor ruta-editor-barra" aria-hidden="true">
+    <span>{v.barra.fichero}</span>
+    <span class="oculta">{v.barra.idiomas}</span>
+    <span class="sp at"><kbd>{v.atajos.ir}</kbd> <kbd>{v.atajos.comparativa}</kbd> comparativa</span>
+    <span class="at"><kbd>{v.atajos.ir}</kbd> <kbd>{v.atajos.beta}</kbd> beta</span>
+  </div>
 </Base>
+
+<script>
+  import { iniciarNumeracion } from '../components/editor/numeracion'
+
+  const buf = document.getElementById('buf')
+  if (buf) iniciarNumeracion(buf)
+
+  // El plegado de cada pregunta es un <details> nativo: el clic y el teclado
+  // (Tab, Enter, Espacio) ya funcionan solos. Lo único que el navegador no da
+  // gratis es `aria-expanded` reflejado como atributo, así que
+  // se sincroniza aquí, y con él el triángulo — el mismo estado, dos señales.
+  for (const detalles of document.querySelectorAll('details.qa')) {
+    const resumen = detalles.querySelector('summary')
+    const tri = detalles.querySelector('.tri')
+    const sincronizar = () => {
+      resumen?.setAttribute('aria-expanded', String(detalles.open))
+      if (tri) tri.textContent = detalles.open ? '▾' : '▸'
+    }
+    detalles.addEventListener('toggle', sincronizar)
+    sincronizar()
+  }
+
+  // Atajos de editor: `g` y luego `c` o `b`. No son el único camino a ningún
+  // sitio —el CTA y el scroll siguen ahí— y se callan mientras escribes.
+  let esperando = 0
+  addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement | null
+    if (e.metaKey || e.ctrlKey || e.altKey) return
+    if (t?.closest('input, textarea, select, [contenteditable]')) return
+    if (e.key === 'g') {
+      esperando = Date.now()
+      return
+    }
+    if (Date.now() - esperando > 1000) return
+    const destino = e.key === 'c' ? '#comparacion' : e.key === 'b' ? '#beta' : ''
+    if (!destino) return
+    esperando = 0
+    const el = document.querySelector<HTMLElement>(destino)
+    if (!el) return
+    el.scrollIntoView()
+    // El teclado va detrás del scroll: si no, el siguiente tabulador devuelve
+    // al visitante al principio de la página.
+    el.setAttribute('tabindex', '-1')
+    el.focus({ preventScroll: true })
+  })
+</script>

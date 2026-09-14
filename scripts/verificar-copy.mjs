@@ -2,26 +2,21 @@
 /**
  * Comprobación automática del copy sobre el HTML generado (CA-INT-5, CA-NEG-*).
  *
- * Desde MAK-82 mira LAS CUATRO RUTAS: el control y las tres variantes visuales.
- * Antes solo miraba `dist/index.html`, así que las variantes se habrían
- * desplegado sin red y «comprobaciones en verde» no habría significado nada.
+ * Mira `dist/index.html`: desde MAK-85 la landing en editor es la única ruta,
+ * ganadora de las seis direcciones de MAK-82.
  *
- * Falla si alguna de las redacciones innegociables no aparece literal en alguna
- * de las cuatro, o si aparece alguna de las cadenas prohibidas. Es lo que hace
- * que esto no dependa de que alguien se acuerde en la revisión.
+ * Falla si alguna de las redacciones innegociables no aparece literal, si
+ * aparece alguna de las cadenas prohibidas, o si el esqueleto de encabezados
+ * se rompe (MAK-85: la regresión de encabezados que esta comprobación no
+ * cazó la primera vez). Es lo que hace que esto no dependa de que alguien se
+ * acuerde en la revisión.
  *
  *   npm run build && npm run verificar
  */
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
-/** El control y las tres variantes. Las cuatro sirven el mismo copy. */
-const RUTAS = [
-  ['control /', 'dist/index.html'],
-  ['variante /a/', 'dist/a/index.html'],
-  ['variante /b/', 'dist/b/index.html'],
-  ['variante /c/', 'dist/c/index.html'],
-]
+const RUTAS = [['landing /', 'dist/index.html']]
 
 const faltan = RUTAS.filter(([, f]) => !existsSync(f))
 if (faltan.length) {
@@ -239,6 +234,25 @@ for (const [ruta, fichero] of RUTAS) {
     else desde = donde
   }
 
+  // --- MAK-85 · el esqueleto de encabezados no puede perderse. Los cinco
+  //     rótulos de sección se ven como comentarios `#` del búfer, pero tienen
+  //     que seguir siendo <h2> para quien navega saltando por encabezados: si
+  //     no, se queda sin el esqueleto de la página.
+  const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
+    visible(inner).toLowerCase()
+  )
+  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
+  const ROTULOS_H2 = [
+    'qué hace distinto',
+    'qué pasa cuando sueltas la tecla',
+    'qué sale de tu mac y qué no',
+    'para quién es',
+    'preguntas',
+  ]
+  for (const rotulo of ROTULOS_H2) {
+    if (!h2s.some((h) => h.includes(rotulo))) mal(ruta, `el rótulo «${rotulo}» no es un <h2>`)
+  }
+
   // --- CA-ENV-3 · el honeypot tiene que llamarse como el campo nativo del
   //     proveedor. Con otro nombre el antispam no hace nada y no se nota hasta
   //     que llega el spam.
@@ -250,14 +264,6 @@ for (const [ruta, fichero] of RUTAS) {
 
   if (fallos.length === errores) console.log(`ok  ${ruta} · copy, metadatos, comparativa, alta y árbol de accesibilidad`)
 }
-
-// --- CA-NEG-1 en el control, donde la comparativa sí es una tabla: la fila
-//     «Precio — Gratis / Por anunciar» enfrentaba un hecho del rival con un
-//     interrogante nuestro en la única pieza cuya función es ganar.
-const tabla = readFileSync('dist/index.html', 'utf8').match(/<table[\s\S]*?<\/table>/)?.[0] ?? ''
-const precios = ['Precio', 'Gratis', 'Por anunciar'].filter((c) => tabla.includes(c))
-if (precios.length) fallos.push(`control /: CA-NEG-1: la tabla habla de precio (${precios.join(', ')})`)
-else console.log('ok  CA-NEG-1 · ningún precio en la tabla del control')
 
 // --- Sin recursos de terceros (CA-NEG-9), en TODAS las páginas construidas y en
 //     el CSS. Se miran solo los atributos de CARGA: un <a href> a un dominio ajeno
@@ -316,14 +322,12 @@ if (!/User-agent:\s*\*/.test(robots) || !/Disallow:\s*\/\s*$/m.test(robots))
   fallos.push('el robots.txt ya no bloquea todo el sitio')
 else console.log('ok  robots.txt · sigue bloqueando la versión de prueba')
 
-// --- Las variantes no entran en el sitemap: son pestañas de revisión, no
-//     páginas del sitio.
+// --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no
+//     entran en el sitemap.
 const sitemap = readFileSync('dist/sitemap-0.xml', 'utf8')
 const enSitemap = (sitemap.match(/<loc>([^<]*)<\/loc>/g) ?? []).length
-const variantesEnSitemap = /\/echo-landing\/[abc]\//.test(sitemap)
-if (enSitemap !== 1 || variantesEnSitemap)
-  fallos.push(`el sitemap tiene ${enSitemap} URL y ${variantesEnSitemap ? 'incluye' : 'no incluye'} variantes`)
-else console.log('ok  sitemap · una sola URL, sin variantes')
+if (enSitemap !== 1) fallos.push(`el sitemap tiene ${enSitemap} URL y debería tener una`)
+else console.log('ok  sitemap · una sola URL')
 
 if (fallos.length) {
   console.error('\nFALLA la comprobación de copy:\n' + fallos.map((f) => `  ✗ ${f}`).join('\n'))
