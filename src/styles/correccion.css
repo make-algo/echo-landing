@@ -107,21 +107,24 @@
   stroke-linecap: round;
 }
 
-/* La inserción: lo que la mano escribe encima, con su llamada. */
+/* La inserción: lo que la mano escribe encima, con su llamada.
+   Va en su propia línea siempre: como bloque de ~24 caracteres compite por el
+   ancho de la columna de `.sucio` en cualquier viewport (no solo en móvil), un
+   inline-block que a veces cabe y a veces no deja el `^` de la llamada
+   colgando bajo una línea huérfana, desconectado de dónde sigue la frase
+   (MAK-106). Una sola línea propia, siempre, es lo único que no depende de
+   dónde caiga el salto. */
 .ruta-correccion .ins {
-  display: inline-block;
+  display: block;
   position: relative;
   color: var(--c-rojo);
-  font: 500 0.26em / 1.2 var(--font-mono);
+  font: 500 0.3em / 1.2 var(--font-mono);
   letter-spacing: 0;
-  vertical-align: 0.9em;
-  margin-inline: 0.15em;
+  margin: 0.2em 0 0.3em;
 }
 .ruta-correccion .ins::before {
   content: '^';
-  position: absolute;
-  left: 0;
-  top: 1.15em;
+  margin-right: 0.4em;
   font-weight: 700;
 }
 
@@ -454,18 +457,6 @@
 }
 
 @media (max-width: 819px) {
-  /* La marca de inserción no cabe flotando sobre un titular de 32 px: pasa a
-     ser una línea propia, que es como se anota un margen estrecho. */
-  .ruta-correccion .ins {
-    display: block;
-    font-size: 0.3em;
-    vertical-align: baseline;
-    margin: 0.2em 0 0.3em;
-  }
-  .ruta-correccion .ins::before {
-    position: static;
-    margin-right: 0.4em;
-  }
   .ruta-correccion .sucio {
     max-width: none;
     font-size: clamp(1.625rem, 1rem + 3vw, 2.25rem);
