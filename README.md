@@ -50,7 +50,7 @@ import { url, absoluteUrl } from '../lib/site'
 ## La lista de espera
 
 No hay formulario ni backend propio: el botón del alta es un enlace `mailto:` a
-`info.makealgo@gmail.com` con el asunto y las dos preguntas ya escritas en el
+`hola@make-algo.com` con el asunto y las dos preguntas ya escritas en el
 cuerpo. El envío lo hace el cliente de correo del visitante; esta página no
 guarda ni transmite nada, así que no hace falta ninguna variable de entorno.
 
