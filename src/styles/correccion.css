@@ -240,26 +240,33 @@
   gap: 0;
 }
 
-/* --- EL CICLO: se dicta, se corrige, se pega — en bucle, sin esperar al scroll
-       (MAK-113, recupera la mecánica de docs/design/landing.md §4 sobre la piel
-       actual). Las dos capas ocupan la MISMA celda de grid: el alto de la caja
-       lo fija la más alta de las dos, así el cambio de una a otra es un cruce
-       de opacidad sin robarle ni un píxel al layout (CLS 0, ninguna capa se
-       saca del árbol). Solo `transform`/`opacity` se animan.
+/* --- EL CICLO: se dicta tecleando, se corrige, se pega — en bucle, sin
+       esperar al scroll (MAK-113, retimed en MAK-129 para que el dictado se
+       teclee carácter a carácter en vez de pegarse de golpe — instrucción
+       explícita de Álvaro, ver docs/product/mak-128-tecleo-antes-de-corregir.md).
+       Las dos capas ocupan la MISMA celda de grid: el alto de la caja lo fija
+       la más alta de las dos, así el cambio de una a otra es un cruce de
+       opacidad sin robarle ni un píxel al layout (CLS 0, ninguna capa se saca
+       del árbol). Solo `transform`/`opacity` se animan — salvo revelar cada
+       carácter, que es alternar opacidad de un span que ya estaba en el DOM,
+       no reflow.
 
-       El bruto usa el MISMO chrome de ventana (`.win`) que `<Escrito />` y el
-       MISMO tachado/inserción ya aprobados de la apertura (`.tach`/`.ins` de la
-       columna izquierda) — ninguna palabra nueva. Sus marcas llevan clase
-       propia (`.ciclo__tach`/`.ciclo__ins`, no `.tach`/`.ins`) para que
-       `correccion/tachado.ts` nunca las mida: medir en cada fotograma habría
-       metido JS de más durante el movimiento (spec MAK-113 §5), así que aquí
-       el trazo es `text-decoration` plano siempre, no solo mientras anima.
+       `correccion/ciclo.ts` orquesta las fases con un atributo `data-fase` en
+       `.ciclo` (tecleo → correccion → pegado → sostenido → reposo); estas
+       reglas solo pintan lo que ese atributo dice. El bruto usa el MISMO
+       chrome de ventana (`.win`) que `<Escrito />` y el MISMO tachado/inserción
+       ya aprobados de la apertura (`.tach`/`.ins` de la columna izquierda) —
+       ninguna palabra nueva. Sus marcas llevan clase propia (`.ciclo__tach`/
+       `.ciclo__ins`, no `.tach`/`.ins`) para que `correccion/tachado.ts` nunca
+       las mida: medir en cada fotograma habría metido JS de más durante el
+       movimiento (spec MAK-113 §5), así que aquí el trazo es `text-decoration`
+       plano siempre, no solo mientras anima.
 
-       Sin JS y con `prefers-reduced-motion` no hace falta ninguna regla extra:
-       el apagón global de animaciones (ver `global.css`) basta, porque el
-       valor base (no animado) de cada capa YA es el fotograma de reposo — el
-       bruto en `opacity: 0` y el final en `opacity: 1` — que es exactamente lo
-       que se ve hoy sin este cambio. */
+       Sin JS, `ciclo.ts` nunca arranca y `.ciclo` nunca tiene `data-fase`: el
+       valor base de cada capa YA es el fotograma de reposo — el bruto en
+       `opacity: 0` y el final en `opacity: 1`. Con `prefers-reduced-motion`,
+       `ciclo.ts` comprueba la media query y no arranca tampoco, por lo que se
+       cae al mismo fotograma final directo — nunca a medio teclear. */
 .ciclo {
   display: grid;
 }
@@ -269,11 +276,29 @@
 .ciclo__bruto {
   opacity: 0;
   transform: translateY(6px);
-  animation: ciclo-bruto 18s ease-in-out infinite;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.ciclo[data-fase='tecleo'] .ciclo__bruto,
+.ciclo[data-fase='correccion'] .ciclo__bruto,
+.ciclo[data-fase='pegado'] .ciclo__bruto {
+  opacity: 1;
+  transform: translateY(0);
 }
 .ciclo__final {
   transform-origin: 50% 40%;
-  animation: ciclo-final 18s ease-in-out infinite;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.ciclo[data-fase='tecleo'] .ciclo__final,
+.ciclo[data-fase='correccion'] .ciclo__final {
+  opacity: 0;
+  transform: scale(0.98);
+}
+/* El destello: un breve rebote por encima de 1 marca el instante del pegado,
+   no un fundido cualquiera — es el golpe, no la aparición. */
+.ciclo[data-fase='pegado'] .ciclo__final {
+  opacity: 1;
+  transform: scale(1.015);
+  transition: opacity 0.12s ease, transform 0.12s ease;
 }
 .ciclo__caret {
   display: inline-block;
@@ -285,15 +310,25 @@
   background: var(--c-ink);
   margin-right: 0.15em;
   opacity: 0;
-  animation: ciclo-caret 18s ease-in-out infinite;
+}
+.ciclo[data-fase='tecleo'] .ciclo__caret {
+  opacity: 1;
+  animation: ciclo-caret 0.9s steps(1, end) infinite;
 }
 .ciclo__texto {
   font-size: 1.0625rem;
 }
+/* Cada carácter ya ocupa su hueco final desde el primer fotograma (CLS 0):
+   «teclear» es solo alternar opacidad, nunca insertar ni quitar texto. */
+.ciclo__texto .cc {
+  opacity: 0;
+}
+.ciclo__texto .cc.cc--on {
+  opacity: 1;
+}
 .ciclo__tach,
 .ciclo__ins {
-  animation: ciclo-marca 18s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
+  transition: opacity 0.3s ease;
 }
 /* Mismo dibujo que `.tach`/`.ins`, deliberadamente sin compartir selector con
    ellos (ver nota de arriba: esto es lo que las excluye de tachado.ts). */
@@ -316,84 +351,44 @@
   margin-right: 0.25em;
   font-weight: 700;
 }
-
-/* Fases, en % de los 18 s del ciclo: reposo (el fotograma final sostenido) →
-   se dicta (el bruto sube y aparece) → se corrige en movimiento (las marcas
-   se activan con vaivén, siempre `text-decoration` plano) → se pega de golpe
-   con un destello (nunca letra a letra: echo pega, no teclea) → se sostiene →
-   reinicia. 0 % y 100 % son el mismo fotograma para que el bucle no salte. */
-@keyframes ciclo-bruto {
-  0%,
-  14% {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  22% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  64%,
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+/* Mientras se teclea, el texto en bruto se lee limpio: ni tachado ni
+   inserción destacada todavía — son el mismo texto ya tecleado, solo que la
+   corrección aún no ha llegado (spec MAK-129 §1). */
+.ciclo[data-fase='tecleo'] .ciclo__tach {
+  color: inherit;
+  text-decoration: none;
 }
-@keyframes ciclo-final {
-  0%,
-  12% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  17% {
-    opacity: 0;
-    transform: scale(1);
-  }
-  62% {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  /* El destello: un breve rebote por encima de 1 marca el instante del
-     pegado, no un fundido cualquiera — es el golpe, no la aparición. */
-  66% {
-    opacity: 1;
-    transform: scale(1.015);
-  }
-  72%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.ciclo[data-fase='tecleo'] .ciclo__ins {
+  color: inherit;
+  font: inherit;
+  letter-spacing: normal;
+  vertical-align: baseline;
+  margin-inline: 0;
+}
+.ciclo[data-fase='tecleo'] .ciclo__ins::before {
+  content: none;
+}
+/* El vaivén de opacidad con el que aparece cada marca, disparado una vez por
+   vuelta cuando el tecleo termina — no un bucle infinito como antes. */
+.ciclo__tach.marca-on,
+.ciclo__ins.marca-on {
+  animation: ciclo-marca 0.9s ease-in-out both;
+  animation-delay: var(--d, 0s);
 }
 @keyframes ciclo-caret {
   0%,
-  15% {
-    opacity: 0;
-  }
-  18%,
-  20%,
-  22%,
-  58% {
+  100% {
     opacity: 1;
   }
-  19%,
-  21% {
-    opacity: 0;
-  }
-  60%,
-  100% {
+  50% {
     opacity: 0;
   }
 }
 @keyframes ciclo-marca {
-  0%,
-  35% {
+  0% {
     opacity: 0.3;
   }
-  45%,
+  60%,
   100% {
     opacity: 1;
   }

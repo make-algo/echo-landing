@@ -34,6 +34,39 @@ import '../styles/correccion.css'
  */
 const v = correccion
 const titular = apertura.titular.join(' ')
+
+/**
+ * Fase de tecleo del ciclo (MAK-129): el texto en bruto se revela carácter a
+ * carácter en vez de pegarse de golpe (mak-113 §2 revertido para esta fase
+ * por instrucción explícita de Álvaro, ver mak-128). Cada carácter va en su
+ * propio span para poder revelarlo con opacidad sin reflow (CLS 0): el bloque
+ * ya ocupa su tamaño final desde el primer fotograma. El orden y el texto son
+ * los mismos que ya aprobó Álvaro, solo se envuelve carácter a carácter.
+ */
+function letras(texto: string) {
+  return Array.from(texto)
+    .map((c) => {
+      const seguro = c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c
+      return `<span class="cc">${seguro}</span>`
+    })
+    .join('')
+}
+const segmentosCiclo = [
+  { texto: 'eh…', clase: 'ciclo__tach', delay: '0s' },
+  { texto: ' hablas y aparece escrito', clase: null },
+  { texto: ', o sea', clase: 'ciclo__tach', delay: '.5s' },
+  { texto: ', sin muletillas, ', clase: null },
+  { texto: 'sin ir diciendo coma, punto,', clase: 'ciclo__tach', delay: '1s' },
+  { texto: v.insercion, clase: 'ciclo__ins', delay: '1.2s' },
+  { texto: ' ', clase: null },
+  { texto: 'y eh,', clase: 'ciclo__tach', delay: '1.6s' },
+  { texto: ' sin cambiar de idioma', clase: null },
+] as const
+const cicloTextoHTML = segmentosCiclo
+  .map((s) =>
+    s.clase ? `<span class="${s.clase}" style="--d: ${s.delay}">${letras(s.texto)}</span>` : letras(s.texto)
+  )
+  .join('')
 ---
 
 <Base ogTitle={titular}>
@@ -76,17 +109,7 @@ const titular = apertura.titular.join(' ')
             <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
             <div class="win__rule"></div>
             <div class="win__body">
-              <span class="ciclo__caret"></span><span class="ciclo__texto"
-                ><span class="ciclo__tach" style="--d: 0s">eh…</span> hablas y aparece escrito<span
-                  class="ciclo__tach"
-                  style="--d: .5s">, o sea</span
-                >, sin muletillas, <span class="ciclo__tach" style="--d: 1s"
-                  >sin ir diciendo coma, punto,</span
-                ><span class="ciclo__ins" style="--d: 1.2s">{v.insercion}</span> <span
-                  class="ciclo__tach"
-                  style="--d: 1.6s">y eh,</span
-                > sin cambiar de idioma</span
-              >
+              <span class="ciclo__caret"></span><span class="ciclo__texto" set:html={cicloTextoHTML} />
             </div>
           </div>
           <div class="ciclo__final">
@@ -241,10 +264,13 @@ const titular = apertura.titular.join(' ')
 <script>
   import { iniciarTachado } from '../components/correccion/tachado'
   import { iniciarFaq } from '../components/correccion/faq'
+  import { iniciarCiclo } from '../components/correccion/ciclo'
 
   const contenido = document.getElementById('contenido')
   if (contenido) {
     iniciarTachado(contenido)
     iniciarFaq(contenido)
   }
+  const ciclo = document.querySelector<HTMLElement>('.ciclo')
+  if (ciclo) iniciarCiclo(ciclo)
 </script>
