@@ -8,8 +8,9 @@ gratuito. El código de la app vive en el repo privado `make-algo/echo`, y ahí 
 quedan la estrategia, el pricing y cualquier documento interno. Aquí no va ningún
 secreto: ni claves, ni tokens, ni datos de clientes.
 
-- **Versión de prueba**: https://make-algo.github.io/echo-landing/ — con `noindex`
-  y `robots.txt` bloqueado: no se difunde el enlace hasta que haya lanzamiento.
+- **Landing**: https://make-algo.github.io/echo-landing/ — indexable desde el
+  15-09-2026 (decisión humana explícita en MAK-71). Sigue en el dominio de GitHub
+  Pages: conectar un dominio propio es una tarea aparte, sin fecha.
 - **Stack**: Astro 5 + Tailwind 4 (`@tailwindcss/vite`), salida estática, cero
   JavaScript de cliente salvo donde haga falta.
 - **Despliegue**: automático en cada push a `main` vía GitHub Actions
@@ -30,8 +31,9 @@ npm run verificar # comprueba el copy sobre dist/ (hay que construir antes)
 `npm run verificar` lee `dist/index.html` y falla si alguna de las tres
 redacciones innegociables (privacidad, cierre de la comparativa y «para quién no
 es») no aparece literal, si aparece alguna cadena prohibida, si los metadatos se
-salen de sus límites, si hay algún recurso de un dominio ajeno o si falta el
-`noindex`. Construye antes: se ejecuta sobre la salida, no sobre el código.
+salen de sus límites, si hay algún recurso de un dominio ajeno o si el `noindex`
+o el bloqueo de `robots.txt` reaparecen sin que un humano lo pida otra vez.
+Construye antes: se ejecuta sobre la salida, no sobre el código.
 
 ## El `base` del sitio
 
@@ -54,5 +56,6 @@ guarda ni transmite nada, así que no hace falta ninguna variable de entorno.
 
 ## Qué no se hace sin aprobación humana
 
-Conectar un dominio propio, quitar el `noindex` y desbloquear `robots.txt`, y enviar
-emails reales a la lista de espera.
+Conectar un dominio propio, y enviar emails reales a la lista de espera (el
+`mailto:` los manda el propio visitante, no nosotros). Quitar el `noindex` y
+desbloquear `robots.txt` ya se hizo, con aprobación explícita en MAK-71.
