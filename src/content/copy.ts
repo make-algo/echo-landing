@@ -8,17 +8,14 @@
  * - Los espacios duros van como ` ` dentro de la cadena, no como entidad:
  *   así el texto es una sola cadena comparable y `scripts/verificar-copy.mjs`
  *   puede exigirlo literal.
- * - Donde la composición parte una frase en dos elementos (el cierre, el pie
- *   de la demo), la frase vive aquí entera y partida en trozos contiguos.
+ * - Donde la composición parte una frase en dos elementos (el cierre),
+ *   la frase vive aquí entera y partida en trozos contiguos.
  *   Ninguna composición puede meter nada entre ellos: la comprobación de
  *   copy exige la frase seguida en el HTML generado.
  */
 
 /** Micro-texto de interfaz recreada dentro de la demo. No es copy de página. */
 export const demo = {
-  tituloOculto: 'Así se ve',
-  descripcion:
-    'Un dictado con muletillas convertido en un párrafo limpio dentro de un correo. Se mantiene pulsada una tecla, echo transcribe lo dicho con sus muletillas y repeticiones, y al soltarla pega en el correo el mismo texto ya limpio y puntuado.',
   ventana: {
     barra: 'Nuevo mensaje',
     para: { etiqueta: 'Para:', valor: 'equipo@' },
@@ -32,8 +29,6 @@ export const demo = {
     unidad: 's',
     tiempos: ['0,0', '0,6', '1,2', '1,8', '1,8'],
   },
-  /** CA · va literal y SEGUIDO: ninguna composición puede partirlo en dos cajas. */
-  pie: 'Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la beta.',
 } as const
 
 export const cabecera = {
