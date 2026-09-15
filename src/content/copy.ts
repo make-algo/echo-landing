@@ -58,7 +58,7 @@ export const argumentos = {
     {
       titulo: 'Limpia el texto, no solo lo transcribe',
       texto:
-        'Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta («el martes, no, mejor el jueves») y puntúa sola. También adapta el formato a donde estés escribiendo: párrafos y saludo en un correo, texto plano en un editor o una terminal.',
+        'Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta («el martes, no, mejor el jueves») y puntúa sola.',
     },
     {
       titulo: 'Español con inglés técnico en medio',
@@ -210,15 +210,11 @@ export const preguntas = {
   lista: [
     {
       p: '¿Necesito pagar Claude?',
-      r: 'Vale Claude Pro o Max, y también ChatGPT Plus. No te pedimos que contrates nada nuevo, sino que lo que ya pagas haga una cosa más. Y si no tienes ninguna de las dos, echo funciona con el pulido desactivado: transcripción local y puntuación por voz.',
+      r: 'Vale Claude Pro o Max, y también ChatGPT Plus: lo que ya pagas hace una cosa más. Sin ninguna de las dos, echo sigue funcionando con el pulido desactivado: transcripción local y puntuación por voz.',
     },
     {
       p: '¿Se envía mi voz a algún sitio?',
-      r: 'No. La transcripción es local siempre. Con el pulido activado sale el texto ya transcrito, no el audio, y va a tu propia cuenta de Claude o ChatGPT. Con el pulido desactivado no sale nada.',
-    },
-    {
-      p: '¿En qué se diferencia del dictado que ya trae el Mac?',
-      r: 'El de macOS transcribe literalmente: tus muletillas, y la puntuación la dictas tú. Va a un idioma fijo y no sabe en qué app estás escribiendo. Si dictas frases sueltas, te sobra con él.',
+      r: 'No, nunca. La transcripción es local. Con el pulido activado sale el texto —no el audio— a tu propia cuenta de Claude o ChatGPT; desactivado, no sale nada.',
     },
     {
       p: '¿Cuánto tarda?',
