@@ -247,8 +247,8 @@ for (const [ruta, fichero] of RUTAS) {
   }
 
   // --- El alta es un mailto directo: nada de formulario, y al buzón correcto.
-  if (!/href="mailto:info\.makealgo@gmail\.com\?/.test(html))
-    mal(ruta, 'el enlace de la lista de espera no apunta a info.makealgo@gmail.com')
+  if (!/href="mailto:hola@make-algo\.com\?/.test(html))
+    mal(ruta, 'el enlace de la lista de espera no apunta a hola@make-algo.com')
   if (/<form\b/i.test(html)) mal(ruta, 'sigue habiendo un <form> en la página del alta')
 
   // --- El sitio no puede contradecirse sobre quién procesa el formulario.
