@@ -1,3 +1,3 @@
-# Versión de prueba: fuera de los buscadores hasta el lanzamiento.
+# Indexable desde el 15-09-2026 por decisión humana explícita (MAK-71).
 User-agent: *
-Disallow: /
+Allow: /

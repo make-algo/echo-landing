@@ -307,19 +307,21 @@ else
     `ok  CA-NEG-9 · ningún recurso de terceros (${paginas.length} páginas, ${hojas.length} hojas de estilo)`
   )
 
-// --- Ninguna página de la versión de prueba se indexa
-const sinNoindex = paginas.filter(
-  (f) => !/<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
+// --- Indexable desde el 15-09-2026 (decisión humana explícita en MAK-71): ninguna
+//     página lleva `noindex`. Si alguien lo reintroduce sin que el humano lo pida
+//     otra vez, el despliegue se cae aquí igual que antes se caía por lo contrario.
+const conNoindex = paginas.filter(
+  (f) => /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
 )
-if (sinNoindex.length) fallos.push(`Falta el noindex en: ${sinNoindex.join(', ')}`)
-else console.log(`ok  noindex en las ${paginas.length} páginas construidas`)
+if (conNoindex.length) fallos.push(`noindex no debería estar en: ${conNoindex.join(', ')}`)
+else console.log(`ok  sin noindex en las ${paginas.length} páginas construidas`)
 
-// --- Y el robots.txt sigue bloqueando todo. Desbloquearlo es una decisión
-//     humana, así que si alguien lo toca el despliegue se cae aquí.
+// --- Y el robots.txt ya no bloquea el sitio. Volver a bloquearlo es una decisión
+//     humana, así que si alguien lo toca sin pedirlo el despliegue se cae aquí.
 const robots = readFileSync('dist/robots.txt', 'utf8')
-if (!/User-agent:\s*\*/.test(robots) || !/Disallow:\s*\/\s*$/m.test(robots))
-  fallos.push('el robots.txt ya no bloquea todo el sitio')
-else console.log('ok  robots.txt · sigue bloqueando la versión de prueba')
+if (/Disallow:\s*\/\s*$/m.test(robots))
+  fallos.push('el robots.txt vuelve a bloquear el sitio')
+else console.log('ok  robots.txt · el sitio es indexable')
 
 // --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no
 //     entran en el sitemap.
