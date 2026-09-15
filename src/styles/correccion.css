@@ -138,12 +138,6 @@
   top: 0;
   bottom: 0;
 }
-.ruta-correccion .nota {
-  font: 400 var(--text-micro) / 1.35 var(--font-mono);
-  color: var(--c-rojo);
-  letter-spacing: 0.02em;
-}
-
 /* --- LAS DOS VOCES. Display pesado para lo que se dijo, ligero para lo que se
        escribe, y monoespaciada solo para la voz de la máquina. Dos familias, no
        tres. Y las escalas bien separadas, para que se lean como antes/después y
@@ -416,34 +410,6 @@
   width: 3px;
 }
 
-/* --- LA DEMO: la galerada entera. Lo que dijiste arriba, lo que queda debajo. */
-.ruta-correccion .galerada {
-  font-weight: 800;
-  font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
-  line-height: 1.45;
-  letter-spacing: -0.02em;
-  max-width: 30ch;
-}
-.ruta-correccion .resultado {
-  border-top: 6px solid var(--c-ink);
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  max-width: 40rem;
-}
-.ruta-correccion .resultado .campos {
-  font: 400 var(--text-small) / 1.5 var(--font-mono);
-  color: var(--c-ink-2);
-}
-.ruta-correccion .resultado .campos b {
-  color: var(--c-ink);
-  font-weight: 500;
-}
-.ruta-correccion .resultado .texto {
-  font-size: 1.1875rem;
-  line-height: 1.5;
-  margin-top: 0.75rem;
-}
-
 /* --- LA COMPARATIVA SON CUATRO CORRECCIONES, ni una más ------------------- */
 .ruta-correccion .corr {
   border-top: 2px solid var(--c-ink);
@@ -577,17 +543,15 @@
   color: var(--c-ink-2);
 }
 
-/* --- EL HUECO DEL ESCRITORIO. Fuera de la apertura (con su columna fija) y de
-       la demo (ancho completo), el resto de la página es una sola columna de
-       prosa: en 1440 px eso deja el lado derecho vacío en los actos más largos
-       en vertical. Ninguna tramo de la página es aire sin trabajo, así que ese
-       hueco lleva una nota de margen real —texto que se lee en voz alta igual
-       que el resto, no decoración— en el mismo vocabulario mono-rojo de
-       `.rubric`/`.nota`. Descartado: un contador animado por scroll (JS extra,
-       riesgo de jank, y la densidad de marcas que ya baja acto a acto cuenta
-       esa historia sin necesitar un número que se mueva) y estirar la ventana
-       de correo del Acto 2 en `sticky` el resto de la página (queda flotando
-       sin relación con el texto de al lado). MAK-85, punto 2.4. --------------- */
+/* --- EL HUECO DEL ESCRITORIO. Fuera de la apertura (con su columna fija), el
+       resto de la página es una sola columna de prosa: en 1440 px eso deja el
+       lado derecho vacío en los actos más largos en vertical. Ninguna tramo de
+       la página es aire sin trabajo, así que ese hueco lleva una nota de
+       margen real —texto que se lee en voz alta igual que el resto, no
+       decoración— en el mismo vocabulario mono-rojo de `.rubric`. Descartado:
+       un contador animado por scroll (JS extra, riesgo de jank, y la densidad
+       de marcas que ya baja acto a acto cuenta esa historia sin necesitar un
+       número que se mueva). MAK-85, punto 2.4. --------------------------------- */
 @media (min-width: 1024px) {
   .ruta-correccion .acto--margen {
     display: grid;
@@ -615,8 +579,5 @@
   .ruta-correccion .sucio {
     max-width: none;
     font-size: clamp(1.625rem, 1rem + 3vw, 2.25rem);
-  }
-  .ruta-correccion .galerada {
-    max-width: none;
   }
 }

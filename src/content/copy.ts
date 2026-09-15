@@ -32,14 +32,6 @@ export const demo = {
     unidad: 's',
     tiempos: ['0,0', '0,6', '1,2', '1,8', '1,8'],
   },
-  /** Los cinco tramos del dictado. `fuera` es lo que echo quita (va tachado). */
-  dictado: [
-    { fuera: 'eh… ', queda: '' },
-    { fuera: 'hacemos el deploy, ', queda: 'hacemos el deploy del backend en GitHub ' },
-    { fuera: 'el martes, no, mejor ', queda: 'el jueves, ' },
-    { fuera: 'y eh, ', queda: 'lo comentamos ' },
-    { fuera: '', queda: 'en la daily' },
-  ],
   /** CA · va literal y SEGUIDO: ninguna composición puede partirlo en dos cajas. */
   pie: 'Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la beta.',
 } as const
@@ -276,7 +268,6 @@ export const saltar = 'Saltar al contenido'
 export const correccion = {
   capaSucia: 'dictado en bruto · sin editar',
   capaLimpia: 'pegado en tu app · ya editado',
-  grabando: '⌥ espacio mantenido · grabando',
   /** La corrección que la mano escribe encima del dictado de la apertura. */
   insercion: 'sin dictar la puntuación',
   /**

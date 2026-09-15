@@ -119,33 +119,6 @@ const cicloTextoHTML = segmentosCiclo
       </div>
     </section>
 
-    <!-- ACTO 2 · la galerada entera -->
-    <section class="acto" style="margin-top: clamp(3rem, 7vw, 6rem)">
-      <span class="banda" aria-hidden="true"></span>
-      <div class="regla" aria-hidden="true"></div>
-      <figure id="demo">
-        <h2 class="sr-only">{demo.tituloOculto}</h2>
-        <p class="sr-only">{demo.descripcion}</p>
-        <p class="nota">{v.grabando}</p>
-        <p class="galerada" aria-hidden="true" style="margin-top: 1rem">
-          {
-            demo.dictado.map((t) => (
-              <>{t.fuera && <span class="tach">{t.fuera.trim()}</span>}{t.fuera && ' '}{t.queda}</>
-            ))
-          }
-        </p>
-        <div class="resultado">
-          <p class="campos" aria-hidden="true">
-            <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor} · <b
-              >{demo.ventana.asunto.etiqueta}</b
-            > {demo.ventana.asunto.valor}
-          </p>
-          <p class="texto">{demo.ventana.cuerpo}<span class="caret" aria-hidden="true"></span></p>
-        </div>
-        <figcaption class="c-dim" style="margin-top: 1rem">{demo.pie}</figcaption>
-      </figure>
-    </section>
-
     <!-- ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más -->
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <span class="banda" aria-hidden="true"></span>

@@ -49,8 +49,8 @@ const VACIAS = new Set(['br', 'img', 'input', 'hr', 'meta', 'link', 'source', 'c
  * con `aria-hidden="true"`. Es lo que oye quien usa un lector de pantalla.
  *
  * Hace falta porque las variantes pintan encima capas sucias —la onda, el
- * dictado tachado, la galerada corregida— y la promesa tiene que llegar
- * primera y entera en voz alta, no segunda y descuartizada.
+ * dictado tachado— y la promesa tiene que llegar primera y entera en voz
+ * alta, no segunda y descuartizada.
  */
 function accesible(html) {
   let salida = ''
@@ -99,7 +99,6 @@ function accesible(html) {
 const ORDEN = [
   ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
   ['subtítulo', 'Dictado para Mac. La voz se transcribe en tu propio ordenador'],
-  ['pie de la demo', 'Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la beta.'],
   ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
@@ -122,11 +121,6 @@ const INNEGOCIABLES = [
     'CA-INT-2 · cierre de la comparativa',
     `Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando
      dictas párrafos y te cansa editarlos después.`,
-  ],
-  [
-    'pie de la demo · una sola línea',
-    `Mantienes una tecla, hablas, la sueltas. Recreación de la interfaz; el vídeo real llega con la
-     beta.`,
   ],
   [
     'CA-FORM-6 · microcopy bajo el botón',
@@ -240,7 +234,7 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
+  if (h2s.length !== 7) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta siete`)
   const ROTULOS_H2 = [
     'qué hace distinto',
     'qué pasa cuando sueltas la tecla',
