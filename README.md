@@ -8,9 +8,9 @@ gratuito. El código de la app vive en el repo privado `make-algo/echo`, y ahí 
 quedan la estrategia, el pricing y cualquier documento interno. Aquí no va ningún
 secreto: ni claves, ni tokens, ni datos de clientes.
 
-- **Landing**: https://make-algo.github.io/echo-landing/ — indexable desde el
-  15-09-2026 (decisión humana explícita en MAK-71). Sigue en el dominio de GitHub
-  Pages: conectar un dominio propio es una tarea aparte, sin fecha.
+- **Landing**: https://echo.make-algo.com/ — indexable desde el 15-09-2026
+  (decisión humana explícita en MAK-71). Dominio propio conectado en GitHub
+  Pages (`public/CNAME`); `make-algo.github.io/echo-landing/` redirige aquí.
 - **Stack**: Astro 5 + Tailwind 4 (`@tailwindcss/vite`), salida estática, cero
   JavaScript de cliente salvo donde haga falta.
 - **Despliegue**: automático en cada push a `main` vía GitHub Actions
@@ -20,7 +20,7 @@ secreto: ni claves, ni tokens, ni datos de clientes.
 
 ```bash
 npm install
-npm run dev      # desarrollo en http://localhost:4321/echo-landing/
+npm run dev      # desarrollo en http://localhost:4321/
 npm run build    # salida estática en dist/
 npm run preview  # sirve dist/ como lo verá Pages
 npm run verificar # comprueba el copy sobre dist/ (hay que construir antes)
@@ -37,14 +37,15 @@ Construye antes: se ejecuta sobre la salida, no sobre el código.
 
 ## El `base` del sitio
 
-`astro.config.mjs` fija `site: 'https://make-algo.github.io'` y `base: '/echo-landing'`.
-Ninguna ruta ni ningún asset puede escribirse absoluto desde la raíz del dominio o se
-romperá al publicar. Usa los ayudantes de `src/lib/site.ts`:
+`astro.config.mjs` fija `site: 'https://echo.make-algo.com'`, sin `base` (se sirve
+desde la raíz). Aun así ninguna ruta ni ningún asset se escribe absoluto a mano:
+si el sitio vuelve a moverse, el único cambio es `astro.config.mjs`. Usa los
+ayudantes de `src/lib/site.ts`:
 
 ```astro
 import { url, absoluteUrl } from '../lib/site'
-<a href={url('/')}>…</a>              <!-- /echo-landing/ -->
-<img src={url('/demo.webp')} />        <!-- /echo-landing/demo.webp -->
+<a href={url('/')}>…</a>              <!-- / -->
+<img src={url('/demo.webp')} />        <!-- /demo.webp -->
 ```
 
 ## La lista de espera

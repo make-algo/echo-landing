@@ -270,7 +270,7 @@ function ficheros(dir, ext) {
   })
 }
 
-const PROPIO = 'https://make-algo.github.io/'
+const PROPIO = 'https://echo.make-algo.com/'
 const ajeno = (u) => /^https?:\/\//.test(u) && !u.startsWith(PROPIO)
 
 /** Cargas declaradas en un documento o una hoja de estilos. */
