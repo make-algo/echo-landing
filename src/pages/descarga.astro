@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { url } from '../lib/site'
+
+/**
+ * Mini landing de descarga (a petición directa de Álvaro): el DMG de la
+ * última versión, copiado en este repo público (`public/descargas/`) porque
+ * el repo de la app es privado y su release de GitHub no es accesible sin
+ * sesión. Sin formulario, sin argumentario: la página del alta y el mensaje
+ * siguen siendo `/`. Actualizar `version`/`tamano`/`sha256` en cada release
+ * que se quiera ofrecer aquí.
+ */
+const version = '0.8.0'
+const archivo = `Echo-${version}.dmg`
+const tamanoMB = '12,1'
+const sha256 = '435736dd092a63b644896ff575ec7524651e2c192e2873ae132869cf1f3e25ce'
+---
+
+<Base
+  title="Descargar echo — Dictado para Mac"
+  description={`echo ${version} para macOS. Descarga directa, sin cuenta ni formulario.`}
+  path="/descarga"
+>
+  <Header />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <p class="rubric">Descarga</p>
+        <h1 style="font-size: var(--text-h2)">echo {version} para Mac</h1>
+        <p class="lead" style="margin-top: 12px;">
+          Dictado en el propio Mac: mantén ⌥, habla y suelta. El texto aparece pulido donde
+          estabas escribiendo.
+        </p>
+
+        <p style="margin-top: 32px;">
+          <a class="btn" href={url(`/descargas/${archivo}`)} download>Descargar echo {version} (.dmg, {tamanoMB} MB)</a>
+        </p>
+        <p class="microcopy">
+          Requiere macOS 14 o posterior en Apple Silicon. Firmado y notarizado por Make Algo SL:
+          macOS no debería avisar de que viene de un origen no identificado.
+        </p>
+        <p class="microcopy">
+          14 días de prueba completa por Mac. Pasado ese plazo, suscripción anual gestionada
+          desde Ajustes › Licencia dentro de la propia app.
+        </p>
+
+        <h2>Instalar</h2>
+        <p>
+          Abre el <code>.dmg</code> y arrastra echo a Aplicaciones. Al abrirlo por primera vez, un
+          asistente comprueba permisos (Accesibilidad y Micrófono) y deja todo listo para dictar.
+        </p>
+
+        <h2>Comprobar el archivo</h2>
+        <p>
+          SHA-256 de <code>{archivo}</code>:<br />
+          <code style="word-break: break-all;">{sha256}</code>
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
