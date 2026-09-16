@@ -1,9 +1,10 @@
-// La versión de prueba se sirve bajo /echo-landing/ en GitHub Pages, así que ninguna
-// ruta ni ningún asset puede escribirse como absoluto desde la raíz del dominio.
-// `BASE_URL` ya viene con la barra final que fija astro.config.mjs.
+// Dominio propio servido desde la raíz (sin `base` en astro.config.mjs), pero
+// ninguna ruta ni ningún asset se escribe como absoluto a mano: si el sitio
+// vuelve a moverse (a un subdirectorio, a otro dominio), esto es lo único que
+// hay que tocar. `BASE_URL` ya viene con la barra final que fija Astro.
 const BASE = import.meta.env.BASE_URL
 
-/** Ruta interna respetando el `base` del sitio: url('/privacidad') → '/echo-landing/privacidad' */
+/** Ruta interna respetando el `base` del sitio: url('/privacidad') → '/privacidad' */
 export function url(path: string): string {
   return `${BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
 }
