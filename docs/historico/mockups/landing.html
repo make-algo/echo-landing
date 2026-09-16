@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>echo — Dictado para Mac que escribe limpio</title>
+<meta name="description" content="Hablas y el texto aparece escrito y puntuado donde estabas escribiendo. Transcripción local; el pulido usa tu suscripción de Claude o ChatGPT.">
+<!-- MAQUETA DE DISEÑO · MAK-74 / MAK-77 · echo-ux. No es la implementación.
+     Referencia normativa: docs/design/landing.md · tokens: docs/design/tokens.css -->
+<style>
+:root{
+  --paper:#FBFAF8; --paper-sunk:#EDE9E2; --paper-raised:#FFFFFF;
+  --ink:#17150F; --ink-2:#55504A; --ink-3:#5E584F;
+  --line:#D3CCC1; --border:#8A8377;
+  --accent:#0A5B61; --accent-strong:#074A4F; --accent-wash:#DCEFF0;
+  --error:#A32116;
+  --hud:#1F1C17; --hud-ink:#FBFAF8; --hud-ink-2:#A8A29A; --hud-rec:#FF6B5E;
+  --font-sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --t-display:clamp(1.875rem,1.15rem + 3.60vw,3.625rem);
+  --t-h2:clamp(1.5rem,1.15rem + 1.60vw,2.5rem);
+  --t-h3:clamp(1.125rem,1.05rem + 0.37vw,1.3125rem);
+  --t-lead:clamp(1.1875rem,1.10rem + 0.42vw,1.375rem);
+  --t-body:1.0625rem; --t-small:.9375rem; --t-micro:.875rem;
+  --t-rubric:.8125rem;
+  --section:clamp(3rem,2.1rem + 3.8vw,4.5rem);
+  --page:62rem; --measure:36rem; --narrow:32rem;
+  --gutter:clamp(1.25rem,0.9rem + 1.8vw,2rem);
+  --r-xs:4px; --r-md:12px; /* r-md solo lo usa el panel de revisión */
+  --cycle:19s;
+  /* el ciclo arranca en el fotograma del texto ya pegado: lo primero que se ve
+     es la promesa cumplida, no el dictado sucio (MAK-77, crítica r0 §2) */
+  --cycle-start:-11.6s;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--font-sans);font-size:var(--t-body);line-height:1.6;
+  font-synthesis-weight:none;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol,li,figure,table{margin:0}
+p{text-wrap:pretty}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:inherit}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.wrap{max-width:var(--page);margin-inline:auto;padding-inline:var(--gutter)}
+.band{background:var(--paper-sunk)}
+.ruled{border-top:1px solid var(--line)}
+section{padding-block:var(--section)}
+h1{font-size:var(--t-display);line-height:1.08;letter-spacing:-.022em;font-weight:600;
+  text-wrap:balance}
+.wide{display:none}
+@media (min-width:1024px){.wide{display:inline}h1{text-wrap:initial}}
+h2{font-size:var(--t-h2);line-height:1.15;letter-spacing:-.016em;font-weight:600;
+  text-wrap:balance;max-width:22ch}
+h3{font-size:var(--t-h3);line-height:1.3;letter-spacing:-.008em;font-weight:600;
+  text-wrap:balance}
+a{color:var(--accent);text-underline-offset:3px}
+.lead{font-size:var(--t-lead);line-height:1.45;color:var(--ink-2)}
+.measure{max-width:var(--measure)}
+
+/* ---------- Un solo eje ----------
+   Todo arranca en la misma x: hero, rótulos, tabla, formulario y pie. En una
+   página sin ornamento lo único que sostiene la composición es que los ejes
+   no mientan. El rótulo de sección va en mono, pequeño, encima de su propio
+   contenido; las dos secciones cuyo titular es una afirmación —la comparativa
+   y el alta— llevan titular grande. Ese contraste es todo el ritmo que hay. */
+.rubric{font:400 var(--t-rubric)/1.4 var(--font-mono);letter-spacing:.02em;
+  color:var(--ink-2);margin-bottom:24px}
+@media (min-width:640px){.rubric{white-space:nowrap}}
+
+/* ---------- Cabecera ---------- */
+.top{padding-block:22px}
+.top .wrap{display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.top__cta{font-size:var(--t-small);color:var(--ink-2);text-decoration-color:var(--line)}
+.top__cta:hover{color:var(--accent)}
+.wordmark{font:500 1.25rem/1 var(--font-mono);letter-spacing:-.02em;color:var(--ink)}
+
+/* ---------- Botón ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;
+  padding:14px 28px;border:0;border-radius:var(--r-xs);background:var(--accent);
+  color:var(--paper);font:500 var(--t-body)/1.2 var(--font-sans);text-decoration:none;
+  cursor:pointer;transition:background 120ms ease}
+.btn:hover{background:var(--accent-strong)}
+.btn[disabled]{opacity:.75;cursor:progress}
+.btn--submit{margin-top:12px}
+
+/* ---------- Primer viewport: hero + demo ---------- */
+.first{padding-block:clamp(2rem,1rem + 4vw,3.5rem) clamp(3rem,2rem + 3vw,4rem)}
+.first__grid{display:grid;gap:32px}
+.hero__sub{max-width:30rem}
+@media (max-width:1023px){.hero__sub{font-size:var(--t-body);line-height:1.55;text-wrap:initial}}
+.hero__cta{margin-top:32px}
+.hero__req{margin-top:16px;font-size:var(--t-small);line-height:1.5;color:var(--ink-3);
+  max-width:26rem;text-wrap:balance}
+.hero__req .sep{display:none}
+@media (min-width:380px){.hero__req .br{display:none}.hero__req .sep{display:inline}}
+
+/* ---------- Demo ----------
+   Sin marco exterior, sin sombra: la ventana blanca y la barra oscura se
+   apoyan directamente sobre el papel. El contenedor solo reserva altura. */
+.demo{margin:0}
+.demo__media{display:flex;flex-direction:column;container-type:inline-size;
+  border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.demo__foot{margin-top:16px;max-width:34rem}
+.demo__caption{font-size:var(--t-small);line-height:1.5;color:var(--ink-2)}
+.demo__notice{margin-top:14px;font-size:var(--t-micro);line-height:1.5;color:var(--ink-3)}
+.win{flex:1;background:var(--paper-raised);padding:18px 20px;
+  display:flex;flex-direction:column;gap:8px}
+.win__bar{display:flex;align-items:center;gap:6px;font-size:var(--t-micro);color:var(--ink-3)}
+.win__field{font-size:var(--t-micro);color:var(--ink-3);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.win__field b{font-weight:500;color:var(--ink-2)}
+.win__rule{height:1px;background:var(--line)}
+.win__body{flex:1;font-size:var(--t-body);line-height:1.55;color:var(--ink);padding-top:6px}
+.pasted{border-radius:var(--r-xs);box-decoration-break:clone;padding:1px 2px;margin-inline:-2px}
+.caret{display:inline-block;width:2px;height:1.05em;background:var(--accent);
+  vertical-align:-.18em;margin-left:1px}
+.caret--start{display:none;margin-left:0}
+
+.hud{background:var(--hud);padding:14px 18px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;color:var(--hud-ink)}
+.keycap{flex:none;font:500 var(--t-micro)/1 var(--font-mono);color:var(--hud-ink);
+  background:none;border:1px solid #4A443A;border-radius:var(--r-xs);padding:6px 8px}
+.hud__status{flex:none;display:grid;min-width:9ch}
+.hud__status>span{grid-area:1/1;display:flex;align-items:center;gap:6px;
+  font-size:var(--t-micro);white-space:nowrap}
+.st-rec{color:var(--hud-rec);opacity:0}
+.st-rec i{width:8px;height:8px;border-radius:50%;background:var(--hud-rec);display:block}
+.st-pol{color:var(--hud-ink-2);opacity:0}
+/* la onda es tinta clara, no un color propio: el único estado que el color
+   señala en esta barra es «Grabando», y va siempre con su palabra */
+.wave{flex:none;display:flex;align-items:center;gap:3px;height:18px;transform:scaleY(.08);opacity:0}
+.wave b{display:block;width:3px;height:100%;border-radius:2px;background:var(--hud-ink-2)}
+.hud__text{flex:1 0 100%;min-width:0;font:400 var(--t-small)/1.55 var(--font-mono);
+  color:var(--hud-ink)}
+.hud__text .f{text-decoration:line-through;text-decoration-color:var(--hud-ink-2)}
+@media (min-width:640px){.demo__media{aspect-ratio:16/11}}
+@media (max-width:639px){
+  .demo__media{min-height:380px}
+  .wave b:nth-child(n+6){display:none}
+  .win__field--to{display:none}
+}
+
+/* Animación. El estado BASE del marcado es el fotograma final: sin animación
+   —reduced-motion, sin CSS o sin JS— se ve el texto ya pegado y limpio. */
+@media (prefers-reduced-motion:no-preference){
+  .demo__media *{animation-duration:var(--cycle);animation-iteration-count:infinite;
+    animation-timing-function:linear;animation-delay:var(--cycle-start)}
+  .keycap{animation-name:keyPress}
+  .st-rec{animation-name:recOn}
+  .st-pol{animation-name:polOn}
+  .wave{animation-name:waveOn}
+  .wave b{animation:bar .62s ease-in-out infinite alternate}
+  .hud__text .f{animation-name:strike}
+  .pasted{animation-name:paste}
+  .caret--end{animation-name:caretEnd}
+  .caret--start{display:inline-block;animation-name:caretStart}
+  .tm span{animation-name:tick}
+}
+@keyframes keyPress{0%,7.8%{transform:translateY(0);background:transparent}
+  8%,50.4%{transform:translateY(2px);background:#3A352C}
+  50.5%,100%{transform:translateY(0);background:transparent}}
+@keyframes recOn{0%,11.5%{opacity:0}11.6%,47.3%{opacity:1}47.4%,100%{opacity:0}}
+@keyframes polOn{0%,50.4%{opacity:0}50.5%,61%{opacity:1}61.1%,100%{opacity:0}}
+@keyframes waveOn{0%,11.5%{transform:scaleY(.08);opacity:0}12%,47.3%{transform:scaleY(1);opacity:1}
+  50.5%,100%{transform:scaleY(.08);opacity:0}}
+@keyframes bar{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+@keyframes strike{0%,11%{text-decoration-color:var(--hud-ink-2);color:var(--hud-ink-2)}
+  11.05%,50.4%{text-decoration-color:transparent;color:var(--hud-ink)}
+  61.1%,100%{text-decoration-color:var(--hud-ink-2);color:var(--hud-ink-2)}}
+@keyframes paste{0%,11%{opacity:1;background:transparent}
+  11.05%,61%{opacity:0;background:var(--accent-wash)}
+  61.7%{opacity:1;background:var(--accent-wash)}
+  64.3%{opacity:1;background:var(--accent-wash)}
+  68.5%,100%{opacity:1;background:transparent}}
+@keyframes caretEnd{0%,11%{opacity:1}11.05%,61%{opacity:0}61.1%,100%{opacity:1}}
+@keyframes caretStart{0%,11%{opacity:0}11.05%,61%{opacity:1}61.1%,100%{opacity:0}}
+@keyframes tick{0%{opacity:0}100%{opacity:0}}
+/* fragmentos de la transcripción en vivo: 5 saltos entre 11,6 % y 47,4 % */
+.s1{animation-name:f1}.s2{animation-name:f2}.s3{animation-name:f3}
+.s4{animation-name:f4}.s5{animation-name:f5}
+@keyframes f1{0%,11%{opacity:1}11.05%,12.5%{opacity:0}12.6%,100%{opacity:1}}
+@keyframes f2{0%,11%{opacity:1}11.05%,18.8%{opacity:0}18.9%,100%{opacity:1}}
+@keyframes f3{0%,11%{opacity:1}11.05%,26.2%{opacity:0}26.3%,100%{opacity:1}}
+@keyframes f4{0%,11%{opacity:1}11.05%,33.6%{opacity:0}33.7%,100%{opacity:1}}
+@keyframes f5{0%,11%{opacity:1}11.05%,41%{opacity:0}41.1%,100%{opacity:1}}
+.tm{display:inline-grid;min-width:3.2ch}
+.tm span{grid-area:1/1;opacity:0}
+.tm span:last-child{opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  .tm span:last-child{opacity:0}
+  .tm .t1{animation-name:tk1}.tm .t2{animation-name:tk2}
+  .tm .t3{animation-name:tk3}.tm .t4{animation-name:tk4}
+}
+@keyframes tk1{0%,50.4%{opacity:0}50.5%,53.1%{opacity:1}53.2%,100%{opacity:0}}
+@keyframes tk2{0%,53.1%{opacity:0}53.2%,55.8%{opacity:1}55.9%,100%{opacity:0}}
+@keyframes tk3{0%,55.8%{opacity:0}55.9%,58.4%{opacity:1}58.5%,100%{opacity:0}}
+@keyframes tk4{0%,58.4%{opacity:0}58.5%,61%{opacity:1}61.1%,100%{opacity:0}}
+
+/* ---------- Argumentos: lista apilada a una columna ---------- */
+.args{display:grid;gap:48px}
+.arg h3{margin-bottom:8px}
+.arg p{color:var(--ink-2);max-width:var(--measure);font-size:var(--t-body)}
+@media (min-width:768px){
+  .arg{display:grid;grid-template-columns:15rem minmax(0,1fr);column-gap:2.5rem;align-items:start}
+  .arg h3{margin-bottom:0;font-size:1.625rem;line-height:1.2;letter-spacing:-.018em}
+}
+
+/* ---------- Pasos: una tira continua, no tres tarjetas ---------- */
+.steps{list-style:none;padding:0;display:grid;gap:0}
+.steps li{padding:24px 0;border-top:1px solid var(--line);max-width:var(--measure)}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps .n{font:400 var(--t-micro)/1 var(--font-mono);color:var(--ink-3);
+  display:block;margin-bottom:8px}
+.steps h3{font-size:var(--t-body);font-weight:600}
+.steps p{color:var(--ink-2);margin-top:6px;font-size:var(--t-small)}
+.steps .t{color:var(--ink);font-weight:500}
+@media (min-width:768px){
+  .steps{grid-template-columns:repeat(3,1fr);column-gap:3rem;border-top:1px solid var(--line)}
+  .steps li{border-top:0;padding:20px 0 0;max-width:none}
+  .steps li:last-child{border-bottom:0}
+}
+
+/* ---------- Comparativa: ancho de contenido completo ---------- */
+.cmp{margin-top:clamp(2rem,1.4rem + 2.5vw,3rem)}
+table{border-collapse:collapse;width:100%;text-align:left;table-layout:fixed}
+col.c-attr{width:38%}col.c-os{width:31%}col.c-echo{width:31%}
+thead th,thead td{font-size:var(--t-h3);font-weight:600;color:var(--ink);
+  padding:0 20px 12px 0;border-bottom:1px solid var(--ink);vertical-align:bottom}
+tbody th{font-weight:400;color:var(--ink-2);padding:16px 20px 16px 0;vertical-align:top;
+  border-bottom:1px solid var(--line)}
+tbody td{color:var(--ink-2);padding:16px 20px 16px 0;vertical-align:top;
+  border-bottom:1px solid var(--line)}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+.t-echo{color:var(--ink);font-weight:500}
+.col-label{display:none}
+.closer{margin-top:clamp(2rem,1.4rem + 2.5vw,3rem);border-top:1px solid var(--ink);
+  padding-top:24px;font-size:clamp(1.25rem,1.05rem + 1vw,1.75rem);line-height:1.35;
+  letter-spacing:-.012em;color:var(--ink)}
+.closer span{display:block;max-width:var(--measure);text-wrap:pretty}
+@media (max-width:639px){
+  table,thead,tbody,tr,th,td,colgroup,col{display:block}
+  colgroup{display:none}
+  thead{display:none}
+  tbody tr{display:grid;grid-template-columns:1fr 1fr;column-gap:20px;
+    border-bottom:1px solid var(--line);padding-block:18px}
+  tbody th{grid-column:1/-1;padding:0 0 10px;font-size:var(--t-body);font-weight:600;
+    color:var(--ink);border-bottom:0}
+  tbody td{padding:0;border-bottom:0}
+  .col-label{display:block;font:400 var(--t-micro)/1.4 var(--font-mono);color:var(--ink-3);
+    margin-bottom:2px}
+}
+
+/* ---------- Privacidad ---------- */
+.priv{display:grid;gap:24px}
+.priv__main{font-size:var(--t-lead);line-height:1.5;color:var(--ink);max-width:var(--measure)}
+.priv__notes{display:grid;gap:16px;color:var(--ink-2);font-size:var(--t-body);max-width:var(--measure)}
+@media (min-width:1024px){
+  .priv{grid-template-columns:6fr 5fr;column-gap:3rem;align-items:start}
+  .priv__main{font-size:var(--t-h3);line-height:1.45}
+}
+
+/* ---------- Para quién ---------- */
+.who{display:grid;gap:28px;max-width:var(--measure)}
+.who p{color:var(--ink)}
+.who p+p{border-top:1px solid var(--line);padding-top:28px}
+@media (min-width:1024px){
+  .who{grid-template-columns:1fr 1fr;column-gap:3rem;max-width:none;align-items:start}
+  .who p{border-top:1px solid var(--line);padding-top:20px;max-width:26rem}
+  .who p+p{padding-top:20px}
+}
+
+/* ---------- Formulario ---------- */
+.beta__body{max-width:var(--narrow);min-height:480px}
+@media (min-width:1024px){
+  .beta__body{max-width:none;display:grid;grid-template-columns:7fr 5fr;column-gap:3rem;
+    align-items:start}
+  .beta__body>form,.beta__body>.done{grid-column:1;grid-row:1;max-width:30rem}
+  .beta__body .legalnote{grid-column:2;grid-row:1;align-self:end;margin-top:0;max-width:21rem}
+}
+.beta .lead{max-width:var(--measure);margin-top:16px}
+form{margin-top:36px}
+.field{margin-bottom:22px}
+label{display:block;font-size:var(--t-small);font-weight:500;color:var(--ink);margin-bottom:8px}
+label .opt{font-weight:400;color:var(--ink-3)}
+input[type=email],textarea{width:100%;font:400 var(--t-body)/1.5 var(--font-sans);color:var(--ink);
+  background:var(--paper-raised);border:1px solid var(--border);border-radius:var(--r-xs);
+  padding:12px 14px;min-height:48px}
+textarea{min-height:84px;resize:none}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+input:focus-visible,textarea:focus-visible{border-color:var(--accent)}
+/* radios nativos, sin caja: la caja no añadía nada que la etiqueta no dijera */
+.radios{display:grid;grid-template-columns:auto auto;justify-content:start;gap:4px 32px}
+@media (min-width:640px){.radios{display:flex;flex-wrap:wrap;gap:4px 28px}}
+.radio{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin:0;
+  font-size:var(--t-small);font-weight:400;color:var(--ink);cursor:pointer}
+.radio input{accent-color:var(--accent);margin:0;width:19px;height:19px}
+.err{display:block;font-size:var(--t-small);color:var(--error);margin-top:6px;min-height:1.5em}
+.field--bad input{border-color:var(--error);border-width:2px}
+.legalnote{font-size:var(--t-micro);line-height:1.5;color:var(--ink-3);margin-top:24px;
+  max-width:30rem}
+/* dato jurídico que todavía no existe: se marca como pendiente en vez de
+   publicarse como si fuera definitivo (docs/legal/README.md) */
+.pending{font-family:var(--font-mono);font-size:.92em;color:var(--ink-3)}
+.alert{border:1px solid var(--error);border-radius:var(--r-xs);color:var(--error);
+  padding:12px 14px;margin-bottom:20px;font-size:var(--t-body)}
+/* el bloque recibe foco para que el lector lo lea; el anillo sobra en un
+   texto no interactivo (landing.md §6.4) */
+[tabindex="-1"]:focus{outline:none}
+.done{margin-top:36px;max-width:30rem}
+.done p:first-of-type{font-size:var(--t-lead);line-height:1.45;color:var(--ink)}
+.done p+p{margin-top:16px;color:var(--ink-2)}
+.done .mail{font-family:var(--font-mono);font-weight:500;background:var(--accent-wash);
+  padding:1px 5px;border-radius:var(--r-xs);overflow-wrap:anywhere}
+.hp{position:absolute;left:-9999px}
+[hidden]{display:none!important}
+
+/* ---------- Preguntas ---------- */
+.faq{display:grid;gap:0;border-bottom:1px solid var(--line)}
+.qa{border-top:1px solid var(--line)}
+.qa>summary{padding:16px 0;font-size:var(--t-body);font-weight:500;cursor:pointer;
+  list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  max-width:30rem}
+.qa>summary::-webkit-details-marker{display:none}
+.qa>summary::after{content:"+";font:400 var(--t-body)/1 var(--font-mono);color:var(--ink-3)}
+.qa[open]>summary::after{content:"–"}
+.qa>p{color:var(--ink-2);padding-bottom:18px;font-size:var(--t-small);max-width:32rem}
+
+
+/* ---------- Pie ---------- */
+footer{border-top:1px solid var(--line);padding-block:36px;font-size:var(--t-small);color:var(--ink-3)}
+.legal{margin-top:8px}
+.legal a{color:var(--ink-3)}
+.legal a+a{margin-left:20px}
+
+@media (min-width:1024px){
+  .first__grid{grid-template-columns:5fr 7fr;column-gap:3rem;row-gap:40px;align-items:start}
+  h1{grid-column:1/-1;grid-row:1;font-size:clamp(2.75rem,4vw,3.625rem)}
+  .hero__rest{grid-column:1;grid-row:2}
+  .demo{grid-column:2;grid-row:2;margin-top:4px;display:flex;flex-direction:column}
+  .demo__media{flex:1;aspect-ratio:auto;min-block-size:20rem}
+  /* en columna estrecha el titular baja de cuerpo: si no, el primer
+     viewport de 1024x768 no cabe (landing.md §3.1) */
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- Panel de revisión (NO forma parte de la landing) ---------- */
+.review{position:fixed;right:12px;bottom:12px;z-index:9;background:var(--hud);
+  color:var(--hud-ink);border-radius:var(--r-md);padding:10px 12px;font-size:12px;
+  font-family:var(--font-mono);max-width:min(92vw,320px)}
+.review summary{cursor:pointer;color:var(--hud-ink-2);margin-bottom:2px}
+.review[open] summary{margin-bottom:6px}
+.review button{font:inherit;background:#322D25;color:var(--hud-ink);border:1px solid #4A443A;
+  border-radius:var(--r-xs);padding:5px 8px;margin:2px 2px 0 0;cursor:pointer}
+.review button[aria-pressed=true]{background:var(--hud-ink);color:var(--hud)}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap"><span class="wordmark">echo</span><a class="top__cta" href="#beta">Entrar en la beta privada</a></div></header>
+
+<main>
+<!-- ══ 1+2. HERO + DEMO — comparten el primer viewport a ≥1024 px ══ -->
+<div class="first wrap">
+  <div class="first__grid">
+
+    <h1>Habla y aparece escrito.<br class="wide"> Sin muletillas, sin dictar la puntuación<br class="wide"> y sin cambiar de idioma.</h1>
+
+    <div class="hero__rest">
+      <p class="lead hero__sub">Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.</p>
+      <p class="hero__cta"><a class="btn" href="#beta">Entrar en la beta privada</a></p>
+      <p class="hero__req">Sin descargable público todavía. Te escribimos cuando abramos tu tanda.<span class="sep"> · </span><br class="br">macOS&nbsp;26 y Apple&nbsp;Silicon.</p>
+    </div>
+
+    <figure class="demo" id="demo">
+        <h2 class="sr-only">Así se ve</h2>
+        <p class="sr-only">Un dictado con muletillas convertido en un párrafo limpio dentro de un correo. Se mantiene pulsada una tecla, echo transcribe lo dicho con sus muletillas y repeticiones, y al soltarla pega en el correo el mismo texto ya limpio y puntuado.</p>
+        <div class="demo__media">
+          <div class="win">
+            <div class="win__bar">Nuevo mensaje</div>
+            <div class="win__field win__field--to"><b>Para:</b> equipo@</div>
+            <div class="win__field"><b>Asunto:</b> Deploy de la semana</div>
+            <div class="win__rule" aria-hidden="true"></div>
+            <div class="win__body"><span class="caret caret--start" aria-hidden="true"></span><span class="pasted">Hacemos el deploy del backend en GitHub el jueves y lo comentamos en la daily.</span><span class="caret caret--end" aria-hidden="true"></span></div>
+          </div>
+          <div class="hud">
+            <span class="keycap" aria-hidden="true">⌥ espacio</span>
+            <span class="hud__status">
+              <span class="st-rec"><i aria-hidden="true"></i>Grabando</span>
+              <span class="st-pol">Puliendo <span class="tm"><span class="t1">0,0</span><span class="t2">0,6</span><span class="t3">1,2</span><span class="t4">1,8</span><span>1,8</span></span> s</span>
+            </span>
+            <span class="wave" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
+            <span class="hud__text"><span class="s s1"><span class="f">eh… </span></span><span class="s s2"><span class="f">hacemos el deploy, </span>hacemos el deploy del backend en GitHub </span><span class="s s3"><span class="f">el martes, no, mejor </span>el jueves, </span><span class="s s4"><span class="f">y eh, </span>lo comentamos </span><span class="s s5">en la daily</span></span>
+          </div>
+        </div>
+        <div class="demo__foot">
+          <figcaption class="demo__caption">Mantienes una tecla, hablas, la sueltas. El texto aparece limpio en la app donde estabas escribiendo.</figcaption>
+          <p class="demo__notice">Recreación de la interfaz. El vídeo real llega con la&nbsp;beta.</p>
+        </div>
+    </figure>
+
+  </div>
+</div>
+
+<!-- ══ 3. TRES ARGUMENTOS ══ -->
+<section id="que-hace-distinto"><div class="wrap rail">
+  <h2 class="rubric">Qué hace distinto</h2>
+  <div class="args">
+    <div class="arg"><h3>Limpia el texto, no solo lo transcribe</h3>
+      <p>Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta («el martes, no, mejor el jueves») y puntúa sola. También adapta el formato a donde estés escribiendo: párrafos y saludo en un correo, texto plano en un editor o una terminal.</p></div>
+    <div class="arg"><h3>Español con inglés técnico en medio</h3>
+      <p>«Hacemos el deploy del backend en GitHub» no se convierte en «depploy del Back and and Get Have». echo usa un modelo multilingüe que detecta el idioma solo y aguanta la mezcla dentro de la misma frase. 25 idiomas&nbsp;europeos.</p></div>
+    <div class="arg"><h3>Sin cuotas por minuto</h3>
+      <p>La transcripción corre en tu Mac, así que no hay servidor que pagar ni minutos que gastar. El pulido lo hace el CLI de Claude Code o el de Codex con tu propia sesión: consume tu cuota, no una nuestra. No te pedimos ninguna API key.</p></div>
+  </div>
+</div></section>
+
+<!-- ══ 4. CÓMO FUNCIONA ══ -->
+<section id="como-funciona"><div class="wrap rail">
+  <h2 class="rubric">Qué pasa cuando sueltas la tecla</h2>
+  <ol class="steps">
+    <li><span class="n" aria-hidden="true">01</span><h3>Se transcribe en tu Mac.</h3>
+      <p><span class="t">Décimas de segundo.</span> Modelo local, sin&nbsp;conexión.</p></li>
+    <li><span class="n" aria-hidden="true">02</span><h3>Se pule con tu suscripción.</h3>
+      <p>El texto transcrito pasa por Claude o ChatGPT, con tu sesión. <span class="t">De 1,5 a 2,5 segundos.</span> Puedes dejarlo en «solo cuando haga falta», que es como viene: los dictados que ya salen limpios se pegan al&nbsp;instante.</p></li>
+    <li><span class="n" aria-hidden="true">03</span><h3>Se pega donde estabas.</h3>
+      <p>En la app activa, con el formato que le corresponda. Y se queda en el portapapeles por si lo quieres pegar otra&nbsp;vez.</p></li>
+  </ol>
+</div></section>
+
+<!-- ══ 5. COMPARACIÓN ══ -->
+<section id="comparacion" class="ruled"><div class="wrap">
+  <h2>El dictado del Mac transcribe. echo escribe.</h2>
+  <p class="lead measure" style="margin-top:16px">El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no hace, y son las cuatro razones por las que existe echo.</p>
+  <div class="cmp">
+  <table>
+    <colgroup><col class="c-attr"><col class="c-os"><col class="c-echo"></colgroup>
+    <thead><tr>
+      <td><span class="sr-only">Criterio</span></td>
+      <th scope="col">Dictado de macOS</th>
+      <th scope="col" class="t-echo">echo</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Muletillas y repeticiones</th>
+        <td><span class="col-label">Dictado de macOS</span>Las transcribe tal cual</td>
+        <td class="t-echo"><span class="col-label">echo</span>Las quita</td></tr>
+      <tr><th scope="row">Puntuación</th>
+        <td><span class="col-label">Dictado de macOS</span>La dictas tú, palabra por palabra</td>
+        <td class="t-echo"><span class="col-label">echo</span>La pone sola</td></tr>
+      <tr><th scope="row">Idiomas mezclados</th>
+        <td><span class="col-label">Dictado de macOS</span>Un idioma fijo por sesión</td>
+        <td class="t-echo"><span class="col-label">echo</span>Detecta y mezcla, 25 idiomas</td></tr>
+      <tr><th scope="row">Dónde se procesa la&nbsp;voz</th>
+        <td><span class="col-label">Dictado de macOS</span>En tu Mac</td>
+        <td class="t-echo"><span class="col-label">echo</span>En tu Mac</td></tr>
+      <tr><th scope="row">Precio</th>
+        <td><span class="col-label">Dictado de macOS</span>Gratis</td>
+        <td class="t-echo"><span class="col-label">echo</span>Por anunciar</td></tr>
+      <tr><th scope="row">Formato según la app</th>
+        <td><span class="col-label">Dictado de macOS</span>No lo cambia</td>
+        <td class="t-echo"><span class="col-label">echo</span>Correo, chat o terminal, distinto</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="closer"><span>Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos&nbsp;después.</span></p>
+</div></section>
+
+<!-- ══ 6. PRIVACIDAD ══ -->
+<section id="privacidad"><div class="wrap rail">
+  <h2 class="rubric">Qué sale de tu Mac y qué no</h2>
+  <div class="priv">
+    <p class="priv__main">Tu voz no sale nunca de tu Mac: la transcripción es local. Si activas el pulido, el texto transcrito —no el audio— se envía a Claude o a ChatGPT con tu propia cuenta, igual que si lo hubieras pegado tú en el chat. Si prefieres que no salga nada, desactiva el pulido: echo sigue funcionando.</p>
+    <div class="priv__notes">
+      <p>No tenemos servidores en medio: echo habla con el CLI que ya tienes instalado, no con una API nuestra.</p>
+      <p>No guardamos ni enviamos a ninguna parte lo que dictas. El audio solo se guarda en tu disco si tú lo activas para hacer pruebas.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══ 7. PARA QUIÉN ES ══ -->
+<section id="para-quien"><div class="wrap rail">
+  <h2 class="rubric">Para quién es</h2>
+  <div class="who">
+    <p><strong>Te va a servir si</strong> escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas más rápido de lo que tecleas. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te&nbsp;cuesta.</p>
+    <p><strong>No te va a servir si</strong> dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.</p>
+  </div>
+</div></section>
+
+<!-- ══ 8. LISTA DE ESPERA ══ -->
+<section id="beta" class="band"><div class="wrap beta">
+  <h2>Entrar en la beta privada</h2>
+  <p class="lead">Vamos abriendo por tandas para poder atender a cada uno. Nos dices en qué lo usarías y te escribimos cuando te toque.</p>
+
+  <div class="beta__body">
+    <form id="f" method="POST" action="#" novalidate>
+      <p class="hp" aria-hidden="true"><label>No rellenar <input tabindex="-1" autocomplete="off" name="bot-field"></label></p>
+
+      <div class="field" id="field-email">
+        <label for="email">Tu correo</label>
+        <input id="email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="tu@correo.com" aria-describedby="email-error">
+        <span class="err" id="email-error"></span>
+      </div>
+
+      <div class="field">
+        <label for="uso">¿Para qué lo usarías? <span class="opt">(opcional)</span></label>
+        <textarea id="uso" name="uso" rows="3" maxlength="500" placeholder="Prompts, correos, notas, documentación…"></textarea>
+      </div>
+
+      <div class="field">
+        <label id="sub-label" for="sub-1">¿Tienes Claude o ChatGPT de pago? <span class="opt">(opcional)</span></label>
+        <div class="radios" role="radiogroup" aria-labelledby="sub-label">
+          <label class="radio"><input type="radio" id="sub-1" name="sub" value="Claude">Claude</label>
+          <label class="radio"><input type="radio" name="sub" value="ChatGPT">ChatGPT</label>
+          <label class="radio"><input type="radio" name="sub" value="Las dos">Las dos</label>
+          <label class="radio"><input type="radio" name="sub" value="Ninguna">Ninguna</label>
+        </div>
+      </div>
+
+      <div class="alert" id="send-error" role="alert" hidden>No hemos podido guardar tu correo. Inténtalo otra vez en un momento.</div>
+
+      <button class="btn btn--submit" id="submit" type="submit">Apuntarme</button>
+    </form>
+    <p class="legalnote"><strong>Protección de datos:</strong> el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas opcionales, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. El formulario lo procesa <span class="pending">[proveedor por decidir]</span> con las garantías que explicamos en la <a href="/privacidad">política de privacidad</a>, donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a <span class="pending">[correo por definir]</span>.</p>
+
+    <div id="ok" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
+      <p>Apuntado. Te escribimos a <span class="mail" id="ok-mail">tu@correo.com</span> cuando abramos tu tanda.</p>
+      <p>Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.</p>
+    </div>
+
+    <div id="dup" class="done" role="status" aria-live="polite" tabindex="-1" hidden>
+      <p>Ya estabas en la lista. Te escribimos cuando abramos tu tanda.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══ 9. FAQ ══ -->
+<section id="preguntas"><div class="wrap rail">
+  <h2 class="rubric">Preguntas</h2>
+  <div class="faq">
+    <details class="qa"><summary>¿Necesito pagar Claude?</summary><p>Vale Claude Pro o Max, y también ChatGPT Plus. No te pedimos que contrates nada nuevo, sino que lo que ya pagas haga una cosa más. Y si no tienes ninguna de las dos, echo funciona con el pulido desactivado: transcripción local y puntuación por voz.</p></details>
+    <details class="qa"><summary>¿Se envía mi voz a algún sitio?</summary><p>No. La transcripción es local siempre. Con el pulido activado sale el texto ya transcrito, no el audio, y va a tu propia cuenta de Claude o ChatGPT. Con el pulido desactivado no sale nada.</p></details>
+    <details class="qa"><summary>¿En qué se diferencia del&nbsp;dictado que ya trae el Mac?</summary><p>El de macOS transcribe literalmente: tus muletillas, y la puntuación la dictas tú. Va a un idioma fijo y no sabe en qué app estás escribiendo. Si dictas frases sueltas, te sobra con él.</p></details>
+    <details class="qa"><summary>¿Cuánto tarda?</summary><p>La transcripción, décimas de segundo. El pulido, entre 1,5 y 2,5 segundos con Claude. Por defecto solo se pule cuando hace falta, así que la mayoría de los dictados se pegan al&nbsp;instante.</p></details>
+    <details class="qa"><summary>¿Y si falla Claude o no tengo conexión?</summary><p>Se pega la transcripción en bruto y el menú te dice por qué. No pierdes el dictado.</p></details>
+    <details class="qa"><summary>¿Qué Mac necesito?</summary><p>macOS 26 (Tahoe) y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.</p></details>
+    <details class="qa"><summary>¿En qué idiomas funciona?</summary><p>25 idiomas europeos, con detección automática y mezcla dentro de la misma frase.</p></details>
+    <details class="qa"><summary>¿Cuánto va a costar?</summary><p>Todavía no está decidido. Quien esté en la lista de espera lo sabrá antes que nadie y con condiciones de early-bird.</p></details>
+    <details class="qa"><summary>¿Cuándo puedo descargarlo?</summary><p>Estamos en beta privada por tandas. No damos fecha porque no la sabemos; te escribimos cuando te toque.</p></details>
+  </div>
+</div></section>
+</main>
+
+<!-- ══ 10. PIE ══ -->
+<footer><div class="wrap">
+  <p>echo es una app de Make Algo SL. Dictado para macOS.</p>
+  <p class="legal"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a></p>
+</div></footer>
+
+<!-- Panel de revisión de estados — NO forma parte de la landing -->
+<details class="review">
+  <summary>Panel de revisión · no va en la landing</summary>
+  <button data-s="reposo" aria-pressed="true">reposo</button><button data-s="enviando" aria-pressed="false">enviando</button><button data-s="exito" aria-pressed="false">éxito</button><button data-s="error" aria-pressed="false">error envío</button><button data-s="invalido" aria-pressed="false">email inválido</button><button data-s="duplicado" aria-pressed="false">duplicado</button>
+</details>
+<script>
+const f=document.getElementById('f'),ok=document.getElementById('ok'),dup=document.getElementById('dup'),
+  se=document.getElementById('send-error'),ee=document.getElementById('email-error'),
+  fe=document.getElementById('field-email'),em=document.getElementById('email'),
+  sb=document.getElementById('submit');
+function estado(s){
+  f.hidden=(s==='exito'||s==='duplicado'); ok.hidden=(s!=='exito'); dup.hidden=(s!=='duplicado');
+  se.hidden=(s!=='error');
+  document.querySelector('.legalnote').hidden=(s==='exito'||s==='duplicado');
+  const bad=(s==='invalido');
+  fe.classList.toggle('field--bad',bad);
+  em.setAttribute('aria-invalid',bad);
+  ee.textContent=bad?'Ese correo no parece válido. Revísalo.':'';
+  sb.disabled=(s==='enviando'); sb.textContent=(s==='enviando')?'Apuntando…':'Apuntarme';
+  f.setAttribute('aria-busy',s==='enviando');
+  if(s==='exito'){document.getElementById('ok-mail').textContent=em.value.trim()||'tu@correo.com';ok.focus();}
+  if(s==='duplicado')dup.focus();
+  document.querySelectorAll('.review button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===s));
+}
+document.querySelectorAll('.review button').forEach(b=>b.onclick=()=>estado(b.dataset.s));
+let intentado=false;
+f.addEventListener('submit',e=>{e.preventDefault();intentado=true;
+  const v=em.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){estado('invalido');em.focus();return;}
+  estado('enviando'); setTimeout(()=>estado('exito'),900);});
+/* Hoja de revisión: landing.html#estado=exito pinta ese estado y salta al alta.
+   Se hace por hash y no desde el documento padre porque un iframe file:// es de
+   origen opaco y no se le puede tocar el DOM desde fuera. */
+const h=new URLSearchParams(location.hash.slice(1));
+if(h.has('estado')){
+  document.querySelector('.review').hidden=true;
+  em.value='ana.martinez@estudio.dev';
+  document.getElementById('uso').value='Prompts largos y respuestas de issues.';
+  estado(h.get('estado'));
+  document.getElementById('beta').scrollIntoView();
+}
+em.addEventListener('blur',()=>{if(!intentado)return;
+  const v=em.value.trim();
+  if(v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))estado('invalido');});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!doctype html><meta charset=utf-8><title>echo — estados del formulario</title>
+<!-- Hoja de revisión: los seis estados del alta, uno al lado del otro.
+     No forma parte de la landing. Abrir con doble clic; no necesita servidor. -->
+<style>body{margin:0;background:#2A2A2A;display:grid;grid-template-columns:repeat(3,430px);
+gap:14px;padding:14px;font:13px/1.4 ui-monospace,monospace;align-content:start}
+figure{margin:0}figcaption{color:#EEE;padding:0 0 6px}
+iframe{border:0;width:430px;height:820px;background:#EDE9E2}</style>
+<script>
+const S=[['reposo','1 · reposo'],['enviando','2 · enviando'],['error','3 · error de envío'],
+['invalido','4 · correo inválido'],['exito','5 · éxito'],['duplicado','6 · duplicado']];
+document.write(S.map(([s,t])=>`<figure><figcaption>${t}</figcaption><iframe loading="eager" src="./landing.html#estado=${s}"></iframe></figure>`).join(''));
+</script>
