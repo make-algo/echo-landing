@@ -1,0 +1,263 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { url } from '../lib/site'
+
+/**
+ * Texto legal íntegro. No se reescribe ni se resume: el criterio y las notas de
+ * implementación viven en el repo de la app, en docs/legal/condiciones.md.
+ *
+ * Esta URL es la que Stripe pide en Settings › Public details › Terms of service.
+ * Sin ella, el checkout rechaza `consent_collection[terms_of_service]=required`
+ * y /comprar devuelve un 500.
+ *
+ * Al cambiar el texto hay que subir CONDICIONES_VERSION en server/src/index.js,
+ * o no se sabrá qué versión aceptó cada cliente.
+ */
+const actualizado = '17 de septiembre de 2026'
+---
+
+<Base
+  title="Condiciones de uso y suscripción — echo"
+  description="Condiciones de uso y suscripción de echo, el dictado para Mac de Make Algo SL."
+  path="/condiciones"
+>
+  <Header />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Condiciones de uso y suscripción</h1>
+        <p class="microcopy">Última actualización: {actualizado}.</p>
+
+        <h2>1. Quiénes somos</h2>
+        <p>
+          echo lo desarrolla y comercializa <strong>Make Algo SL</strong>, NIF B88875018, Calle
+          General Pardiñas, 114 — 28006 Madrid, España. Puedes escribirnos a
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> para cualquier cosa: dudas,
+          bajas, reclamaciones o ejercicio de tus derechos.
+        </p>
+        <p>
+          Estas condiciones regulan la descarga y el uso de echo y, si te suscribes, la
+          suscripción. Al instalar echo aceptas los apartados 7 a 12; al suscribirte aceptas
+          además los apartados 4 a 6.
+        </p>
+
+        <h2>2. Qué es echo y qué necesitas para usarlo</h2>
+        <p>
+          echo es una aplicación de dictado por voz para macOS: mantienes una tecla, hablas, la
+          sueltas y el texto aparece escrito en la aplicación donde estabas.
+        </p>
+        <p>
+          Necesitas <strong>macOS 14 o posterior en un Mac con Apple Silicon</strong>, permiso de
+          micrófono y de accesibilidad, y unos 600 MB de disco para el modelo de reconocimiento,
+          que se descarga la primera vez.
+        </p>
+        <p>
+          El <strong>pulido con inteligencia artificial es opcional</strong> y requiere que tengas
+          tu propia suscripción de pago a Claude (Anthropic) o a ChatGPT (OpenAI), con su
+          aplicación de línea de comandos instalada y con la sesión iniciada. <strong>Nosotros no
+          vendemos, incluimos ni intermediamos esas suscripciones.</strong> Sin ninguna de las dos,
+          echo funciona igualmente: transcribe en tu Mac y aplica los comandos de puntuación por
+          voz.
+        </p>
+
+        <h2>3. Qué sale de tu Mac y qué no</h2>
+        <ul>
+          <li><strong>Tu voz no sale nunca.</strong> El reconocimiento se hace entero en tu Mac.</li>
+          <li>
+            <strong>Si activas el pulido, el texto transcrito sí sale.</strong> echo ejecuta en tu
+            Mac la aplicación oficial de Anthropic o de OpenAI, que envía ese texto <strong>con tu
+            propia cuenta</strong>, igual que si lo hubieras pegado tú en su chat. Nosotros no lo
+            vemos, no lo recibimos y no lo guardamos. Ese envío se rige por las condiciones y la
+            política de privacidad de Anthropic o de OpenAI, no por estas.
+          </li>
+          <li>
+            <strong>Ese uso consume la cuota de tu suscripción</strong> con ellos. Si dictas mucho,
+            se nota. No podemos garantizar que su cuota te dé de sobra, porque no es nuestra.
+          </li>
+          <li>
+            <strong>Hacia nosotros solo sale</strong> un identificador de tu Mac y, si te
+            suscribes, tu correo. Los detalles están en la
+            <a href={url('/privacidad')}>política de privacidad</a>.
+          </li>
+          <li>Si prefieres que no salga nada, desactiva el pulido en Ajustes.</li>
+        </ul>
+
+        <h2>4. La prueba de 14 días</h2>
+        <p>
+          echo funciona 14 días completo, gratis y <strong>sin tarjeta</strong>, contados desde la
+          primera vez que lo abres en cada Mac. Terminado ese plazo hace falta una suscripción para
+          seguir dictando. Reinstalarlo no reinicia la prueba.
+        </p>
+
+        <h2>5. Precio, pago y renovación</h2>
+        <ul>
+          <li>
+            La suscripción cuesta <strong>12 € al año, IVA incluido</strong>, y vale para
+            <strong>hasta tres Macs</strong> tuyos.
+          </li>
+          <li>El pago lo procesa <strong>Stripe</strong>. No vemos ni guardamos los datos de tu tarjeta.</li>
+          <li>
+            <strong>La suscripción se renueva automáticamente</strong> cada año, al mismo precio,
+            salvo que la canceles antes. Si vamos a subir el precio, te avisamos por correo
+            <strong>con al menos 30 días</strong> de antelación; si no te vale, cancelas antes de
+            la renovación.
+          </li>
+          <li>
+            <strong>Puedes cancelar cuando quieras</strong>, sin dar explicaciones, desde Ajustes ›
+            Licencia, que te lleva al portal de Stripe. Al cancelar, echo te sigue funcionando
+            hasta el final del periodo que ya has pagado; no hay penalización ni permanencia.
+          </li>
+          <li>
+            Si un cobro falla, te avisamos e intentamos cobrarlo de nuevo. Si sigue sin poder
+            cobrarse, la suscripción se suspende.
+          </li>
+        </ul>
+
+        <h2>6. Derecho de desistimiento</h2>
+        <p>
+          Si eres consumidor, tienes derecho a desistir del contrato en <strong>14 días
+          naturales</strong> sin dar ningún motivo.
+        </p>
+        <p>
+          Ahora bien: para que puedas usar echo en cuanto pagas, al contratar te pedimos que
+          <strong>consientas expresamente que empecemos a prestarte el servicio de
+          inmediato</strong> y que <strong>reconozcas que, por eso, pierdes el derecho de
+          desistimiento</strong> una vez ejecutado (art. 103.m del texto refundido de la Ley
+          General para la Defensa de los Consumidores y Usuarios). Si no lo aceptas, no podemos
+          activarte la licencia al momento.
+        </p>
+        <p>
+          <strong>Con independencia de lo anterior, te damos nuestra propia garantía de
+          devolución:</strong> si en los primeros 14 días desde el cobro echo no te convence,
+          escríbenos a <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> y te devolvemos
+          el dinero íntegro, sin preguntas. Nos parece justo, porque antes has tenido 14 días de
+          prueba para decidirlo.
+        </p>
+
+        <h2>7. Tu licencia de uso</h2>
+        <p>
+          No te vendemos el software: te damos una <strong>licencia de uso personal, no exclusiva,
+          intransferible y revocable</strong> para instalar y usar echo en hasta tres Macs que
+          controles, con fines personales o profesionales, mientras cumplas estas condiciones.
+        </p>
+        <p>
+          <strong>No puedes:</strong> revender, alquilar, prestar, sublicenciar ni distribuir echo;
+          quitar o alterar los avisos de autoría; eludir el control de licencia; ni usar echo para
+          prestar un servicio de dictado a terceros que no sean usuarios de sus propias copias.
+        </p>
+        <p>
+          <strong>Sí puedes, porque la ley te lo reconoce:</strong> hacer una copia de seguridad y
+          realizar las operaciones que permite el artículo 100 del texto refundido de la Ley de
+          Propiedad Intelectual, incluida la descompilación para conseguir interoperabilidad. Nada
+          de este apartado limita esos derechos.
+        </p>
+
+        <h2>8. Software de terceros y marcas</h2>
+        <p>
+          echo incorpora <strong>FluidAudio</strong>, con licencia Apache 2.0, y utiliza el modelo
+          de reconocimiento <strong>Parakeet TDT 0.6b v3 de NVIDIA</strong>, con licencia
+          CC-BY-4.0. El texto de ambas licencias está en Ajustes › Acerca de › Licencias.
+        </p>
+        <p>
+          Las aplicaciones de línea de comandos de Claude Code y de Codex son de Anthropic y de
+          OpenAI respectivamente, <strong>no se distribuyen con echo</strong> y se rigen por sus
+          propias condiciones. echo no está patrocinado, avalado ni asociado a Anthropic, OpenAI,
+          NVIDIA ni Apple; sus marcas se citan únicamente para describir con qué funciona echo.
+        </p>
+
+        <h2>9. Actualizaciones</h2>
+        <p>
+          echo comprueba periódicamente si hay una versión nueva y puede instalarla. Mientras tu
+          suscripción esté activa te proporcionaremos las actualizaciones necesarias para que echo
+          siga siendo conforme con el contrato, incluidas las de seguridad. Puedes desactivar la
+          instalación automática en Ajustes; si lo haces y no instalas las actualizaciones que te
+          ofrecemos, no respondemos de la falta de conformidad que se deba únicamente a eso.
+        </p>
+
+        <h2>10. Si Anthropic u OpenAI cambian las reglas</h2>
+        <p>
+          El pulido depende de servicios de terceros que no controlamos. Pueden cambiar sus
+          condiciones, sus precios o su disponibilidad, o dejar de permitir este uso.
+        </p>
+        <p>
+          Si eso ocurre, <strong>podemos sustituir el proveedor de pulido por otro
+          equivalente</strong> sin que se considere un incumplimiento, avisándote por correo. Si no
+          quedara ninguno disponible, echo seguiría funcionando con transcripción local y comandos
+          de voz; si consideras que eso supone una falta de conformidad con lo que contrataste,
+          puedes resolver la suscripción y te devolvemos la parte proporcional no consumida.
+        </p>
+
+        <h2>11. Garantía legal de conformidad</h2>
+        <p>
+          Respondemos ante ti de la falta de conformidad de echo durante <strong>toda la vigencia
+          de tu suscripción</strong>, conforme a los artículos 115 y siguientes del texto refundido
+          de la Ley General para la Defensa de los Consumidores y Usuarios. Nada de estas
+          condiciones limita, excluye ni condiciona esa garantía. Si echo no hace lo que decimos
+          que hace, escríbenos a <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
+        </p>
+
+        <h2>12. Responsabilidad</h2>
+        <p>
+          Respondemos de los daños y perjuicios previsibles que te causemos por incumplir estas
+          condiciones.
+        </p>
+        <p>
+          <strong>No excluimos ni limitamos</strong> en ningún caso nuestra responsabilidad por
+          dolo, culpa grave, muerte o daños personales, ni ninguna otra que la ley no permita
+          limitar.
+        </p>
+        <p>Dos advertencias de sentido común, porque describen cómo funciona echo:</p>
+        <ul>
+          <li>
+            echo <strong>pega texto en la aplicación donde estés escribiendo</strong>. Revisa lo
+            que aparece antes de enviarlo. No respondemos del uso que hagas del texto ni del sitio
+            donde acabe.
+          </li>
+          <li>
+            echo <strong>no es adecuado para información sujeta a secreto profesional si usas el
+            pulido</strong>, porque el texto sale hacia Anthropic o OpenAI. Para esos casos,
+            desactiva el pulido.
+          </li>
+        </ul>
+
+        <h2>13. Suspensión y terminación</h2>
+        <p>
+          Podemos suspender o terminar tu licencia si no se paga la suscripción o si usas echo de
+          una forma que infrinja estas condiciones o la ley. Te avisaremos antes y te daremos un
+          plazo razonable para corregirlo, salvo que la infracción sea grave o urgente. Tú puedes
+          terminar cuando quieras cancelando la suscripción y desinstalando echo.
+        </p>
+
+        <h2>14. Cambios en estas condiciones</h2>
+        <p>
+          Podemos modificarlas por motivos legales, técnicos o de funcionamiento del servicio. Te
+          avisaremos por correo <strong>con al menos 30 días</strong> de antelación. Si los cambios
+          no te convienen, puedes cancelar antes de que entren en vigor y te devolveremos la parte
+          proporcional no consumida.
+        </p>
+
+        <h2>15. Tus datos</h2>
+        <p>
+          Qué tratamos, por qué y cómo ejercer tus derechos está en la
+          <a href={url('/privacidad')}>política de privacidad</a>.
+        </p>
+
+        <h2>16. Ley aplicable y reclamaciones</h2>
+        <p>
+          Estas condiciones se rigen por la <strong>ley española</strong>. Si eres consumidor,
+          conservas el derecho a reclamar ante los juzgados y tribunales de tu propio domicilio, y
+          las leyes de protección al consumidor de tu país de residencia en la Unión Europea siguen
+          amparándote.
+        </p>
+        <p>
+          Antes de acudir a un tribunal, escríbenos a
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>: respondemos a cualquier
+          reclamación en un plazo máximo de un mes.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
