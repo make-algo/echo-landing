@@ -162,6 +162,11 @@ const PROHIBIDAS = [
     ],
   ],
   ['CA-NEG-3 · contadores', ['personas en la lista', 'plazas restantes']],
+  ['CA-FORM-6b · correo de baja sin fijar', ['correo por definir']],
+  [
+    'CA-FAQ-1 · FAQ de la lista de espera retirada',
+    ['beta privada por tandas', 'condiciones de early-bird', 'todavía no está decidido'],
+  ],
   // CA-NEG-1 · la comparativa no vuelve a hablar de precio. «Por anunciar» era
   // la mitad nuestra de aquella fila y no aparece en ningún otro sitio del
   // copy, así que se puede prohibir en toda la página; «Gratis» no, porque «el
