@@ -2,20 +2,22 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
-import { url } from '../lib/site'
 
 /**
- * Mini landing de descarga (a petición directa de Álvaro): el DMG de la
- * última versión, copiado en este repo público (`public/descargas/`) porque
- * el repo de la app es privado y su release de GitHub no es accesible sin
- * sesión. Sin formulario, sin argumentario: la página del alta y el mensaje
- * siguen siendo `/`. Actualizar `version`/`tamano`/`sha256` en cada release
- * que se quiera ofrecer aquí.
+ * Mini landing de descarga (a petición directa de Álvaro). El .dmg no vive en
+ * este repo: se sirve desde la release de larga vida «actualizaciones» de
+ * este mismo repositorio público, la misma que alimenta el canal de
+ * actualizaciones de Sparkle (`scripts/publicar-actualizacion.sh`, en el repo
+ * de la app, sube ahí cada versión y poda las antiguas). Actualizar
+ * `version`/`tamanoMB`/`sha256` en cada release que se quiera ofrecer aquí —
+ * los tres salen de `gh release view actualizaciones --repo
+ * make-algo/echo-landing --json assets`.
  */
-const version = '0.8.0'
+const version = '0.9.0'
 const archivo = `Echo-${version}.dmg`
-const tamanoMB = '12,1'
-const sha256 = '435736dd092a63b644896ff575ec7524651e2c192e2873ae132869cf1f3e25ce'
+const tamanoMB = '12,9'
+const sha256 = '8816353e607828d1fbf68a8a3333f030ad555b8a7376e17f340163bdb537b1f4'
+const descargaUrl = `https://github.com/make-algo/echo-landing/releases/download/actualizaciones/${archivo}`
 ---
 
 <Base
@@ -35,7 +37,7 @@ const sha256 = '435736dd092a63b644896ff575ec7524651e2c192e2873ae132869cf1f3e25ce
         </p>
 
         <p style="margin-top: 32px;">
-          <a class="btn" href={url(`/descargas/${archivo}`)} download>Descargar echo {version} (.dmg, {tamanoMB} MB)</a>
+          <a class="btn" href={descargaUrl}>Descargar echo {version} (.dmg, {tamanoMB} MB)</a>
         </p>
         <p class="microcopy">
           Requiere macOS 14 o posterior en Apple Silicon. Firmado y notarizado por Make Algo SL:
