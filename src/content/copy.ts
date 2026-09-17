@@ -180,7 +180,7 @@ export const beta = {
   entradilla:
     'La descarga ya está arriba. Si la pruebas y quieres contarnos qué tal te va —o qué te falla—, escríbenos. Lo leemos todo.',
   uso: {
-    etiqueta: '¿Para qué lo usarías?',
+    etiqueta: '¿Para qué lo usas?',
   },
   sub: {
     etiqueta: '¿Tienes Claude o ChatGPT de pago?',

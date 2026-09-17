@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
+import { url } from '../lib/site'
 
 /**
  * Mini landing de descarga (a petición directa de Álvaro). El .dmg no vive en
@@ -12,12 +13,11 @@ import Header from '../components/Header.astro'
  * `version`/`tamanoMB`/`sha256` en cada release que se quiera ofrecer aquí —
  * los tres salen de `gh release view actualizaciones --repo
  * make-algo/echo-landing --json assets`.
- */
-/**
+ *
  * El precio es información precontractual obligatoria en cuanto se anuncia la
- * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí.
- * Pendiente: enlazar desde esta página las condiciones de suscripción y el EULA
- * en cuanto existan.
+ * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí. Las
+ * condiciones se enlazan desde aquí porque su apartado 7 —la licencia de uso—
+ * aplica desde que se instala, aunque nunca se pague.
  */
 const precio = '12 € al año, IVA incluido'
 const version = '0.9.0'
@@ -53,6 +53,11 @@ const descargaUrl = `https://github.com/make-algo/echo-landing/releases/download
         <p class="microcopy">
           14 días de prueba completa por Mac, sin tarjeta. Pasado ese plazo, {precio}, para hasta
           tres Macs: se contrata y se cancela desde Ajustes › Licencia dentro de la propia app.
+        </p>
+        <p class="microcopy">
+          Al instalar echo aceptas las
+          <a href={url('/condiciones')}>condiciones de uso y suscripción</a>; qué datos tratamos y
+          cómo ejercer tus derechos, en la <a href={url('/privacidad')}>política de privacidad</a>.
         </p>
 
         <div class="divisor">
