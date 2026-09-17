@@ -103,7 +103,7 @@ const ORDEN = [
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
   ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
-  ['microcopy del alta', 'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter.'],
+  ['microcopy del alta', 'Solo te escribimos para avisarte de novedades y nuevas versiones de echo. Sin publicidad.'],
 ]
 
 // --- Las redacciones innegociables: copy aprobado que va literal o no va.
@@ -124,8 +124,8 @@ const INNEGOCIABLES = [
   ],
   [
     'CA-FORM-6 · microcopy bajo el botón',
-    `Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
-     respondiendo a cualquier correo.`,
+    `Solo te escribimos para avisarte de novedades y nuevas versiones de echo. Sin publicidad.
+     Te puedes borrar respondiendo a cualquier correo.`,
   ],
   [
     'CA-INT-3 · para quién NO es',
@@ -162,6 +162,11 @@ const PROHIBIDAS = [
     ],
   ],
   ['CA-NEG-3 · contadores', ['personas en la lista', 'plazas restantes']],
+  ['CA-FORM-6b · correo de baja sin fijar', ['correo por definir']],
+  [
+    'CA-FAQ-1 · FAQ de la lista de espera retirada',
+    ['beta privada por tandas', 'condiciones de early-bird', 'todavía no está decidido'],
+  ],
   // CA-NEG-1 · la comparativa no vuelve a hablar de precio. «Por anunciar» era
   // la mitad nuestra de aquella fila y no aparece en ningún otro sitio del
   // copy, así que se puede prohibir en toda la página; «Gratis» no, porque «el
