@@ -1,0 +1,76 @@
+---
+/**
+ * Seis iconos genéricos para la franja «Se pega donde ya escribes» (MAK-195).
+ * SVG propios, trazo simple, sin ninguna marca de tercero (CA-CAR-3/CA-CAR-4):
+ * ningún icono es el logotipo de una app real, solo la forma que representa
+ * el tipo de sitio (un sobre, una terminal…). Decorativos: `aria-hidden` va
+ * en el `<svg>`, la etiqueta de texto de al lado es el contenido accesible
+ * (CA-CAR-8).
+ */
+interface Props {
+  nombre: 'correo' | 'chat' | 'terminal' | 'editor' | 'notas' | 'navegador'
+}
+const { nombre } = Astro.props
+---
+
+<svg
+  class="carrusel__icono"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    nombre === 'correo' && (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="1.5" />
+        <path d="M4 7l8 6l8-6" />
+      </>
+    )
+  }
+  {
+    nombre === 'chat' && (
+      <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-4.5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
+    )
+  }
+  {
+    nombre === 'terminal' && (
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="1.5" />
+        <path d="M7 9l4 3-4 3" />
+        <path d="M13 15h4" />
+      </>
+    )
+  }
+  {
+    nombre === 'editor' && (
+      <>
+        <polyline points="9 8 5 12 9 16" />
+        <polyline points="15 8 19 12 15 16" />
+      </>
+    )
+  }
+  {
+    nombre === 'notas' && (
+      <>
+        <path d="M6 3h9l3 3v15H6z" />
+        <path d="M15 3v3h3" />
+        <path d="M8.5 11h7" />
+        <path d="M8.5 15h7" />
+      </>
+    )
+  }
+  {
+    nombre === 'navegador' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <ellipse cx="12" cy="12" rx="4" ry="9" />
+        <path d="M3 12h18" />
+      </>
+    )
+  }
+</svg>

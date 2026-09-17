@@ -143,6 +143,17 @@ const INNEGOCIABLES = [
     `El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no
      hace, y son las cuatro razones por las que existe echo.`,
   ],
+  [
+    'CA-CAR-5 · cuerpo de «Se pega donde ya escribes»',
+    `Correo, chat, terminal, notas, código… Hablas más rápido de lo que tecleas, y el texto aparece
+     limpio esté donde esté el cursor.`,
+  ],
+  [
+    'CA-VOC-2 · cuerpo de «Vocabulario personal»',
+    `echo aprende cómo escribes tú. En Ajustes le enseñas nombres propios, marcas y tono por app
+     —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
+     Claude lo aplica cada vez que pule tu dictado.`,
+  ],
 ]
 
 // --- Criterios negativos: lo que no puede aparecer en la página.
@@ -202,6 +213,30 @@ for (const [ruta, fichero] of RUTAS) {
       mal(ruta, `${nombre}: aparece ${encontradas.map((c) => `«${c}»`).join(', ')}`)
   }
 
+  // --- CA-CAR-3/CA-CAR-7: la franja «Se pega donde ya escribes» son seis
+  //     piezas icono+etiqueta, sin ninguna marca de tercero. La búsqueda de
+  //     marcas va SOLO sobre esta sección (no sobre todo el HTML): el
+  //     ejemplo de vocabulario personal («en Slack, tono informal», CA-VOC-2)
+  //     nombra Slack a propósito y no puede hacer fallar este criterio.
+  const franja = html.match(/<section class="acto" id="donde-se-pega"[\s\S]*?<\/section>/)?.[0]
+  if (!franja) mal(ruta, 'CA-CAR-1: no existe la sección #donde-se-pega')
+  else {
+    const MARCAS = ['Slack', 'Notion', 'VS Code', 'Visual Studio', 'Gmail', 'Outlook', 'iMessage', 'WhatsApp', 'Chrome', 'Safari']
+    const marcasEncontradas = MARCAS.filter((m) => franja.toLowerCase().includes(m.toLowerCase()))
+    if (marcasEncontradas.length)
+      mal(ruta, `CA-CAR-3: la franja nombra una marca de tercero: ${marcasEncontradas.join(', ')}`)
+    const piezas = (franja.match(/class="carrusel__pieza"/g) ?? []).length
+    if (piezas !== 6) mal(ruta, `CA-CAR-2: la franja tiene ${piezas} piezas y hacen falta seis`)
+    const ETIQUETAS = ['Correo', 'Chat', 'Terminal', 'Editor de código', 'Notas y documentos', 'Cualquier web']
+    let desdeEtiqueta = -1
+    for (const etiqueta of ETIQUETAS) {
+      const donde = franja.indexOf(etiqueta)
+      if (donde < 0) mal(ruta, `CA-CAR-2: falta la etiqueta «${etiqueta}» en la franja`)
+      else if (donde < desdeEtiqueta) mal(ruta, `CA-CAR-2: «${etiqueta}» llega fuera de orden en la franja`)
+      else desdeEtiqueta = donde
+    }
+  }
+
   // --- Metadatos (CA-META-1, CA-META-2). Las variantes son pieles de la misma
   //     página: el título y la descripción aprobados son los mismos en las cuatro.
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''
@@ -239,10 +274,12 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 7) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta siete`)
+  if (h2s.length !== 9) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta nueve`)
   const ROTULOS_H2 = [
+    'se pega donde ya escribes',
     'qué hace distinto',
     'qué pasa cuando sueltas la tecla',
+    'vocabulario personal',
     'qué sale de tu mac y qué no',
     'para quién es',
     'preguntas',
