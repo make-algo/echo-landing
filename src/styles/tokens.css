@@ -25,9 +25,17 @@
   --color-line:         #D3CCC1; /* separadores decorativos (no texto)     */
   --color-border:       #8A8377; /* borde de control de formulario 3,60:1  */
 
-  --color-accent:       #0A5B61; /* CTA, enlaces, onda     7,51:1 / paper  */
-  --color-accent-strong:#074A4F; /* hover / active         9,58:1 vs paper */
-  --color-accent-wash:  #DCEFF0; /* fondo del destello de pegado           */
+  /* El rojo de la corrección (MAK-71/85, decisión de Álvaro) es el acento
+     real del sitio, no una excepción de `/`: hasta ahora solo lo aplicaba
+     `.ruta-correccion`, así que las páginas que no la llevan (`/descarga`,
+     `/privacidad`, `/aviso-legal`, `/404`) se quedaban con este verde-azulado
+     vestigial de antes de la corrección. Mismos valores que
+     `correccion.css` (`--c-rojo` / `--c-rojo-fuerte` / su destello), medidos
+     ahí: ese override sigue vivo por si `.ruta-correccion` alguna vez
+     necesita divergir, pero ya no hace falta para que coincidan. */
+  --color-accent:       #B52216; /* CTA, enlaces           6,9:1 / paper   */
+  --color-accent-strong:#8E1A10; /* hover / active                        */
+  --color-accent-wash:  #F2DDD6; /* fondo del destello de pegado           */
 
   --color-error:        #A32116; /* texto de error         7,22:1 / paper  */
 
