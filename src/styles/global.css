@@ -155,7 +155,6 @@
     cursor: not-allowed;
   }
   .btn[disabled]:hover { background: var(--color-ink-3); }
-  .btn--submit { margin-top: 4px; }
 
   /* --- La ventana de correo de la demo. Sin sombra: la sombra difusa era el
      tic de «captura bonita» y no separaba nada que un borde o un filete no
