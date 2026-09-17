@@ -130,7 +130,7 @@
   .top__cta:hover { color: var(--color-accent); }
   .wordmark {
     font: 500 1.25rem / 1 var(--font-mono);
-    letter-spacing: -0.02em; color: var(--color-ink);
+    letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none;
   }
 
   /* --- Botón ------------------------------------------------------------ */
