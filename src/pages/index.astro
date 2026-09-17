@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import Escrito from '../components/demo/Escrito.astro'
 import Footer from '../components/Footer.astro'
+import Icono from '../components/Icono.astro'
 import WaitlistForm from '../components/WaitlistForm.astro'
 import { url } from '../lib/site'
 import {
@@ -11,10 +12,12 @@ import {
   comparativa,
   correccion,
   demo,
+  dondeSePega,
   paraQuien,
   pasos,
   preguntas,
   privacidad,
+  vocabulario,
 } from '../content/copy'
 import '../styles/correccion.css'
 
@@ -120,6 +123,30 @@ const cicloTextoHTML = segmentosCiclo
       </div>
     </section>
 
+    {/* ACTO 2 · «Se pega donde ya escribes» (MAK-194/195). La spec la pide
+         entre el Hero y la Demo animada, pero en esta dirección (galerada,
+         MAK-85) las dos ya son UNA sola sección: el ciclo de dictado vive
+         dentro del hero para que compartan el primer viewport en escritorio
+         (D3 de `03-alcance-landing.md`, no se reabre aquí). Partirlas para
+         cumplir la letra de la spec rompería esa regla ya fijada, así que la
+         franja va inmediatamente después del hero+demo — la misma posición
+         argumental, generalizando la promesa antes de que el resto de la
+         página la concrete. Decisión anotada en la issue, no en silencio. */}
+    <section class="acto" id="donde-se-pega" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <h2>{dondeSePega.titulo}</h2>
+      <ul class="carrusel" style="margin-top: 1.5rem">
+        {
+          dondeSePega.piezas.map((p) => (
+            <li class="carrusel__pieza">
+              <Icono nombre={p.icono} />
+              <span class="carrusel__etiqueta">{p.etiqueta}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="c-lead" style="margin-top: 1.5rem">{dondeSePega.cuerpo}</p>
+    </section>
+
     {/* ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más */}
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <span class="banda" aria-hidden="true"></span>
@@ -135,7 +162,7 @@ const cicloTextoHTML = segmentosCiclo
         }
       </div>
 
-      <h2 class="rubric" style="margin-top: 2.5rem">{pasos.rotulo}</h2>
+      <h2 class="rubric" id="como-funciona" style="margin-top: 2.5rem">{pasos.rotulo}</h2>
       <ol style="list-style: none; padding: 0; display: grid; gap: 1.25rem; margin-top: 1.25rem">
         {
           pasos.lista.map((paso) => (
@@ -149,6 +176,17 @@ const cicloTextoHTML = segmentosCiclo
           ))
         }
       </ol>
+    </section>
+
+    {/* ACTO 3bis · «Vocabulario personal» (MAK-194/195), entre «Cómo funciona»
+         (#como-funciona, el h2 de arriba) y «Comparación» (#comparacion,
+         siguiente acto). Mismo patrón que privacidad/para-quién: rótulo mono
+         + un párrafo. */}
+    <section class="acto" id="vocabulario" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <h2 class="rubric">{vocabulario.titulo}</h2>
+      <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">
+        {vocabulario.cuerpo.map((s) => (s.enfasis ? <em>{s.texto}</em> : s.texto))}
+      </p>
     </section>
 
     {/* ACTO 4 · cuatro correcciones, ni una más. El lado derecho, desde

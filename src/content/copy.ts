@@ -52,6 +52,28 @@ export const apertura = {
   },
 } as const
 
+/**
+ * Franja «Se pega donde ya escribes» (MAK-194 / MAK-195). Copy fijado literal
+ * en `docs/product/mak-194-carrusel-velocidad-vocabulario.md` §2 del repo
+ * privado: iconografía genérica, sin marcas de terceros (CA-CAR-3/CA-CAR-4),
+ * y sin multiplicador de velocidad (CA-CAR-6, reutiliza CA-NEG-5).
+ */
+export const dondeSePega = {
+  titulo: 'Se pega donde ya escribes',
+  /** CA-CAR-2: seis piezas, en este orden exacto. `icono` es la clave que lee `Icono.astro`. */
+  piezas: [
+    { icono: 'correo', etiqueta: 'Correo' },
+    { icono: 'chat', etiqueta: 'Chat' },
+    { icono: 'terminal', etiqueta: 'Terminal' },
+    { icono: 'editor', etiqueta: 'Editor de código' },
+    { icono: 'notas', etiqueta: 'Notas y documentos' },
+    { icono: 'navegador', etiqueta: 'Cualquier web' },
+  ],
+  /** CA-CAR-5, literal. */
+  cuerpo:
+    'Correo, chat, terminal, notas, código… Hablas más rápido de lo que tecleas, y el texto aparece limpio esté donde esté el cursor.',
+} as const
+
 export const argumentos = {
   rotulo: 'Qué hace distinto',
   lista: [
@@ -105,6 +127,35 @@ export const pasos = {
             'En la app activa, con el formato que le corresponda. Y se queda en el portapapeles por si lo quieres pegar otra vez.',
         },
       ],
+    },
+  ],
+} as const
+
+/**
+ * Sección «Vocabulario personal» (MAK-194 / MAK-195). Copy fijado literal en
+ * `docs/product/mak-194-carrusel-velocidad-vocabulario.md` §2, que a su vez
+ * reutiliza literalmente los tres ejemplos de `README.md` (sección Uso,
+ * Ajustes ⌘,) del repo privado — CA-VOC-3 (nada del CLI de pruebas, sin
+ * inventar un cuarto ejemplo).
+ *
+ * `cuerpo` va en segmentos, como `pasos.lista[].partes`, para poder poner
+ * `make-algo` y `Álvaro` en cursiva sin romper la frase única y seguida que
+ * exige CA-VOC-2 en el HTML generado.
+ */
+export const vocabulario = {
+  titulo: 'Vocabulario personal',
+  cuerpo: [
+    {
+      texto:
+        'echo aprende cómo escribes tú. En Ajustes le enseñas nombres propios, marcas y tono por app —«escribe ',
+      enfasis: false,
+    },
+    { texto: 'make-algo', enfasis: true },
+    { texto: ' así», «trata ', enfasis: false },
+    { texto: 'Álvaro', enfasis: true },
+    {
+      texto: ' como nombre propio», «en Slack, tono informal»— y Claude lo aplica cada vez que pule tu dictado.',
+      enfasis: false,
     },
   ],
 } as const
