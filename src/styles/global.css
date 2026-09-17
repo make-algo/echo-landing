@@ -149,7 +149,8 @@
      necesita el final de la sección —vaciado y con borde se hundía por debajo
      de los propios campos— pero no es el acento, así que se lee como un botón
      que hoy no está disponible. La nota de estado de arriba dice por qué.
-     Es andamiaje: con la cuenta de Formspree el botón vuelve a acento. */
+     Andamiaje de la época del formulario: hoy el alta es un `mailto:` y el
+     botón nunca se deshabilita, así que esta regla ya no se aplica. */
   .btn[disabled] {
     background: var(--color-ink-3); color: var(--color-paper);
     cursor: not-allowed;
@@ -218,10 +219,6 @@
     margin-top: 32px; padding-top: 20px;
     max-width: var(--container-measure);
   }
-  /* Dato jurídico que todavía no existe: se marca como pendiente en vez de
-     publicarse como si fuera definitivo. No lleva el resaltado del correo del
-     visitante, que significa lo contrario: «relee lo que acabas de escribir». */
-  .pending { font-family: var(--font-mono); font-size: 0.92em; color: var(--color-ink-3); }
 
   .done { margin-top: 36px; max-width: var(--container-measure); }
   .done p:first-of-type {

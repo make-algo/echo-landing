@@ -72,7 +72,7 @@ const cicloTextoHTML = segmentosCiclo
 
 <Base ogTitle={titular}>
   <main id="contenido" class="ruta-correccion">
-    <!-- ACTO 1 · máxima densidad de marcas -->
+    {/* ACTO 1 · máxima densidad de marcas */}
     <section class="acto" style="padding-top: clamp(2rem, 5vw, 4rem)">
       <span class="banda" aria-hidden="true"></span>
       <div class="apertura">
@@ -96,11 +96,11 @@ const cicloTextoHTML = segmentosCiclo
           </p>
         </div>
 
-        <!-- El producto, en el primer pantallazo. Una página que promete
+        {/* El producto, en el primer pantallazo. Una página que promete
              «hablas y aparece escrito» no puede enseñar cero: se ve dictarse,
              corregirse y pegarse solo, en bucle, sin esperar al scroll
              (MAK-113). `<Escrito />` es el fotograma final del ciclo — su
-             marcado no cambia, solo se le superpone el bruto mientras dicta. -->
+             marcado no cambia, solo se le superpone el bruto mientras dicta. */}
         <div class="apertura__prod ciclo" aria-hidden="true">
           <div class="ciclo__bruto win">
             <div class="win__bar">{demo.ventana.barra}</div>
@@ -120,7 +120,7 @@ const cicloTextoHTML = segmentosCiclo
       </div>
     </section>
 
-    <!-- ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más -->
+    {/* ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más */}
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <span class="banda" aria-hidden="true"></span>
       <h2 class="rubric">{argumentos.rotulo}</h2>
@@ -151,9 +151,9 @@ const cicloTextoHTML = segmentosCiclo
       </ol>
     </section>
 
-    <!-- ACTO 4 · cuatro correcciones, ni una más. El lado derecho, desde
+    {/* ACTO 4 · cuatro correcciones, ni una más. El lado derecho, desde
          1024 px, lleva la nota de margen que refuerza lo que la tabla ya
-         demuestra en ese punto del scroll (MAK-85, punto 2.4). -->
+         demuestra en ese punto del scroll (MAK-85, punto 2.4). */}
     <section class="acto acto--margen" style="margin-top: clamp(4rem, 9vw, 8rem)">
       <div class="regla" aria-hidden="true"></div>
       <div class="acto__cuerpo">
@@ -180,7 +180,7 @@ const cicloTextoHTML = segmentosCiclo
       <p class="margen">{v.margenComparativa}</p>
     </section>
 
-    <!-- ACTO 5 · cero marcas. La página ya está limpia. -->
+    {/* ACTO 5 · cero marcas. La página ya está limpia. */}
     <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
       <p class="final">
         {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
@@ -200,7 +200,7 @@ const cicloTextoHTML = segmentosCiclo
       </div>
     </section>
 
-    <!-- ACTO 6 · el alta, en el mismo sistema y sin una sola caja -->
+    {/* ACTO 6 · el alta, en el mismo sistema y sin una sola caja */}
     <section class="acto" id="beta" style="margin-top: clamp(4rem, 9vw, 8rem)">
       <div class="regla" aria-hidden="true"></div>
       <h2>{beta.titulo}</h2>
@@ -208,8 +208,8 @@ const cicloTextoHTML = segmentosCiclo
       <WaitlistForm />
     </section>
 
-    <!-- El lado derecho lleva su propia nota de margen: la última pregunta
-         antes del cierre limpio (MAK-85, punto 2.4). -->
+    {/* El lado derecho lleva su propia nota de margen: la última pregunta
+         antes del cierre limpio (MAK-85, punto 2.4). */}
     <section
       class="acto acto--margen"
       id="preguntas"
