@@ -33,7 +33,7 @@ export const demo = {
 
 export const cabecera = {
   marca: 'echo',
-  cta: 'Entrar en la beta privada',
+  cta: 'Descargar echo',
 } as const
 
 export const apertura = {
@@ -45,10 +45,10 @@ export const apertura = {
   ],
   subtitulo:
     'Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
-  cta: 'Entrar en la beta privada',
+  cta: 'Descargar echo',
   requisito: {
-    aviso: 'Sin descargable público todavía. Te escribimos cuando abramos tu tanda.',
-    maquina: 'macOS 26 y Apple Silicon.',
+    aviso: 'Descarga directa, sin cuenta ni formulario. 14 días de prueba completa y, después, suscripción anual.',
+    maquina: 'macOS 14 o posterior en Apple Silicon.',
   },
 } as const
 
@@ -176,9 +176,9 @@ export const paraQuien = {
 } as const
 
 export const beta = {
-  titulo: 'Entrar en la beta privada',
+  titulo: 'Avísame de próximas novedades',
   entradilla:
-    'Vamos abriendo por tandas para poder atender a cada uno. Escríbenos y cuéntanos en qué lo usarías; te avisamos cuando te toque.',
+    'La descarga ya está arriba. Escríbenos si quieres que te avisemos de futuras versiones y cuéntanos en qué lo usarías.',
   uso: {
     etiqueta: '¿Para qué lo usarías?',
   },
@@ -187,7 +187,7 @@ export const beta = {
     opciones: ['Claude', 'ChatGPT', 'Las dos', 'Ninguna'],
   },
   boton: 'Escríbenos por email',
-  /** CA-FORM-6 */
+  /** CA-FORM-6 · texto aprobado, exigido literal por scripts/verificar-copy.mjs — no tocar sin pasar por pm. */
   microcopy:
     'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar respondiendo a cualquier correo.',
   legal: {
