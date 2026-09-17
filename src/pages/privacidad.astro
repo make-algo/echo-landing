@@ -2,6 +2,21 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
+import { url } from '../lib/site'
+
+/**
+ * Texto legal íntegro. No se reescribe ni se resume sin pasar por asesor-legal.
+ *
+ * Está organizada por situaciones y no por los epígrafes del art. 13 RGPD porque
+ * ya no hay un solo tratamiento: escribirnos, suscribirse y usar la app son tres
+ * cosas distintas, con bases jurídicas y plazos distintos. Los epígrafes que la
+ * ley exige (finalidad, base, plazo, destinatarios, derechos) están todos dentro
+ * de su situación.
+ *
+ * El registro del art. 30, que es interno, vive en el repo de la app:
+ * docs/legal/registro-actividades.md. Si cambia uno, cambia el otro.
+ */
+const actualizado = '17 de septiembre de 2026'
 ---
 
 <Base title="Política de privacidad — echo" path="/privacidad">
@@ -14,66 +29,144 @@ import Header from '../components/Header.astro'
         <h2>Quién es el responsable</h2>
         <p>
           Make Algo SL, NIF B88875018, Calle General Pardiñas, 114 — 28006 Madrid, España.
-          Email: hola@make-algo.com.
+          Email: <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
+        </p>
+        <p>
+          Hay tres momentos en los que tratamos datos tuyos, y son distintos: cuando nos escribes,
+          cuando te suscribes y cuando usas echo en tu Mac. Van por separado porque no se parecen
+          en nada.
         </p>
 
-        <h2>Qué datos recogemos</h2>
+        <h2>Si nos escribes</h2>
         <p>
-          Los que nos mandas al escribirnos: tu dirección de
-          correo y lo que cuentes en el mensaje. El correo sale con el asunto ya puesto y dos
-          preguntas opcionales en el cuerpo —para qué usarías echo y si tienes Claude o ChatGPT de
-          pago—, pero decides tú qué contestas y qué añades. No recogemos nada más: no hay
-          formulario ni base de datos detrás, y esta web no usa cookies ni analítica de terceros.
+          <strong>Qué recogemos.</strong> Tu dirección de correo y lo que cuentes en el mensaje. El
+          correo sale con el asunto ya puesto y dos preguntas opcionales en el cuerpo —para qué usas
+          echo y si tienes Claude o ChatGPT de pago—, pero decides tú qué contestas y qué añades.
+          Esta web no tiene formulario ni base de datos detrás: el mensaje llega a nuestro buzón y
+          ahí se queda.
+        </p>
+        <p>
+          <strong>Para qué.</strong> Para leer y contestar tu mensaje, y lo que nos cuentes para
+          entender cómo se usa echo y mejorarlo. Nada más: no hay lista de correo, no te escribimos
+          después, sin newsletter, sin publicidad, sin ceder tus datos a terceros y sin decisiones
+          automatizadas que te afecten legalmente.
+        </p>
+        <p>
+          <strong>Con qué base legal.</strong> Tu consentimiento (art. 6.1.a RGPD), que nos das con
+          el propio acto de escribirnos. Puedes retirarlo cuando quieras escribiendo a
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>; retirarlo no afecta a lo
+          tratado hasta ese momento.
+        </p>
+        <p>
+          <strong>Cuánto lo guardamos.</strong> Lo justo para contestarte y, como mucho, 12 meses
+          desde tu último mensaje. Si nos pides antes que lo borremos, lo borramos.
         </p>
 
-        <h2>Para qué los usamos</h2>
+        <h2>Si te suscribes a echo</h2>
         <p>
-          Para leer y contestar tu mensaje, y lo que nos cuentes para entender cómo se usa echo y
-          mejorarlo. Nada más: no hay lista de correo, no te escribimos después, sin newsletter,
-          sin publicidad, sin ceder tus datos a terceros y sin decisiones automatizadas que te
-          afecten legalmente.
+          <strong>Qué recogemos.</strong> Tu dirección de correo, la clave de licencia que te
+          emitimos, un identificador de cada Mac donde la actives, las fechas de activación y la
+          constancia de que aceptaste las condiciones al comprar. <strong>Los datos de tu tarjeta
+          no los vemos ni los guardamos</strong>: el pago lo procesa Stripe de principio a fin.
+        </p>
+        <p>
+          El identificador del Mac es un resumen criptográfico de su número de serie interno: no
+          contiene tu nombre ni dice quién eres, pero queda ligado a tu licencia, así que lo
+          tratamos como dato personal y no como dato anónimo.
+        </p>
+        <p>
+          <strong>Para qué.</strong> Para emitirte la licencia, para que echo pueda comprobar que
+          sigue vigente, para limitar cada clave al número de Macs contratado, para atenderte si
+          hay un problema y para cumplir nuestras obligaciones contables y fiscales.
+        </p>
+        <p>
+          <strong>Con qué base legal.</strong> La ejecución del contrato que tenemos contigo
+          (art. 6.1.b RGPD). La constancia de tu aceptación de las condiciones y la facturación se
+          apoyan además en el cumplimiento de obligaciones legales (art. 6.1.c RGPD).
+        </p>
+        <p>
+          <strong>Cuánto lo guardamos.</strong> Mientras tengas la suscripción y, después, durante
+          los plazos que nos imponen la normativa fiscal y mercantil, que llegan a seis años. Por
+          eso, si nos pides la supresión durante ese periodo, lo que hacemos es
+          <strong>bloquear tus datos</strong> —quedan fuera de uso y solo disponibles para atender a
+          la Administración o a un juez— y suprimirlos cuando el plazo termina. Es lo que permite el
+          art. 32 de la LOPDGDD.
+        </p>
+        <p>
+          <strong>Si solo pruebas echo y no compras.</strong> Guardamos únicamente el identificador
+          de ese Mac y la fecha en que empezó la prueba, para que los 14 días no se puedan reiniciar
+          reinstalando. Base: nuestro interés legítimo en que la prueba gratuita funcione como se
+          anuncia (art. 6.1.f RGPD); el dato no permite identificarte por sí solo y no se usa para
+          nada más.
         </p>
 
-        <h2>Con qué base legal</h2>
+        <h2>Cuando usas echo en tu Mac</h2>
         <p>
-          Tu consentimiento (art. 6.1.a RGPD), que nos das con el propio acto de escribirnos.
-          Puedes retirarlo cuando quieras escribiendo a hola@make-algo.com; retirarlo no afecta a
-          lo tratado hasta ese momento.
+          <strong>Tu voz no sale nunca de tu ordenador.</strong> El reconocimiento de voz se hace
+          entero en tu Mac, sin conexión.
+        </p>
+        <p>
+          <strong>Si activas el pulido con inteligencia artificial, el texto transcrito sí sale</strong>,
+          pero no hacia nosotros: echo ejecuta en tu Mac la aplicación oficial de Anthropic o de
+          OpenAI, que envía ese texto <strong>con tu propia cuenta</strong>, igual que si lo hubieras
+          pegado tú en su chat. Nosotros no lo vemos, no lo recibimos y no lo guardamos. Ese envío se
+          rige por la política de privacidad de <a
+            href="https://www.anthropic.com/legal/privacy"
+            rel="noopener">Anthropic</a
+          > o de <a href="https://openai.com/policies/privacy-policy" rel="noopener">OpenAI</a>,
+          según cuál uses. Si prefieres que no salga nada, desactiva el pulido: echo sigue
+          funcionando.
+        </p>
+        <p>
+          <strong>Echo comprueba si hay versiones nuevas.</strong> Para eso pide cada pocas horas un
+          archivo alojado en esta misma web, lo que le da a nuestro proveedor de alojamiento tu
+          dirección IP y la versión que tienes instalada. A nosotros no nos llega esa información, y
+          puedes desactivar la comprobación automática en Ajustes.
+        </p>
+        <p>
+          <strong>Las grabaciones se quedan en tu Mac.</strong> Echo puede guardar el audio de tus
+          dictados para que compares motores de reconocimiento, pero <strong>viene desactivado</strong>
+          y, si lo activas, esos archivos no salen de tu ordenador. Lo mismo vale para el registro
+          de actividad que echo escribe en tu carpeta de historiales.
         </p>
 
-        <h2>Cuánto tiempo los guardamos</h2>
+        <h2>Quién más trata tus datos</h2>
+        <p>Trabajamos con cuatro proveedores, cada uno para una cosa:</p>
+        <ul>
+          <li>
+            <strong>GitHub, Inc.</strong> (Estados Unidos) aloja esta web y el archivo de
+            actualizaciones. Como todo alojamiento, trata los datos técnicos de tu visita —por
+            ejemplo, la dirección IP— para servir las páginas y protegerlas.
+          </li>
+          <li>
+            <strong>Google</strong> (Estados Unidos) presta el servicio de correo sobre el que
+            funciona nuestro buzón. El envío de tu mensaje lo hace tu propio programa de correo, con
+            tu proveedor.
+          </li>
+          <li>
+            <strong>Cloudflare, Inc.</strong> (Estados Unidos) presta el servidor de licencias.
+            La base de datos está alojada en su región europea.
+          </li>
+          <li>
+            <strong>Stripe</strong> procesa los pagos y trata los datos de tu tarjeta, que nunca
+            pasan por nuestros sistemas.
+          </li>
+        </ul>
         <p>
-          Lo justo para contestarte y, como mucho, 12 meses desde tu último mensaje. Si nos pides
-          antes que lo borremos, lo borramos. Después suprimimos tu correo y cualquier copia de
-          trabajo.
-        </p>
-
-        <h2>Quién más los trata</h2>
-        <p>
-          Dos proveedores, cada uno para una cosa. El alojamiento de esta web lo presta
-          GitHub, Inc. (Estados Unidos) a través de su servicio GitHub Pages; como todo
-          alojamiento, trata los datos técnicos de tu visita (por ejemplo, la dirección IP)
-          para servir la página y protegerla. GitHub está certificada en el Marco de
-          Privacidad de Datos UE–EE. UU., la decisión de adecuación de la Comisión Europea
-          que ampara esa transferencia (art. 45 RGPD).
-        </p>
-        <p>
-          Tu alta nos llega por correo electrónico directamente a un buzón de Make Algo SL: no hay
-          ningún proveedor de formularios de por medio y nadie recibe ni almacena tu mensaje en
-          nuestro nombre, salvo el servicio de correo sobre el que funciona ese buzón, que presta
-          Google (Estados Unidos). Google está certificada en el Marco de Privacidad de Datos
-          UE–EE. UU., la decisión de adecuación de la Comisión Europea que ampara esa transferencia
-          (art. 45 RGPD). El envío del mensaje lo hace tu propio programa de correo, con tu
-          proveedor. Fuera de esto, no cedemos tus datos a nadie salvo obligación legal.
+          Los cuatro están certificados en el <strong>Marco de Privacidad de Datos UE–EE. UU.</strong>,
+          la decisión de adecuación de la Comisión Europea que ampara esas transferencias
+          (art. 45 RGPD). Fuera de esto, no cedemos tus datos a nadie salvo obligación legal.
         </p>
 
         <h2>Tus derechos</h2>
         <p>
           Puedes pedirnos acceso, rectificación, supresión, oposición, limitación del tratamiento y
-          portabilidad escribiendo a hola@make-algo.com. Te contestaremos en el plazo máximo de un
-          mes. Si crees que no lo hemos hecho bien, puedes reclamar ante la
-          Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener"
-            >www.aepd.es</a
+          portabilidad escribiendo a <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>. Te
+          contestaremos en el plazo máximo de un mes. Si eres cliente, ten en cuenta el bloqueo por
+          plazos fiscales que explicamos más arriba. Si crees que no lo hemos hecho bien, puedes
+          reclamar ante la Agencia Española de Protección de Datos (<a
+            href="https://www.aepd.es"
+            rel="noopener">www.aepd.es</a
           >).
         </p>
 
@@ -83,7 +176,12 @@ import Header from '../components/Header.astro'
           esta política y, si la ley lo exige, te pediremos consentimiento antes.
         </p>
 
-        <p><em>Última actualización: 15 de septiembre de 2026.</em></p>
+        <p>
+          Las condiciones del servicio están en
+          <a href={url('/condiciones')}>condiciones de uso y suscripción</a>.
+        </p>
+
+        <p><em>Última actualización: {actualizado}.</em></p>
       </div>
     </div>
   </main>
