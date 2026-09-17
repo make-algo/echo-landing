@@ -3,12 +3,15 @@ import { url } from '../lib/site'
 import { beta } from '../content/copy'
 
 /**
- * Lista de espera.
+ * Contacto por email.
  *
- * No hay formulario ni backend propio: el botón es un enlace `mailto:` que
- * abre el cliente de correo del visitante con el asunto y las dos preguntas
- * ya escritas en el cuerpo. El envío lo hace su propio cliente de correo,
- * esta página no guarda ni transmite nada.
+ * No hay formulario ni backend propio: el enlace es un `mailto:` que abre el
+ * cliente de correo del visitante con el asunto y las dos preguntas ya
+ * escritas en el cuerpo. El envío lo hace su propio cliente de correo, esta
+ * página no guarda ni transmite nada.
+ *
+ * El CTA principal de la landing lleva a descargas (MAK-188): este enlace
+ * queda como vía secundaria y discreta, sin el estilo de botón primario.
  */
 interface Props {
   /**
@@ -37,7 +40,7 @@ const mailto = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${e
 
 <div class:list={['beta__body', clase]}>
   <div class="beta__cta">
-    <a class="btn btn--submit" href={mailto}>{beta.boton}</a>
+    <a class="top__cta" href={mailto}>{beta.boton}</a>
 
     <p class="microcopy">{beta.microcopy}</p>
 

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro'
 import Escrito from '../components/demo/Escrito.astro'
 import Footer from '../components/Footer.astro'
 import WaitlistForm from '../components/WaitlistForm.astro'
+import { url } from '../lib/site'
 import {
   apertura,
   argumentos,
@@ -89,7 +90,7 @@ const cicloTextoHTML = segmentosCiclo
           <p class="rubric">{v.capaLimpia}</p>
           <h1>{titular}</h1>
           <p class="c-lead">{apertura.subtitulo}</p>
-          <p><a class="btn" href="#beta">{apertura.cta}</a></p>
+          <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
           <p class="c-dim" style="margin-top: 1.25rem">
             {apertura.requisito.aviso} {apertura.requisito.maquina}
           </p>

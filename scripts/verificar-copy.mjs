@@ -251,6 +251,13 @@ for (const [ruta, fichero] of RUTAS) {
     mal(ruta, 'el enlace de la lista de espera no apunta a hola@make-algo.com')
   if (/<form\b/i.test(html)) mal(ruta, 'sigue habiendo un <form> en la página del alta')
 
+  // --- MAK-188: el CTA principal lleva a descargas, y el mailto queda detrás
+  //     de un enlace secundario que no compite en estilo con ese CTA.
+  if (!/<a class="btn" href="\/descarga">/.test(html))
+    mal(ruta, 'el CTA principal no apunta a /descarga')
+  if (/class="btn[^"]*"\s+href="mailto:/.test(html))
+    mal(ruta, 'el enlace mailto sigue vestido como el botón CTA primario')
+
   // --- El sitio no puede contradecirse sobre quién procesa el formulario.
   if (/proveedor por (decidir|confirmar)/.test(html))
     mal(ruta, 'el formulario sigue diciendo que el proveedor está sin decidir')
