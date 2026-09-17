@@ -13,6 +13,13 @@ import Header from '../components/Header.astro'
  * los tres salen de `gh release view actualizaciones --repo
  * make-algo/echo-landing --json assets`.
  */
+/**
+ * El precio es información precontractual obligatoria en cuanto se anuncia la
+ * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí.
+ * Pendiente: enlazar desde esta página las condiciones de suscripción y el EULA
+ * en cuanto existan.
+ */
+const precio = '12 € al año, IVA incluido'
 const version = '0.9.0'
 const archivo = `Echo-${version}.dmg`
 const tamanoMB = '12,9'
@@ -44,8 +51,8 @@ const descargaUrl = `https://github.com/make-algo/echo-landing/releases/download
           macOS no debería avisar de que viene de un origen no identificado.
         </p>
         <p class="microcopy">
-          14 días de prueba completa por Mac. Pasado ese plazo, suscripción anual gestionada
-          desde Ajustes › Licencia dentro de la propia app.
+          14 días de prueba completa por Mac, sin tarjeta. Pasado ese plazo, {precio}, para hasta
+          tres Macs: se contrata y se cancela desde Ajustes › Licencia dentro de la propia app.
         </p>
 
         <div class="divisor">

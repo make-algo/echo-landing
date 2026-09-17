@@ -195,7 +195,7 @@ export const beta = {
     uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas del correo, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. Tu mensaje nos llega directo al buzón, sin proveedor de formularios de por medio; los detalles y tus derechos, en la ',
     enlace: 'política de privacidad',
     dos: ', donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a ',
-    pendiente: '[correo por definir]',
+    correo: 'hola@make-algo.com',
     tres: '.',
   },
   ok: {
@@ -233,8 +233,8 @@ export const preguntas = {
       r: '25 idiomas europeos, con detección automática y mezcla dentro de la misma frase.',
     },
     {
-      p: '¿Cuánto va a costar?',
-      r: 'Todavía no está decidido. Quien esté en la lista de espera lo sabrá antes que nadie y con condiciones de early-bird.',
+      p: '¿Cuánto cuesta?',
+      r: '14 días de prueba completa, sin tarjeta. Después, 12 € al año con IVA incluido, para hasta tres Macs. Se paga desde la propia app y se cancela cuando quieras.',
     },
     {
       p: '¿Cuándo puedo descargarlo?',
