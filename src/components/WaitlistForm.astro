@@ -44,14 +44,14 @@ const mailto = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${e
 
     <p class="microcopy">{beta.microcopy}</p>
 
-    <!--
+    {/*
       Texto legal de protección de datos, visible junto al botón y no tras un
       enlace: es lo que hace que no haga falta checkbox de consentimiento.
       No se reescribe sin pasar por asesor-legal.
 
       Ya no menciona a Formspree: desde que el alta es un `mailto:` no hay
       encargado del tratamiento ni transferencia a EE. UU. que amparar.
-    -->
+    */}
     <p class="legalnote" id="legalnote">
       <strong>{beta.legal.titulo}</strong>{beta.legal.uno}<a href={url('/privacidad')}
         >{beta.legal.enlace}</a

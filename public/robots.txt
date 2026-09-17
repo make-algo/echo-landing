@@ -1,3 +1,4 @@
-# Indexable desde el 15-09-2026 por decisión humana explícita (MAK-71).
 User-agent: *
 Allow: /
+
+Sitemap: https://echo.make-algo.com/sitemap-index.xml
