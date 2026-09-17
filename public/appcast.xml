@@ -3,6 +3,16 @@
     <channel>
         <title>Echo</title>
         <item>
+            <title>0.9.1</title>
+            <pubDate>Thu, 17 Sep 2026 17:34:00 +0200</pubDate>
+            <link>https://echo.make-algo.com</link>
+            <sparkle:version>13</sparkle:version>
+            <sparkle:shortVersionString>0.9.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/Echo-0.9.1.dmg" length="13613572" type="application/octet-stream" sparkle:edSignature="7WjmzFEDjul1a/483aTQj0qMtQuZlYex7LmpwyMeGDhhq3OtnUSrJjooEIxqtYB4EFG8YsdvWLJmgKhcQeIRBw=="/>
+        </item>
+        <item>
             <title>0.9.0</title>
             <pubDate>Wed, 16 Sep 2026 23:49:51 +0200</pubDate>
             <link>https://echo.make-algo.com</link>
