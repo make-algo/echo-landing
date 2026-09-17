@@ -246,6 +246,7 @@ export const preguntas = {
 export const pie = {
   linea: 'echo es una app de Make Algo SL. Dictado para macOS.',
   avisoLegal: 'Aviso legal',
+  condiciones: 'Condiciones',
   privacidad: 'Privacidad',
 } as const
 
