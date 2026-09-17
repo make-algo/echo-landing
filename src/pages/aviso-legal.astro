@@ -6,8 +6,12 @@ import Header from '../components/Header.astro'
 /**
  * Texto legal íntegro. No se reescribe ni se resume.
  * Datos de la sociedad confirmados por asesor-fiscal en MAK-133. La sociedad YA está
- * constituida e inscrita: falta completar la inscripción con tomo, folio y hoja, que es
- * lo que pide el art. 10.b LSSI. Ponerlos aquí en cuanto se tengan a mano.
+ * constituida e inscrita. No lleva tomo ni folio a propósito: la hoja es electrónica y el
+ * BORME de Madrid solo publica sección, hoja e inscripción. Si algún impreso pide las tres
+ * casillas, tomo y folio van en blanco con la nota «inscripción en folio electrónico».
+ * Fórmula larga para escrituras y contratos: «… Sección 8.ª (Sociedades), hoja M-893705,
+ * inscripción 1.ª de 20 de julio de 2026, en folio electrónico».
+ * BORME núm. 142, de 27-07-2026, acto 350160.
  * Ya sin noindex: indexable desde el 15-09-2026 por decisión de Álvaro en MAK-71.
  */
 ---
@@ -29,7 +33,8 @@ import Header from '../components/Header.astro'
           <strong>NIF:</strong> B88875018<br />
           <strong>Domicilio:</strong> Calle General Pardiñas, 114 — 28006 Madrid, España<br />
           <strong>Email de contacto:</strong> hola@make-algo.com<br />
-          <strong>Datos registrales:</strong> Inscrita en el Registro Mercantil de Madrid.
+          <strong>Datos registrales:</strong> Registro Mercantil de Madrid, Sección 8.ª, hoja
+          M-893705, inscripción 1.ª
         </p>
 
         <h2>Uso del sitio</h2>
