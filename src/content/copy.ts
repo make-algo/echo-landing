@@ -176,9 +176,9 @@ export const paraQuien = {
 } as const
 
 export const beta = {
-  titulo: 'Avísame de próximas novedades',
+  titulo: 'Escríbenos',
   entradilla:
-    'La descarga ya está arriba. Escríbenos si quieres que te avisemos de futuras versiones y cuéntanos en qué lo usarías.',
+    'La descarga ya está arriba. Si la pruebas y quieres contarnos qué tal te va —o qué te falla—, escríbenos. Lo leemos todo.',
   uso: {
     etiqueta: '¿Para qué lo usarías?',
   },
@@ -189,12 +189,12 @@ export const beta = {
   boton: 'Escríbenos por email',
   /** CA-FORM-6 · texto aprobado, exigido literal por scripts/verificar-copy.mjs — no tocar sin pasar por pm. */
   microcopy:
-    'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar respondiendo a cualquier correo.',
+    'No hay lista ni newsletter: no te vamos a escribir. Guardamos tu correo solo mientras haga falta para contestarte.',
   legal: {
     titulo: 'Protección de datos:',
-    uno: ' el responsable es Make Algo SL. Usamos tu email solo para avisarte cuando abramos tu tanda; las dos preguntas del correo, solo para ordenar la lista. Sin newsletter y sin cesiones comerciales. Tu mensaje nos llega directo al buzón, sin proveedor de formularios de por medio; los detalles y tus derechos, en la ',
+    uno: ' el responsable es Make Algo SL. Usamos tu correo solo para leer y contestar tu mensaje, y lo que cuentes solo para entender cómo se usa echo. No te apuntamos a ninguna lista, no te escribimos después y no cedemos nada a terceros. Tu mensaje llega directo a nuestro buzón, sin proveedor de formularios de por medio; los detalles y tus derechos, en la ',
     enlace: 'política de privacidad',
-    dos: ', donde también tienes cómo ejercer tus derechos. Te puedes borrar respondiendo a cualquier correo o escribiendo a ',
+    dos: '. Puedes pedirnos que lo borremos escribiendo a ',
     correo: 'hola@make-algo.com',
     tres: '.',
   },
@@ -238,7 +238,7 @@ export const preguntas = {
     },
     {
       p: '¿Cuándo puedo descargarlo?',
-      r: 'Estamos en beta privada por tandas. No damos fecha porque no la sabemos; te escribimos cuando te toque.',
+      r: 'Ya. La descarga está arriba, sin lista de espera ni invitación: 14 días de prueba completa y después decides.',
     },
   ],
 } as const

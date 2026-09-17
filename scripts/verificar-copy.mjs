@@ -103,7 +103,7 @@ const ORDEN = [
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
   ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
-  ['microcopy del alta', 'Te escribimos cuando abramos tu tanda y nada más. Sin newsletter.'],
+  ['microcopy del alta', 'No hay lista ni newsletter: no te vamos a escribir.'],
 ]
 
 // --- Las redacciones innegociables: copy aprobado que va literal o no va.
@@ -124,8 +124,8 @@ const INNEGOCIABLES = [
   ],
   [
     'CA-FORM-6 · microcopy bajo el botón',
-    `Te escribimos cuando abramos tu tanda y nada más. Sin newsletter. Te puedes borrar
-     respondiendo a cualquier correo.`,
+    `No hay lista ni newsletter: no te vamos a escribir. Guardamos tu correo solo mientras haga
+     falta para contestarte.`,
   ],
   [
     'CA-INT-3 · para quién NO es',
