@@ -149,6 +149,16 @@ const INNEGOCIABLES = [
      limpio esté donde esté el cursor.`,
   ],
   [
+    'CA-NEG-5/CA-QUIEN-5 · «para quién es» con el multiplicador',
+    `escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas 4
+     veces más rápido de lo que tecleas.`,
+  ],
+  [
+    'CA-NEG-5/CA-QUIEN-5 · nota con las dos cifras de referencia',
+    `4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a
+     tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).`,
+  ],
+  [
     'CA-VOC-2 · cuerpo de «Vocabulario personal»',
     `echo aprende cómo escribes tú. En Ajustes le enseñas nombres propios, marcas y tono por app
      —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
@@ -178,7 +188,13 @@ const PROHIBIDAS = [
     ],
   ],
   ['CA-NEG-4/7 · competidores', ['Wispr', 'Superwhisper', 'Aqua Voice', 'Trustpilot']],
-  ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3', 'veces más rápido']],
+  // CA-NEG-5: multiplicadores genéricos siguen fuera. El único permitido, «4
+  // veces más rápido» en «para quién es» (MAK-217, docs/gtm/02-propuesta-valor.md
+  // §4/§5.7/§5.11 y docs/gtm/03-alcance-landing.md CA-NEG-5/CA-QUIEN-5 del repo
+  // privado), se comprueba abajo como INNEGOCIABLE, con su cifra de referencia
+  // visible al lado. La franja «Se pega donde ya escribes» sigue prohibiéndolo
+  // del todo (CA-CAR-6), comprobado más abajo solo sobre esa sección.
+  ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3']],
   [
     'CA-NEG-8 · palabras prohibidas por el tono',
     [
@@ -245,6 +261,10 @@ for (const [ruta, fichero] of RUTAS) {
       mal(ruta, `CA-CAR-3: la franja nombra una marca de tercero: ${marcasEncontradas.join(', ')}`)
     const piezas = (franja.match(/class="carrusel__pieza"/g) ?? []).length
     if (piezas !== 6) mal(ruta, `CA-CAR-2: la franja tiene ${piezas} piezas y hacen falta seis`)
+    // CA-CAR-6: esta franja no lleva multiplicador de velocidad, ni siquiera
+    // el «4 veces» aprobado para «para quién es» — spec propia, sin excepción.
+    if (/\d+\s*x\b|veces\s+más\s+rápido/i.test(visible(franja)))
+      mal(ruta, 'CA-CAR-6: la franja «Se pega donde ya escribes» lleva un multiplicador de velocidad')
     const ETIQUETAS = ['Correo', 'Chat', 'Terminal', 'Editor de código', 'Notas y documentos', 'Cualquier web']
     let desdeEtiqueta = -1
     for (const etiqueta of ETIQUETAS) {

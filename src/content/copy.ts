@@ -220,7 +220,7 @@ export const paraQuien = {
     {
       fuerte: 'Te va a servir si',
       resto:
-        ' escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas más rápido de lo que tecleas. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
+        ' escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas 4 veces más rápido de lo que tecleas. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
     },
     {
       /** CA-INT-3 */
@@ -229,6 +229,9 @@ export const paraQuien = {
         ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
     },
   ],
+  /** CA-NEG-5 / CA-QUIEN-5 (docs/gtm/03-alcance-landing.md del repo privado): cifra visible junto al "4 veces", no solo en enlace. */
+  nota:
+    '4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).',
 } as const
 
 export const beta = {
