@@ -92,6 +92,11 @@ export const argumentos = {
       texto:
         'La transcripción corre en tu Mac, así que no hay servidor que pagar ni minutos que gastar. El pulido lo hace el CLI de Claude Code o el de Codex con tu propia sesión: consume tu cuota, no una nuestra. No te pedimos ninguna API key.',
     },
+    {
+      titulo: 'Local, sin cuenta y sin guardar nada',
+      texto:
+        'La voz se transcribe en tu Mac; nunca sale del dispositivo. No hace falta crear ninguna cuenta para descargar ni para usar echo. Y no guardamos ni enviamos a ningún sitio lo que dictas: si activas el pulido, lo único que sale es el texto ya transcrito, hacia tu propia cuenta de Claude o ChatGPT.',
+    },
   ],
 } as const
 
