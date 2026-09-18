@@ -154,11 +154,29 @@ const INNEGOCIABLES = [
      —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
      Claude lo aplica cada vez que pule tu dictado.`,
   ],
+  [
+    'CA-ARG-5 · cuarto bloque de «Qué hace distinto»',
+    `La voz se transcribe en tu Mac; nunca sale del dispositivo. No hace falta crear ninguna cuenta
+     para descargar ni para usar echo. Y no guardamos ni enviamos a ningún sitio lo que dictas: si
+     activas el pulido, lo único que sale es el texto ya transcrito, hacia tu propia cuenta de
+     Claude o ChatGPT.`,
+  ],
 ]
 
 // --- Criterios negativos: lo que no puede aparecer en la página.
 const PROHIBIDAS = [
-  ['CA-PRIV-4', ['100% privado', '100 % privado', 'totalmente local', 'totalmente privado']],
+  [
+    'CA-PRIV-4',
+    [
+      '100% privado',
+      '100 % privado',
+      '100% local',
+      '100 % local',
+      'totalmente local',
+      'totalmente privado',
+      'privacidad total',
+    ],
+  ],
   ['CA-NEG-4/7 · competidores', ['Wispr', 'Superwhisper', 'Aqua Voice', 'Trustpilot']],
   ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3', 'veces más rápido']],
   [
