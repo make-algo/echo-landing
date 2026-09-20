@@ -28,7 +28,13 @@ import { servidor, url } from '../lib/site'
  */
 const precio = '12 € al año, IVA incluido'
 const version = '1.0.1'
-const archivo = `Echo-${version}.dmg`
+// El instalador se llama como la marca, en minúscula. La 1.0.1 es la única que
+// quedó subida con el nombre viejo y no se renombra: renombrar un asset publicado
+// rompe el enlace que circula y el canal de actualizaciones de quien aún no se ha
+// actualizado. El nombre se decide por versión —igual que en el Worker, que hace
+// lo mismo en `/descargar`—, así que al subir la versión de arriba esto sale ya
+// bien solo y esta excepción se puede borrar.
+const archivo = `${version === '1.0.1' ? 'Echo' : 'echo'}-${version}.dmg`
 const tamanoMB = '13,0'
 const sha256 = '0e1eacbee6c5bb2d36ff1b7b27c0e63adfd8e27bff54863c586f99890e7134db'
 const descargaUrl = `${servidor}/descargar?v=${version}`

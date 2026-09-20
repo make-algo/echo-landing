@@ -393,10 +393,11 @@ else
 //     Es una sola marca: la misma en la prosa, en el `<title>`, en `og:site_name`
 //     y en el Mac de quien la instala. La única «Echo» con mayúscula que queda
 //     hoy es el nombre del instalador ya publicado (`Echo-1.0.1.dmg`), y por eso
-//     va exceptuado aquí: el artefacto se renombra a `echo-X.Y.Z.dmg` al
-//     publicar la próxima versión —a la vez que el redirect `/descargar` del
-//     Worker, que construye ese nombre a mano y devolvería un 404 si se renombra
-//     el asset sin desplegarlo—. Cuando eso pase, se quita la excepción.
+//     va exceptuado aquí. Ese no se renombra —renombrar un asset publicado rompe
+//     el enlace que circula y el canal de actualizaciones de quien todavía no se
+//     ha actualizado—: la próxima versión sale ya como `echo-X.Y.Z.dmg`, y tanto
+//     esta página como el `/descargar` del Worker deciden el nombre por versión,
+//     así que las dos conviven. Cuando la 1.0.1 deje de ofrecerse, fuera excepción.
 const ARTEFACTO_PUBLICADO = /Echo-\d+\.\d+\.\d+\.dmg/g
 const conMayuscula = paginas.filter((f) =>
   /\bEcho\b/.test(readFileSync(f, 'utf8').replace(ARTEFACTO_PUBLICADO, ''))
