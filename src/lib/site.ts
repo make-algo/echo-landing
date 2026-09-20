@@ -15,10 +15,17 @@ export function absoluteUrl(path: string): string {
 }
 
 export const site = {
-  // Copy aprobado. No se reescribe.
-  title: 'echo — Dictado para Mac que escribe limpio',
+  /**
+   * Copy aprobado; lo único que se toca aquí es cómo se NOMBRA el producto.
+   *
+   * En los metadatos el nombre va siempre completo, «Echo, dictado para Mac»:
+   * «Echo» a secas compite en búsqueda con el altavoz de Amazon y no lo gana
+   * nadie. En la prosa de la página el producto sigue siendo «echo» en
+   * minúscula, que es el logotipo y el copy aprobado.
+   */
+  title: 'Echo, dictado para Mac que escribe limpio',
   description:
-    'Hablas y el texto aparece escrito y puntuado donde estabas escribiendo. Transcripción local; el pulido usa tu suscripción de Claude o ChatGPT.',
+    'Echo, dictado para Mac: hablas y el texto aparece escrito y puntuado donde estabas. Transcripción local y pulido con tu suscripción de Claude o ChatGPT.',
 } as const
 
 /**

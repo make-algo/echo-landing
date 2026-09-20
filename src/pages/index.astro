@@ -95,7 +95,7 @@ const cicloTextoHTML = segmentosCiclo
           <p class="c-lead">{apertura.subtitulo}</p>
           <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
           <p class="c-dim" style="margin-top: 1.25rem">
-            {apertura.requisito.aviso} {apertura.requisito.maquina}
+            {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
           </p>
         </div>
 

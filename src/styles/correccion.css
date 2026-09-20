@@ -178,6 +178,14 @@
   max-width: 54ch;
   margin-top: 1.5rem;
 }
+/* La cifra dentro de una línea gris: negrita sola no basta en cuerpo pequeño y
+   a un paso de contraste del fondo, así que sube a tinta plena. Es lo mismo que
+   hacen los `dato` de «Qué pasa cuando sueltas la tecla», donde el texto que
+   los rodea ya es tinta y la negrita se ve sin ayuda. */
+.ruta-correccion .c-dim strong {
+  color: var(--c-ink);
+}
+
 .ruta-correccion .c-dim,
 .ruta-correccion .rubric {
   font: 400 var(--text-small) / 1.5 var(--font-mono);

@@ -47,7 +47,20 @@ export const apertura = {
     'Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
   cta: 'Descargar echo',
   requisito: {
-    aviso: 'Descarga directa, sin cuenta ni formulario. 14 días de prueba completa y, después, suscripción anual.',
+    /**
+     * Segmentado como `pasos.lista[].partes` y por lo mismo: el precio es la
+     * cifra que decide la comparación —doce euros al año, no al mes— y en el
+     * gris del resto de la línea no se lee, así que sube a tinta plena. La
+     * frase sigue siendo una y seguida en el HTML: nada se mete en medio.
+     */
+    aviso: [
+      { dato: false, texto: '14 días de prueba completa y, después, ' },
+      { dato: true, texto: '12 € al año' },
+      {
+        dato: false,
+        texto: ' con IVA incluido, para hasta tres Macs. Descarga directa, sin cuenta ni formulario.',
+      },
+    ],
     maquina: 'macOS 14 o posterior en Apple Silicon.',
   },
 } as const
@@ -226,7 +239,7 @@ export const paraQuien = {
       /** CA-INT-3 */
       fuerte: 'No te va a servir si',
       resto:
-        ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 26, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
+        ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 14 o posterior, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
     },
   ],
   /** CA-NEG-5 / CA-QUIEN-5 (docs/gtm/03-alcance-landing.md del repo privado): cifra visible junto al "4 veces", no solo en enlace. */
@@ -285,7 +298,7 @@ export const preguntas = {
     },
     {
       p: '¿Qué Mac necesito?',
-      r: 'macOS 26 (Tahoe) y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
+      r: 'macOS 14 (Sonoma) o posterior y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
     },
     {
       p: '¿En qué idiomas funciona?',
@@ -303,7 +316,7 @@ export const preguntas = {
 } as const
 
 export const pie = {
-  linea: 'echo es una app de Make Algo SL. Dictado para macOS.',
+  linea: 'Echo, dictado para Mac. Una app de Make Algo SL.',
   avisoLegal: 'Aviso legal',
   condiciones: 'Condiciones',
   privacidad: 'Privacidad',
