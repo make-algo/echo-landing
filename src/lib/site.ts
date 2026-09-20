@@ -18,14 +18,15 @@ export const site = {
   /**
    * Copy aprobado; lo único que se toca aquí es cómo se NOMBRA el producto.
    *
-   * En los metadatos el nombre va siempre completo, «Echo, dictado para Mac»:
-   * «Echo» a secas compite en búsqueda con el altavoz de Amazon y no lo gana
-   * nadie. En la prosa de la página el producto sigue siendo «echo» en
-   * minúscula, que es el logotipo y el copy aprobado.
+   * Siempre «echo, dictado para Mac», y siempre en minúscula. Dos reglas que
+   * van juntas: el descriptor porque «echo» a secas compite en búsqueda con el
+   * altavoz de Amazon y esa pelea no se gana; la minúscula porque es el
+   * logotipo, es como se llama la app en el Mac de quien la instala y es el
+   * copy aprobado de toda la página. Una marca, escrita igual en todas partes.
    */
-  title: 'Echo, dictado para Mac que escribe limpio',
+  title: 'echo, dictado para Mac que escribe limpio',
   description:
-    'Echo, dictado para Mac: hablas y el texto aparece escrito y puntuado donde estabas. Transcripción local y pulido con tu suscripción de Claude o ChatGPT.',
+    'echo, dictado para Mac: hablas y el texto aparece escrito y puntuado donde estabas. Transcripción local y pulido con tu suscripción de Claude o ChatGPT.',
 } as const
 
 /**

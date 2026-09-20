@@ -279,7 +279,7 @@ for (const [ruta, fichero] of RUTAS) {
   //     página: el título y la descripción aprobados son los mismos en las cuatro.
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''
   const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? ''
-  if (title !== 'Echo, dictado para Mac que escribe limpio')
+  if (title !== 'echo, dictado para Mac que escribe limpio')
     mal(ruta, `CA-META-1: el <title> no es el aprobado (es «${title}»)`)
   else if (title.length > 60) mal(ruta, `CA-META-1: el <title> supera 60 caracteres (${title.length})`)
   if (description.length === 0 || description.length > 155)
@@ -387,6 +387,23 @@ else
   console.log(
     `ok  CA-NEG-9 · ningún recurso de terceros (${paginas.length} páginas, ${hojas.length} hojas de estilo)`
   )
+
+// --- La marca se escribe «echo», en minúscula, en todas partes.
+//
+//     Es una sola marca: la misma en la prosa, en el `<title>`, en `og:site_name`
+//     y en el Mac de quien la instala. La única «Echo» con mayúscula que queda
+//     hoy es el nombre del instalador ya publicado (`Echo-1.0.1.dmg`), y por eso
+//     va exceptuado aquí: el artefacto se renombra a `echo-X.Y.Z.dmg` al
+//     publicar la próxima versión —a la vez que el redirect `/descargar` del
+//     Worker, que construye ese nombre a mano y devolvería un 404 si se renombra
+//     el asset sin desplegarlo—. Cuando eso pase, se quita la excepción.
+const ARTEFACTO_PUBLICADO = /Echo-\d+\.\d+\.\d+\.dmg/g
+const conMayuscula = paginas.filter((f) =>
+  /\bEcho\b/.test(readFileSync(f, 'utf8').replace(ARTEFACTO_PUBLICADO, ''))
+)
+if (conMayuscula.length)
+  fallos.push(`la marca va en minúscula y aparece «Echo» en: ${conMayuscula.join(', ')}`)
+else console.log(`ok  marca · «echo» en minúscula en las ${paginas.length} páginas`)
 
 // --- El requisito de macOS, uno solo en todo el sitio.
 //
