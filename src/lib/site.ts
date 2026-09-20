@@ -20,3 +20,10 @@ export const site = {
   description:
     'Hablas y el texto aparece escrito y puntuado donde estabas escribiendo. Transcripción local; el pulido usa tu suscripción de Claude o ChatGPT.',
 } as const
+
+/**
+ * Nuestro servidor (el Worker de licencias). La landing lo usa para dos cosas: el botón de compra
+ * y la medición —visitas y descargas—, que vive ahí y no en una analítica de terceros porque esta
+ * web promete que no carga nada de fuera y `npm run verificar` lo comprueba en cada build.
+ */
+export const servidor = 'https://echo-licencias.make-algo.com'

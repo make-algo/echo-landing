@@ -388,6 +388,56 @@ else
     `ok  CA-NEG-9 · ningún recurso de terceros (${paginas.length} páginas, ${hojas.length} hojas de estilo)`
   )
 
+// --- La medición es nuestra y de nadie más.
+//
+//     Dos piezas que se pierden en silencio si alguien las toca sin saber para
+//     qué estaban —la página sigue funcionando igual, solo que ya no cuenta
+//     nada—, así que se comprueban aquí en vez de confiar en la revisión:
+//
+//     1. El beacon de visitas, inline y contra nuestro propio servidor. Por eso
+//        CA-NEG-9 sigue pasando ahí arriba: no hay nada que cargar de fuera.
+//     2. El botón de descarga, que pasa por el contador. Si vuelve a apuntar
+//        directo a GitHub se pierde el único dato de descargas reales que hay,
+//        porque el contador de GitHub suma además cada actualización de Sparkle
+//        (el appcast apunta al mismo .dmg) y las dos cifras quedan sumadas sin
+//        poder separarlas.
+const SERVIDOR = 'https://echo-licencias.make-algo.com'
+
+const sinBeacon = paginas.filter((f) => !readFileSync(f, 'utf8').includes(`${SERVIDOR}/v1/visita`))
+if (sinBeacon.length) fallos.push(`la medición de visitas no llega a: ${sinBeacon.join(', ')}`)
+else console.log(`ok  medición · las ${paginas.length} páginas cuentan su visita en nuestro servidor`)
+
+const DESCARGA = 'dist/descarga/index.html'
+if (!existsSync(DESCARGA)) fallos.push(`no existe ${DESCARGA}`)
+else if (!readFileSync(DESCARGA, 'utf8').includes(`<a class="btn" href="${SERVIDOR}/descargar?v=`))
+  fallos.push('el botón de /descarga no pasa por el contador: las descargas dejarían de medirse')
+else console.log('ok  medición · el botón de descarga pasa por el contador')
+
+// Y que no se cuele una analítica de terceros por la puerta de atrás: la
+// comprobación de arriba mira atributos de carga, y un fragmento de Google
+// Analytics pegado en línea no tiene `src` que mirar.
+const ANALITICAS = [
+  'google-analytics.com',
+  'googletagmanager.com',
+  'cloudflareinsights.com',
+  'plausible.io',
+  'umami.is',
+  'posthog.com',
+  'segment.com',
+  'hotjar.com',
+  'matomo',
+  'mixpanel',
+  'clarity.ms',
+]
+const conAnalitica = []
+for (const f of paginas) {
+  const html = readFileSync(f, 'utf8').toLowerCase()
+  for (const a of ANALITICAS) if (html.includes(a)) conAnalitica.push(`${f}: ${a}`)
+}
+if (conAnalitica.length)
+  fallos.push(`CA-NEG-9: analítica de terceros en la página: ${conAnalitica.join(', ')}`)
+else console.log('ok  CA-NEG-9 · ninguna analítica de terceros')
+
 // --- Indexable desde el 15-09-2026 (decisión humana explícita en MAK-71): ninguna
 //     página lleva `noindex`. Si alguien lo reintroduce sin que el humano lo pida
 //     otra vez, el despliegue se cae aquí igual que antes se caía por lo contrario.

@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
-import { url } from '../lib/site'
+import { servidor, url } from '../lib/site'
 
 /**
  * Mini landing de descarga (a petición directa de Álvaro). El .dmg no vive en
@@ -14,6 +14,13 @@ import { url } from '../lib/site'
  * los tres salen de `gh release view actualizaciones --repo
  * make-algo/echo-landing --json assets`.
  *
+ * El botón no apunta al .dmg: pasa por `/descargar` de nuestro servidor, que
+ * cuenta y redirige. Es la única forma de saber cuánta gente descarga echo,
+ * porque el contador de GitHub cuenta además cada actualización automática de
+ * Sparkle —el appcast apunta a este mismo archivo— y las dos cifras quedan
+ * sumadas sin poder separarlas. Si esto vuelve a apuntar directo a GitHub, se
+ * pierde el dato en silencio; por eso `npm run verificar` lo comprueba.
+ *
  * El precio es información precontractual obligatoria en cuanto se anuncia la
  * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí. Las
  * condiciones se enlazan desde aquí porque su apartado 7 —la licencia de uso—
@@ -24,7 +31,7 @@ const version = '0.11.0'
 const archivo = `Echo-${version}.dmg`
 const tamanoMB = '13,0'
 const sha256 = 'b2f2af2e5b363eee8395d85fa379b51dc3fea15905354f20dcfd3142eb6dde14'
-const descargaUrl = `https://github.com/make-algo/echo-landing/releases/download/actualizaciones/${archivo}`
+const descargaUrl = `${servidor}/descargar?v=${version}`
 ---
 
 <Base

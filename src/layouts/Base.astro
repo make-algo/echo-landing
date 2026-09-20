@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css'
-import { absoluteUrl, site, url } from '../lib/site'
+import { absoluteUrl, servidor, site, url } from '../lib/site'
 import { saltar } from '../content/copy'
 
 interface Props {
@@ -69,5 +69,35 @@ const canonical = absoluteUrl(path)
   <body>
     <a href="#contenido" class="skip">{saltar}</a>
     <slot />
+
+    {/*
+      Medición de visitas. Va a nuestro propio servidor —el mismo Worker que emite las licencias—,
+      no a una analítica de terceros: esta página promete que no carga nada de fuera (CA-NEG-9,
+      comprobado en `npm run verificar`), y un script de Google o de Cloudflare contradiría de
+      paso el argumento de venta de la propia landing.
+
+      Suma uno a un contador por día, ruta, país y procedencia. No hay cookie, ni identificador de
+      visitante, ni IP guardada, así que la política de privacidad puede seguir diciendo que esta
+      web no usa cookies. Va `is:inline` para que siga siendo una etiqueta sin `src`: así no hay
+      nada que cargar y la comprobación de recursos de terceros sigue teniendo sentido.
+
+      Si el servidor no contesta, no pasa nada: `sendBeacon` no espera respuesta y el try/catch se
+      come el resto. Ninguna visita se pierde por lentitud, y ninguna página se rompe por esto.
+
+      La URL entra montada entera y no como `servidor + '/v1/visita'`: así aparece literal en el
+      HTML publicado y se puede comprobar de un vistazo —y automáticamente— a dónde va esto.
+    */}
+    <script is:inline define:vars={{ medicion: `${servidor}/v1/visita` }}>
+      try {
+        navigator.sendBeacon(
+          medicion,
+          // `text/plain` a propósito: así es una petición simple y el navegador no manda antes un
+          // preflight que retrasaría la medida (el Worker lo acepta igual, pero sobra).
+          new Blob([JSON.stringify({ ruta: location.pathname, referrer: document.referrer })], {
+            type: 'text/plain',
+          })
+        )
+      } catch {}
+    </script>
   </body>
 </html>
