@@ -3,6 +3,23 @@
     <channel>
         <title>echo</title>
         <item>
+            <title>1.0.2</title>
+            <pubDate>Sun, 20 Sep 2026 15:42:29 +0200</pubDate>
+            <link>https://echo.make-algo.com</link>
+            <sparkle:version>19</sparkle:version>
+            <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo-1.0.2.dmg" length="13686886" type="application/octet-stream" sparkle:edSignature="tUOpsU5dA5+yvtsrFJKjrUZfn46hlZlj6XHQ6TIZc3kHJATFNCKFqG0Kf4BgDquDFzm/F4PS0HRR8mXL+LuBBQ=="/>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo19-18.delta" sparkle:deltaFrom="18" length="8106822" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976432" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="CkRl6NVC67zAO/wwsO5cYfg72uUH9j/+uFDT4mCUiPHL8EDAS6PAgf7Dh5+5pw3/bNBveY8Hc+fG/WZqnAU7Cw=="/>
+                <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo19-17.delta" sparkle:deltaFrom="17" length="8103242" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976432" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="DQDSNxFvs4jXrlCJUqj3BN5cm3P4/CBUp2m+LjXVydiEAjuo3nSihMBGiv6L8uiBFJQ9pHhKc0JhSRsXk59iDw=="/>
+                <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo19-16.delta" sparkle:deltaFrom="16" length="8112050" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976432" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="JV92CsDng/r1s5Cj9NoMrBQZ7Y9pM8vF6Sz5Je5Fq4JXZDHuW9DP2N+XYGmJ8z48IOInf55KJprMol/b6CGdBw=="/>
+                <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo19-15.delta" sparkle:deltaFrom="15" length="8110278" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976432" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="d/ujPwLt5hPNs2habBEqyuRG2362Hi5a/SJfQkjkBjruUYRr9i1pnJd44quOdjfvnO+4qUELYb3lj23CpIrvCQ=="/>
+                <enclosure url="https://github.com/make-algo/echo-landing/releases/download/actualizaciones/echo19-14.delta" sparkle:deltaFrom="14" length="8112218" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976432" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="YibdO6H6xHndJBZtOBH4CQeieNALppPsLIaTRmnYP7XqPQfCo2oKKLKTI3Sg0kK8PEz5glwMZYmsYkhZg3rTAg=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>1.0.1</title>
             <pubDate>Sun, 20 Sep 2026 14:18:54 +0200</pubDate>
             <link>https://echo.make-algo.com</link>
