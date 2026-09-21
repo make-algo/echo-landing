@@ -140,11 +140,16 @@ const cicloTextoHTML = segmentosCiclo
                que ya usa la página. «Tecleando» lleva el tachado medido de
                `correccion/tachado.ts` (clase `.tach`, la misma que arriba);
                ninguna de las dos filas va `aria-hidden`: son la comparación
-               en sí, no una capa sucia que repita lo que ya dijo el titular. */}
+               en sí, no una capa sucia que repita lo que ya dijo el titular.
+               `.tach` va en el `<span>` interno, inline, no en `.veloc__valor`
+               (que es `display: block` para la maquetación): `tachado.ts` mide
+               con `getClientRects()`, que da un rect por línea SOLO en línea
+               —sobre un bloque da un único rect, el de toda la caja, y el
+               trazo sale mal (ver revisión de la issue). */}
           <div class="veloc">
             <p class="veloc__fila">
               <span class="veloc__modo">{tecleando.modo}</span>
-              <span class="veloc__valor tach">{tecleando.ppm}</span>
+              <span class="veloc__valor"><span class="tach">{tecleando.ppm}</span></span>
             </p>
             <p class="veloc__fila">
               <span class="veloc__modo">{hablando.modo}</span>

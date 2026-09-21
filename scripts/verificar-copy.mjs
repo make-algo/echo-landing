@@ -505,6 +505,21 @@ else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
   }
 }
 
+// --- MAK-230 (revisión) · `.tach` nunca sobre un elemento `display: block`.
+//
+//     `correccion/tachado.ts` mide con `getClientRects()`: sobre un elemento
+//     en línea da un rect POR LÍNEA VISUAL; sobre un bloque da un único rect,
+//     el de toda la caja — el tachado sale mal (ancho de caja, no de texto;
+//     altura de toda la caja, no de cada línea). Así se rompió la primera
+//     vez: `.tach` iba sobre `.veloc__valor`, que es `display: block`. Esta
+//     comprobación es estructural, no geométrica de verdad (este script no
+//     abre un navegador) — la verificación de píxeles real se hizo a mano
+//     con Chrome headless vía CDP antes de entregar; esto solo evita que la
+//     misma combinación de clases vuelva a colarse en silencio.
+if (/class="[^"]*\bveloc__valor\b[^"]*\btach\b[^"]*"|class="[^"]*\btach\b[^"]*\bveloc__valor\b[^"]*"/.test(portada))
+  fallos.push('MAK-230: `.tach` va en el mismo elemento que `.veloc__valor` (display: block) — el tachado medido da un único rect por caja, no uno por línea')
+else console.log('ok  MAK-230 · `.tach` de la comparación de velocidad va en un <span> en línea, no en el bloque')
+
 // --- La medición es nuestra y de nadie más.
 //
 //     Dos piezas que se pierden en silencio si alguien las toca sin saber para
