@@ -78,21 +78,22 @@ export const apertura = {
 } as const
 
 /**
- * Franja «Se pega donde ya escribes» (MAK-194 / MAK-195). Copy fijado literal
- * en `docs/product/mak-194-carrusel-velocidad-vocabulario.md` §2 del repo
- * privado: iconografía genérica, sin marcas de terceros (CA-CAR-3/CA-CAR-4),
- * y sin multiplicador de velocidad (CA-CAR-6, reutiliza CA-NEG-5).
+ * Franja «Se pega donde ya escribes» (MAK-194 / MAK-195, logos reales fijados
+ * en MAK-212 — deroga la decisión A de MAK-194 §1, sin tocar el resto). Copy
+ * y tabla de marcas en `docs/product/mak-212-logos-reales-carrusel.md` del
+ * repo privado (PR #58): seis logos reales curados, sin multiplicador de
+ * velocidad (CA-CAR-6, reutiliza CA-NEG-5).
  */
 export const dondeSePega = {
   titulo: 'Se pega donde ya escribes',
-  /** CA-CAR-2: seis piezas, en este orden exacto. `icono` es la clave que lee `Icono.astro`. */
+  /** CA-LOGO-1: seis piezas, en este orden exacto. `icono` es la clave que lee `Icono.astro`. */
   piezas: [
-    { icono: 'correo', etiqueta: 'Correo' },
-    { icono: 'chat', etiqueta: 'Chat' },
-    { icono: 'terminal', etiqueta: 'Terminal' },
-    { icono: 'editor', etiqueta: 'Editor de código' },
-    { icono: 'notas', etiqueta: 'Notas y documentos' },
-    { icono: 'navegador', etiqueta: 'Cualquier web' },
+    { icono: 'gmail', etiqueta: 'Correo' },
+    { icono: 'slack', etiqueta: 'Chat de equipo' },
+    { icono: 'github', etiqueta: 'Issues y PRs' },
+    { icono: 'vscode', etiqueta: 'Editor de código' },
+    { icono: 'notion', etiqueta: 'Notas y documentos' },
+    { icono: 'linear', etiqueta: 'Gestión de producto' },
   ],
   /** CA-CAR-5, literal. */
   cuerpo:

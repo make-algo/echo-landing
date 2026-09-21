@@ -118,13 +118,25 @@
 
   /* --- Cabecera --------------------------------------------------------
      Sin ella, alguien que entra y se va a los tres segundos se va sin saber
-     cómo se llama el producto. */
-  .top { padding-block: 22px; }
+     cómo se llama el producto, y a partir de la segunda pantalla no tiene
+     forma de descargar sin volver arriba (MAK-231). Pegajosa en las cinco
+     rutas: fondo sólido (no hay nada debajo que tape) y un filete de 1 px
+     que solo se lee al pasar contenido por debajo, nunca una sombra —el
+     sistema no tiene sombras. Ni JS ni transición de tamaño: `position:
+     sticky` no anima nada, así que `prefers-reduced-motion` no tiene nada
+     que desactivar aquí. */
+  .top {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
+    padding-block: 14px;
+  }
+  @media (min-width: 640px) { .top { padding-block: 22px; } }
   .top .wrap {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
   .top__cta {
-    font-size: var(--text-small); color: var(--color-ink-2);
+    font-size: var(--text-small); line-height: 1.2; color: var(--color-ink-2);
     text-decoration-color: var(--color-line);
   }
   .top__cta:hover { color: var(--color-accent); }
@@ -132,6 +144,11 @@
     font: 500 1.25rem / 1 var(--font-mono);
     letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none;
   }
+
+  /* El ancla puede caer bajo la cabecera pegajosa: el hueco reserva la altura
+     máxima que la cabecera llega a ocupar (móvil incluido), así el salto
+     nunca tapa el titular de la sección de destino. */
+  [id] { scroll-margin-top: 4.5rem; }
 
   /* --- Botón ------------------------------------------------------------ */
   .btn {
