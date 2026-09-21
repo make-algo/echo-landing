@@ -520,6 +520,15 @@ const sinOgImage = RUTAS_OG.filter((f) => !/<meta property="og:image" content="[
 if (sinOgImage.length) fallos.push(`falta og:image en: ${sinOgImage.join(', ')}`)
 else console.log(`ok  og:image · presente en las ${RUTAS_OG.length} rutas publicadas`)
 
+// `/og` sí se construye y se publica, y el `robots.txt` del sitio permite
+// todo: sin un `noindex` propio, el molde de la tarjeta acabaría indexado como
+// si fuera una página de echo. El sitemap no basta — no es una lista de lo
+// permitido, solo de lo sugerido.
+const ogHtml = readFileSync('dist/og/index.html', 'utf8')
+if (!/<meta name="robots" content="noindex/.test(ogHtml))
+  fallos.push('dist/og/index.html se publica sin noindex: el molde de la tarjeta es indexable')
+else console.log('ok  /og · el molde de la tarjeta lleva noindex y no se indexa')
+
 if (!existsSync('public/og.png') && !existsSync('public/og.jpg'))
   fallos.push('no existe public/og.png (ni public/og.jpg)')
 else {

@@ -17,6 +17,10 @@ import '../styles/global.css'
 <html lang="es">
   <head>
     <meta charset="utf-8" />
+    <!-- Astro publica esta ruta como `/og/`: queda fuera del sitemap, pero
+         seguiría siendo rastreable e indexable (el `robots.txt` del sitio
+         permite todo). Es andamio, no una página de la landing. -->
+    <meta name="robots" content="noindex, nofollow" />
     <style>
       html,
       body {
