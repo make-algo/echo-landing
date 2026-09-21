@@ -99,7 +99,7 @@ function accesible(html) {
 const ORDEN = [
   ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
   ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
-  ['subtítulo', 'Dictado para Mac. La voz se transcribe en tu propio ordenador'],
+  ['subtítulo', 'La voz se transcribe en tu propio ordenador'],
   ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],

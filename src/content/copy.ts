@@ -49,8 +49,14 @@ export const apertura = {
    * Copy literal, aprobado en la issue — no se reescribe.
    */
   tagline: 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.',
+  /**
+   * MAK-230 (revisión): ya no abre con «Dictado para Mac.» — el tagline de
+   * justo encima lo dice ya, y dos frases seguidas con las mismas tres
+   * palabras es la sobreexplicación que prohíbe `tics-de-ia`. No se pierde
+   * nada: el subtítulo pasa a arrancar directo en la explicación.
+   */
   subtitulo:
-    'Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
+    'La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
   cta: 'Descargar echo',
   requisito: {
     /**

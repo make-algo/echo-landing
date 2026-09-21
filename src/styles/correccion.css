@@ -161,18 +161,29 @@
 }
 /* MAK-230: la línea que dice qué es esto, en <p> —no es un nuevo apartado de
    la página, es la frase que sigue al titular, así que no suma un <h2> al
-   esqueleto de encabezados— pero a un cuerpo grande, en la escala de un
-   rótulo de sección. Más contenida que `.ruta-correccion h2` a propósito:
-   entre el titular y ella ya hay bastante peso en la primera pantalla, y el
-   criterio de aceptación es que quepa a 1440 px sin empujar nada fuera de
-   vista, no que compita en tamaño con el titular. */
+   esqueleto de encabezados— pero a cuerpo de h2, como pedía la issue: misma
+   regla que `.ruta-correccion h2` en tamaño y peso. Para que quepa a 1440 px
+   sin empujar nada fuera de vista, el subtítulo de debajo perdió su
+   «Dictado para Mac.» redundante (revisión de la issue): así el peso total
+   de la primera pantalla no crece. */
 .ruta-correccion .tagline {
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  font-size: clamp(1.0625rem, 0.95rem + 0.55vw, 1.25rem);
-  max-width: 34ch;
-  margin-top: 0.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.625rem);
+  max-width: 20ch;
+  margin-top: 0.4rem;
+}
+/* El hero es la sección con más peso propio de la página (galerada intacta
+   arriba + titular + tagline): el aire entre sus piezas se recorta un poco
+   —el filete y los rótulos, no el tipo— para que quepa en la primera
+   pantalla a 1440 px sin tocar `.sucio` ni el `<h1>`. Solo aquí: el resto
+   de la página conserva su ritmo. */
+.ruta-correccion .apertura .regla {
+  margin-block: clamp(1rem, 2vw, 1.5rem);
+}
+.ruta-correccion .apertura .rubric {
+  margin-bottom: 8px;
 }
 .ruta-correccion h2 {
   font-weight: 800;
@@ -228,31 +239,36 @@
   background: var(--c-rojo-fuerte);
 }
 
-/* MAK-230: el «4 veces más rápido» como pieza visual — dos filas, mismo
-   trazo tachado que el resto de la página (`.tach`, medido por
-   `correccion/tachado.ts`) para «Tecleando» y tinta plena para «Hablando».
-   Compacto a propósito: vive en el hero, no puede competir en tamaño con el
-   titular ni empujar el bloque de corrección fuera de la primera pantalla. */
+/* MAK-230 (revisión): el «4 veces más rápido» tiene que leerse de pie a dos
+   metros, no como el pie de foto de la demo — así que las cifras suben a
+   cuerpo de titular (misma regla que `.ruta-correccion h1`/`h2`) y las filas
+   se separan con aire de verdad. Sigue sin ser una tarjeta ni un panel
+   (`tics-de-ia`): ni caja, ni fondo, ni borde — solo tamaño y espacio, en el
+   mismo lenguaje de corrección que el resto de la página (`.tach`, medido
+   por `correccion/tachado.ts`, para «Tecleando»; tinta plena para
+   «Hablando»). El rótulo de cada fila va encima, en mono pequeño, como
+   `.rubric` — no al lado, para que la cifra tenga toda la línea. */
 .ruta-correccion .veloc {
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
   display: grid;
-  gap: 0.5rem;
+  gap: 1.5rem;
 }
 .ruta-correccion .veloc__fila {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  display: block;
 }
 .ruta-correccion .veloc__modo {
+  display: block;
   font: 400 var(--text-small) / 1.4 var(--font-mono);
   color: var(--c-ink-2);
-  min-width: 6.5ch;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.2rem;
 }
 .ruta-correccion .veloc__valor {
+  display: block;
   font-weight: 800;
-  letter-spacing: -0.015em;
-  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  font-size: clamp(1.875rem, 1.1rem + 3vw, 3.25rem);
 }
 .ruta-correccion .veloc__valor--bien {
   color: var(--c-ink);
