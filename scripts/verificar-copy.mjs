@@ -98,7 +98,10 @@ function accesible(html) {
  */
 const ORDEN = [
   ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
-  ['subtítulo', 'Dictado para Mac. La voz se transcribe en tu propio ordenador'],
+  ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
+  ['subtítulo', 'La voz se transcribe en tu propio ordenador'],
+  ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
+  ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
@@ -139,6 +142,10 @@ const INNEGOCIABLES = [
     `Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.`,
   ],
   [
+    'MAK-230 · tagline debajo del bloque limpio',
+    `Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.`,
+  ],
+  [
     'entradilla de la comparativa · anuncia cuatro',
     `El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no
      hace, y son las cuatro razones por las que existe echo.`,
@@ -149,9 +156,18 @@ const INNEGOCIABLES = [
      limpio esté donde esté el cursor.`,
   ],
   [
-    'CA-NEG-5/CA-QUIEN-5 · «para quién es» con el multiplicador',
-    `escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas 4
-     veces más rápido de lo que tecleas.`,
+    // MAK-230: el «4 veces» deja de repetirse en prosa; se comprueba como
+    // pieza visual del hero, más abajo en este mismo array.
+    'MAK-230 · «para quién es» sin repetir el multiplicador',
+    `escribes mucho a lo largo del día: prompts, mensajes, issues, correos, documentos.`,
+  ],
+  [
+    'MAK-230 · comparación de velocidad, fila «Tecleando»',
+    `Tecleando ~40 palabras por minuto`,
+  ],
+  [
+    'MAK-230 · comparación de velocidad, fila «Hablando»',
+    `Hablando ~150 palabras por minuto`,
   ],
   [
     'CA-NEG-5/CA-QUIEN-5 · nota con las dos cifras de referencia',
@@ -189,11 +205,13 @@ const PROHIBIDAS = [
   ],
   ['CA-NEG-4/7 · competidores', ['Wispr', 'Superwhisper', 'Aqua Voice', 'Trustpilot']],
   // CA-NEG-5: multiplicadores genéricos siguen fuera. El único permitido, «4
-  // veces más rápido» en «para quién es» (MAK-217, docs/gtm/02-propuesta-valor.md
-  // §4/§5.7/§5.11 y docs/gtm/03-alcance-landing.md CA-NEG-5/CA-QUIEN-5 del repo
-  // privado), se comprueba abajo como INNEGOCIABLE, con su cifra de referencia
-  // visible al lado. La franja «Se pega donde ya escribes» sigue prohibiéndolo
-  // del todo (CA-CAR-6), comprobado más abajo solo sobre esa sección.
+  // veces más rápido», vivía en prosa en «para quién es» (MAK-217) y desde
+  // MAK-230 es la pieza visual del hero (comparación Tecleando/Hablando), con
+  // su cifra de referencia (docs/gtm/02-propuesta-valor.md §4/§5.7/§5.11 y
+  // docs/gtm/03-alcance-landing.md CA-NEG-5/CA-QUIEN-5 del repo privado)
+  // siempre pegada, comprobada abajo como INNEGOCIABLE. La franja «Se pega
+  // donde ya escribes» sigue prohibiéndolo del todo (CA-CAR-6), comprobado
+  // más abajo solo sobre esa sección.
   ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3']],
   [
     'CA-NEG-8 · palabras prohibidas por el tono',
@@ -466,6 +484,41 @@ if (desdeCTA < 0) fallos.push('no hay CTA de descarga en el hero: no se puede co
 else if (!/12\s*€\s*al año/.test(visible(portada.slice(desdeCTA, desdeCTA + 800))))
   fallos.push('el precio ya no aparece junto al primer botón (se habrá quedado solo en la FAQ)')
 else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
+
+// --- MAK-230 · la cifra y su fuente siguen juntas, y las dos en el hero.
+//
+//     Si el «4 veces» vuelve a mudarse de sección, la fuente tiene que
+//     mudarse con él (CA-NEG-5/CA-QUIEN-5) — y las dos filas de la
+//     comparación (Tecleando/Hablando) tienen que seguir viviendo dentro del
+//     primer acto (el hero), no más abajo en el scroll.
+{
+  const heroFin = portada.indexOf('id="donde-se-pega"')
+  const desdeHablando = portada.indexOf('Hablando')
+  if (heroFin < 0) fallos.push('MAK-230: no se encuentra el final del hero (#donde-se-pega)')
+  else if (desdeHablando < 0 || desdeHablando > heroFin)
+    fallos.push('MAK-230: la comparación de velocidad ya no vive dentro del hero')
+  else {
+    const entreFilaYFuente = visible(portada.slice(desdeHablando, desdeHablando + 600))
+    if (!entreFilaYFuente.includes('4 veces más rápido que teclear'))
+      fallos.push('MAK-230: la fuente de la comparación de velocidad se separó de la cifra')
+    else console.log('ok  MAK-230 · comparación de velocidad en el hero, cifra y fuente juntas')
+  }
+}
+
+// --- MAK-230 (revisión) · `.tach` nunca sobre un elemento `display: block`.
+//
+//     `correccion/tachado.ts` mide con `getClientRects()`: sobre un elemento
+//     en línea da un rect POR LÍNEA VISUAL; sobre un bloque da un único rect,
+//     el de toda la caja — el tachado sale mal (ancho de caja, no de texto;
+//     altura de toda la caja, no de cada línea). Así se rompió la primera
+//     vez: `.tach` iba sobre `.veloc__valor`, que es `display: block`. Esta
+//     comprobación es estructural, no geométrica de verdad (este script no
+//     abre un navegador) — la verificación de píxeles real se hizo a mano
+//     con Chrome headless vía CDP antes de entregar; esto solo evita que la
+//     misma combinación de clases vuelva a colarse en silencio.
+if (/class="[^"]*\bveloc__valor\b[^"]*\btach\b[^"]*"|class="[^"]*\btach\b[^"]*\bveloc__valor\b[^"]*"/.test(portada))
+  fallos.push('MAK-230: `.tach` va en el mismo elemento que `.veloc__valor` (display: block) — el tachado medido da un único rect por caja, no uno por línea')
+else console.log('ok  MAK-230 · `.tach` de la comparación de velocidad va en un <span> en línea, no en el bloque')
 
 // --- La medición es nuestra y de nadie más.
 //

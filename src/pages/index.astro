@@ -18,6 +18,7 @@ import {
   pasos,
   preguntas,
   privacidad,
+  velocidad,
   vocabulario,
 } from '../content/copy'
 import '../styles/correccion.css'
@@ -39,6 +40,7 @@ import '../styles/correccion.css'
  */
 const v = correccion
 const titular = apertura.titular.join(' ')
+const [tecleando, hablando] = velocidad.filas
 
 /**
  * Fase de tecleo del ciclo (MAK-129): el texto en bruto se revela carácter a
@@ -78,7 +80,7 @@ const cicloTextoHTML = segmentosCiclo
   <Header />
   <main id="contenido" class="ruta-correccion">
     {/* ACTO 1 · máxima densidad de marcas */}
-    <section class="acto" style="padding-top: clamp(2rem, 5vw, 4rem)">
+    <section class="acto" style="padding-top: clamp(1rem, 2vw, 2rem)">
       <span class="banda" aria-hidden="true"></span>
       <div class="apertura">
         <div>
@@ -94,6 +96,9 @@ const cicloTextoHTML = segmentosCiclo
 
           <p class="rubric">{v.capaLimpia}</p>
           <h1>{titular}</h1>
+          {/* MAK-230: qué es esto, en grande, inmediatamente debajo del
+               bloque limpio. Se añade, no sustituye al subtítulo. */}
+          <p class="tagline">{apertura.tagline}</p>
           <p class="c-lead">{apertura.subtitulo}</p>
           <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
           <p class="c-dim" style="margin-top: 1.25rem">
@@ -101,25 +106,56 @@ const cicloTextoHTML = segmentosCiclo
           </p>
         </div>
 
-        {/* El producto, en el primer pantallazo. Una página que promete
-             «hablas y aparece escrito» no puede enseñar cero: se ve dictarse,
-             corregirse y pegarse solo, en bucle, sin esperar al scroll
-             (MAK-113). `<Escrito />` es el fotograma final del ciclo — su
-             marcado no cambia, solo se le superpone el bruto mientras dicta. */}
-        <div class="apertura__prod ciclo" aria-hidden="true">
-          <div class="ciclo__bruto win">
-            <div class="win__bar">{demo.ventana.barra}</div>
-            <div class="win__field win__field--to">
-              <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor}
+        {/* La columna del producto: la demo (decorativa, aria-hidden) y,
+             debajo, la comparación de velocidad — que SÍ se lee. Las dos
+             comparten columna porque ahí sobra alto que el texto de la
+             izquierda ya no tiene (MAK-230): así la comparación entra por
+             encima del pliegue en escritorio sin alargar la columna de
+             texto ni empujar el bloque de corrección fuera de vista. */}
+        <div class="apertura__col-prod">
+          {/* El producto, en el primer pantallazo. Una página que promete
+               «hablas y aparece escrito» no puede enseñar cero: se ve dictarse,
+               corregirse y pegarse solo, en bucle, sin esperar al scroll
+               (MAK-113). `<Escrito />` es el fotograma final del ciclo — su
+               marcado no cambia, solo se le superpone el bruto mientras dicta. */}
+          <div class="apertura__prod ciclo" aria-hidden="true">
+            <div class="ciclo__bruto win">
+              <div class="win__bar">{demo.ventana.barra}</div>
+              <div class="win__field win__field--to">
+                <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor}
+              </div>
+              <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
+              <div class="win__rule"></div>
+              <div class="win__body">
+                <span class="ciclo__caret"></span><span class="ciclo__texto" set:html={cicloTextoHTML} />
+              </div>
             </div>
-            <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
-            <div class="win__rule"></div>
-            <div class="win__body">
-              <span class="ciclo__caret"></span><span class="ciclo__texto" set:html={cicloTextoHTML} />
+            <div class="ciclo__final">
+              <Escrito />
             </div>
           </div>
-          <div class="ciclo__final">
-            <Escrito />
+
+          {/* MAK-230: el «4 veces más rápido» como pieza visual, no como
+               frase enterrada — dos filas en el mismo lenguaje de corrección
+               que ya usa la página. «Tecleando» lleva el tachado medido de
+               `correccion/tachado.ts` (clase `.tach`, la misma que arriba);
+               ninguna de las dos filas va `aria-hidden`: son la comparación
+               en sí, no una capa sucia que repita lo que ya dijo el titular.
+               `.tach` va en el `<span>` interno, inline, no en `.veloc__valor`
+               (que es `display: block` para la maquetación): `tachado.ts` mide
+               con `getClientRects()`, que da un rect por línea SOLO en línea
+               —sobre un bloque da un único rect, el de toda la caja, y el
+               trazo sale mal (ver revisión de la issue). */}
+          <div class="veloc">
+            <p class="veloc__fila">
+              <span class="veloc__modo">{tecleando.modo}</span>
+              <span class="veloc__valor"><span class="tach">{tecleando.ppm}</span></span>
+            </p>
+            <p class="veloc__fila">
+              <span class="veloc__modo">{hablando.modo}</span>
+              <span class="veloc__valor veloc__valor--bien">{hablando.ppm}</span>
+            </p>
+            <p class="microcopy" style="margin-top: 0.6rem">{velocidad.fuente}</p>
           </div>
         </div>
       </div>
@@ -238,7 +274,6 @@ const cicloTextoHTML = segmentosCiclo
       <div style="display: grid; gap: 1.25rem; margin-top: 1.25rem">
         {paraQuien.parrafos.map((p) => <p><strong>{p.fuerte}</strong>{p.resto}</p>)}
       </div>
-      <p class="microcopy" style="margin-top: 0.75rem">{paraQuien.nota}</p>
     </section>
 
     {/* ACTO 6 · el alta, en el mismo sistema y sin una sola caja */}
