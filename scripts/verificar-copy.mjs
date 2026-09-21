@@ -247,32 +247,55 @@ for (const [ruta, fichero] of RUTAS) {
       mal(ruta, `${nombre}: aparece ${encontradas.map((c) => `«${c}»`).join(', ')}`)
   }
 
-  // --- CA-CAR-3/CA-CAR-7: la franja «Se pega donde ya escribes» son seis
-  //     piezas icono+etiqueta, sin ninguna marca de tercero. La búsqueda de
-  //     marcas va SOLO sobre esta sección (no sobre todo el HTML): el
-  //     ejemplo de vocabulario personal («en Slack, tono informal», CA-VOC-2)
-  //     nombra Slack a propósito y no puede hacer fallar este criterio.
+  // --- CA-LOGO-1..5 (MAK-212, deroga CA-CAR-3/CA-CAR-4 de MAK-194): la franja
+  //     «Se pega donde ya escribes» son seis piezas icono+etiqueta, y desde
+  //     MAK-212 el icono es el logo real de la marca, no un dibujo genérico.
   const franja = html.match(/<section class="acto" id="donde-se-pega"[\s\S]*?<\/section>/)?.[0]
   if (!franja) mal(ruta, 'CA-CAR-1: no existe la sección #donde-se-pega')
   else {
-    const MARCAS = ['Slack', 'Notion', 'VS Code', 'Visual Studio', 'Gmail', 'Outlook', 'iMessage', 'WhatsApp', 'Chrome', 'Safari']
-    const marcasEncontradas = MARCAS.filter((m) => franja.toLowerCase().includes(m.toLowerCase()))
-    if (marcasEncontradas.length)
-      mal(ruta, `CA-CAR-3: la franja nombra una marca de tercero: ${marcasEncontradas.join(', ')}`)
     const piezas = (franja.match(/class="carrusel__pieza"/g) ?? []).length
-    if (piezas !== 6) mal(ruta, `CA-CAR-2: la franja tiene ${piezas} piezas y hacen falta seis`)
+    if (piezas !== 6) mal(ruta, `CA-LOGO-1: la franja tiene ${piezas} piezas y hacen falta seis`)
     // CA-CAR-6: esta franja no lleva multiplicador de velocidad, ni siquiera
     // el «4 veces» aprobado para «para quién es» — spec propia, sin excepción.
     if (/\d+\s*x\b|veces\s+más\s+rápido/i.test(visible(franja)))
       mal(ruta, 'CA-CAR-6: la franja «Se pega donde ya escribes» lleva un multiplicador de velocidad')
-    const ETIQUETAS = ['Correo', 'Chat', 'Terminal', 'Editor de código', 'Notas y documentos', 'Cualquier web']
+    // CA-LOGO-1: las seis piezas, en este orden exacto, con la etiqueta de
+    // categoría (contenido accesible) y el nombre de marca exacto en el
+    // `<title>` del SVG (decorativo, aria-hidden — CA-LOGO-5).
+    const PIEZAS = [
+      ['Gmail', 'Correo'],
+      ['Slack', 'Chat de equipo'],
+      ['GitHub', 'Issues y PRs'],
+      ['VS Code', 'Editor de código'],
+      ['Notion', 'Notas y documentos'],
+      ['Linear', 'Gestión de producto'],
+    ]
     let desdeEtiqueta = -1
-    for (const etiqueta of ETIQUETAS) {
+    for (const [marca, etiqueta] of PIEZAS) {
       const donde = franja.indexOf(etiqueta)
-      if (donde < 0) mal(ruta, `CA-CAR-2: falta la etiqueta «${etiqueta}» en la franja`)
-      else if (donde < desdeEtiqueta) mal(ruta, `CA-CAR-2: «${etiqueta}» llega fuera de orden en la franja`)
+      if (donde < 0) mal(ruta, `CA-LOGO-1: falta la etiqueta «${etiqueta}» en la franja`)
+      else if (donde < desdeEtiqueta) mal(ruta, `CA-LOGO-1: «${etiqueta}» llega fuera de orden en la franja`)
       else desdeEtiqueta = donde
+      if (!franja.includes(`<title>${marca}</title>`))
+        mal(ruta, `CA-LOGO-1: falta el <title>${marca}</title> del logo en la franja`)
     }
+    // CA-LOGO-3: ningún logo procede del CDN de un competidor.
+    const CDN_COMPETIDORES = ['typeless', 'wisprflow', 'superwhisper', 'aquavoice']
+    const cdnEncontrados = CDN_COMPETIDORES.filter((c) => franja.toLowerCase().includes(c))
+    if (cdnEncontrados.length)
+      mal(ruta, `CA-LOGO-3: la franja referencia un CDN de competidor: ${cdnEncontrados.join(', ')}`)
+    // CA-LOGO-4: ninguna de las seis piezas nombra ni muestra un competidor de
+    // dictado o un asistente de IA generalista.
+    const COMPETIDORES_IA = ['ChatGPT', 'OpenAI', 'Claude', 'Perplexity', 'Copilot', 'Wispr', 'Superwhisper', 'Aqua Voice']
+    const iaEncontrados = COMPETIDORES_IA.filter((c) => franja.toLowerCase().includes(c.toLowerCase()))
+    if (iaEncontrados.length)
+      mal(ruta, `CA-LOGO-4: la franja nombra un competidor/asistente de IA: ${iaEncontrados.join(', ')}`)
+    // CA-LOGO-5: cada logo sigue siendo decorativo, con la etiqueta de texto
+    // como único contenido accesible (hereda CA-CAR-8, sin cambio).
+    const iconos = franja.match(/<svg class="carrusel__icono"[^>]*>/g) ?? []
+    const sinAriaHidden = iconos.filter((s) => !/aria-hidden="true"/.test(s))
+    if (iconos.length !== 6) mal(ruta, `CA-LOGO-1: hay ${iconos.length} logos y hacen falta seis`)
+    if (sinAriaHidden.length) mal(ruta, `CA-LOGO-5: ${sinAriaHidden.length} logo(s) sin aria-hidden="true"`)
   }
 
   // --- Metadatos (CA-META-1, CA-META-2). Las variantes son pieles de la misma
