@@ -135,6 +135,28 @@ const cicloTextoHTML = segmentosCiclo
             </div>
           </div>
 
+          {/* MAK-229: la píldora real, junto al bloque de dictado en bruto de
+               arriba — lo que el visitante ve de verdad en su pantalla
+               mientras habla. A diferencia del `.ciclo` de encima, esta capa
+               NO va `aria-hidden`: es la prueba del producto, no una
+               recreación, así que lleva su propio `alt`. Pixels reales de la
+               app (MAK-228), redimensionados y comprimidos por
+               `scripts/generar-producto.mjs`; nunca se recorta a mano. */}
+          <div class="apertura__pildora">
+            <picture>
+              <source srcset={url('/producto/hud_listening.avif')} type="image/avif" />
+              <source srcset={url('/producto/hud_listening.webp')} type="image/webp" />
+              <img
+                src={url('/producto/hud_listening.png')}
+                width="320"
+                height="137"
+                alt="La píldora de echo escuchando, con la onda de voz y el contador en 0:07."
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
+          </div>
+
           {/* MAK-230: el «4 veces más rápido» como pieza visual, no como
                frase enterrada — dos filas en el mismo lenguaje de corrección
                que ya usa la página. «Tecleando» lleva el tachado medido de
@@ -210,6 +232,27 @@ const cicloTextoHTML = segmentosCiclo
               <p style="margin-top: 0.3rem; color: var(--c-ink-2)">
                 {paso.partes.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}
               </p>
+              {/* MAK-229: «Puliendo con Claude…» en el píxel de la app — la
+                   única prueba visual de que el pulido corre contra la
+                   suscripción que el visitante ya paga. Solo en este paso
+                   (identidad por referencia contra `pasos.lista[1]`, no por
+                   índice suelto: si el orden de los pasos cambia, esto se
+                   mueve con «Se pule con tu suscripción.»). Carga perezosa:
+                   este paso no está en el primer pantallazo. */}
+              {paso === pasos.lista[1] && (
+                <picture class="paso__pildora">
+                  <source srcset={url('/producto/hud_polishing.avif')} type="image/avif" />
+                  <source srcset={url('/producto/hud_polishing.webp')} type="image/webp" />
+                  <img
+                    src={url('/producto/hud_polishing.png')}
+                    width="280"
+                    height="119"
+                    alt="La píldora de echo con la onda terracota, un icono de chispas y el texto «Puliendo con Claude…»."
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              )}
             </li>
           ))
         }

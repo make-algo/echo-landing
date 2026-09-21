@@ -614,6 +614,48 @@ else {
   else console.log(`ok  ${ogFichero} · ${(ogSize / 1024).toFixed(1)} KB, por debajo de 300 KB`)
 }
 
+// --- MAK-229 · la píldora real, en sus dos sitios, y sin que un refactor se
+//     la lleve por delante en silencio: cada una en <picture> con AVIF/WebP
+//     además del PNG, con width/height explícitos (CLS 0), y la del héroe con
+//     fetchpriority="high" (no bloquea el render) mientras la del paso de
+//     pulido va loading="lazy". El fichero tiene que existir de verdad en
+//     dist/ (public/producto/ copiado tal cual al build) en los tres formatos.
+{
+  const PILDORAS = [
+    {
+      nombre: 'héroe · listening',
+      slug: 'hud_listening',
+      alt: 'La píldora de echo escuchando, con la onda de voz y el contador en 0:07.',
+      carga: /fetchpriority="high"/,
+    },
+    {
+      nombre: 'paso «Se pule con tu suscripción» · polishing',
+      slug: 'hud_polishing',
+      alt: 'Puliendo con Claude',
+      carga: /loading="lazy"/,
+    },
+  ]
+  for (const { nombre, slug, alt, carga } of PILDORAS) {
+    const bloque = portada.match(new RegExp(`<picture[^>]*>[\\s\\S]*?${slug}\\.png[\\s\\S]*?</picture>`))?.[0]
+    if (!bloque) {
+      fallos.push(`MAK-229: no se encuentra el <picture> de ${nombre} (${slug}.png) en la portada`)
+      continue
+    }
+    if (!bloque.includes(`${slug}.avif`)) fallos.push(`MAK-229: ${nombre} no tiene fuente AVIF`)
+    if (!bloque.includes(`${slug}.webp`)) fallos.push(`MAK-229: ${nombre} no tiene fuente WebP`)
+    if (!/width="\d+"/.test(bloque) || !/height="\d+"/.test(bloque))
+      fallos.push(`MAK-229: ${nombre} no lleva width/height explícitos`)
+    if (!bloque.includes(alt)) fallos.push(`MAK-229: ${nombre} no lleva el alt esperado («${alt}…»)`)
+    if (!carga.test(bloque)) fallos.push(`MAK-229: ${nombre} no lleva el atributo de carga esperado (${carga})`)
+    for (const ext of ['png', 'avif', 'webp']) {
+      const ruta = `dist/producto/${slug}.${ext}`
+      if (!existsSync(ruta)) fallos.push(`MAK-229: falta ${ruta}`)
+    }
+  }
+  if (!fallos.some((f) => f.startsWith('MAK-229')))
+    console.log('ok  MAK-229 · la píldora real está en el héroe y en el paso de pulido, con AVIF/WebP/PNG')
+}
+
 // --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no
 //     entran en el sitemap.
 const sitemap = readFileSync('dist/sitemap-0.xml', 'utf8')
