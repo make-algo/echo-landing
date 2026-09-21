@@ -375,7 +375,11 @@ function cargas(texto) {
   return urls
 }
 
-const paginas = ficheros('dist', '.html')
+// `/og` no es una ruta de la landing: es el molde que `generar-og.mjs` capta
+// para `public/og.png` (MAK-231), no lleva `<Base>` y por tanto no lleva ni el
+// beacon de medición ni nada que dependa de esa capa. Fuera de las comprobaciones
+// que asumen que toda página construida es una página que alguien visita.
+const paginas = ficheros('dist', '.html').filter((f) => f !== 'dist/og/index.html')
 const hojas = ficheros('dist', '.css')
 const terceros = []
 for (const f of [...paginas, ...hojas]) {
@@ -505,6 +509,25 @@ const robots = readFileSync('dist/robots.txt', 'utf8')
 if (/Disallow:\s*\/\s*$/m.test(robots))
   fallos.push('el robots.txt vuelve a bloquear el sitio')
 else console.log('ok  robots.txt · el sitio es indexable')
+
+// --- La imagen de Open Graph, en todas las rutas publicadas (MAK-231). Sin
+//     ella cualquier enlace a echo en Slack, WhatsApp o X sale como una
+//     tarjeta de texto gris. `/og` es el molde que genera la imagen, no una
+//     ruta de la landing, así que queda fuera de esta comprobación.
+const RUTAS_OG = ['dist/index.html', 'dist/descarga/index.html', 'dist/privacidad/index.html',
+  'dist/aviso-legal/index.html', 'dist/condiciones/index.html', 'dist/404.html']
+const sinOgImage = RUTAS_OG.filter((f) => !/<meta property="og:image" content="[^"]+"/.test(readFileSync(f, 'utf8')))
+if (sinOgImage.length) fallos.push(`falta og:image en: ${sinOgImage.join(', ')}`)
+else console.log(`ok  og:image · presente en las ${RUTAS_OG.length} rutas publicadas`)
+
+if (!existsSync('public/og.png') && !existsSync('public/og.jpg'))
+  fallos.push('no existe public/og.png (ni public/og.jpg)')
+else {
+  const ogFichero = existsSync('public/og.png') ? 'public/og.png' : 'public/og.jpg'
+  const { size: ogSize } = statSync(ogFichero)
+  if (ogSize > 300 * 1024) fallos.push(`${ogFichero} supera 300 KB (${(ogSize / 1024).toFixed(1)} KB)`)
+  else console.log(`ok  ${ogFichero} · ${(ogSize / 1024).toFixed(1)} KB, por debajo de 300 KB`)
+}
 
 // --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no
 //     entran en el sitemap.
