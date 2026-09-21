@@ -43,6 +43,12 @@ export const apertura = {
     'Sin muletillas, sin dictar la puntuación',
     'y sin cambiar de idioma.',
   ],
+  /**
+   * MAK-230: la línea que dice qué es esto, en grande, inmediatamente debajo
+   * del bloque limpio. No sustituye al titular ni al subtítulo: se añade.
+   * Copy literal, aprobado en la issue — no se reescribe.
+   */
+  tagline: 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.',
   subtitulo:
     'Dictado para Mac. La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
   cta: 'Descargar echo',
@@ -85,6 +91,21 @@ export const dondeSePega = {
   /** CA-CAR-5, literal. */
   cuerpo:
     'Correo, chat, terminal, notas, código… Hablas más rápido de lo que tecleas, y el texto aparece limpio esté donde esté el cursor.',
+} as const
+
+/**
+ * MAK-230: el «4 veces más rápido» sube de la sección «Para quién es» a
+ * pieza visual en el hero, en el mismo lenguaje de corrección que ya usa la
+ * página (tachado/limpio). La cifra y su fuente se mueven juntas — se
+ * quitan de `paraQuien` para no repetirse.
+ */
+export const velocidad = {
+  filas: [
+    { modo: 'Tecleando', ppm: '~40 palabras por minuto' },
+    { modo: 'Hablando', ppm: '~150 palabras por minuto' },
+  ],
+  fuente:
+    '4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).',
 } as const
 
 export const argumentos = {
@@ -231,9 +252,13 @@ export const paraQuien = {
   rotulo: 'Para quién es',
   parrafos: [
     {
+      /**
+       * MAK-230: el «4 veces más rápido» y su cifra suben al hero como
+       * pieza visual (ver `velocidad`); esta prosa ya no lo repite.
+       */
       fuerte: 'Te va a servir si',
       resto:
-        ' escribes mucho a lo largo del día —prompts, mensajes, issues, correos, documentos— y hablas 4 veces más rápido de lo que tecleas. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
+        ' escribes mucho a lo largo del día: prompts, mensajes, issues, correos, documentos. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
     },
     {
       /** CA-INT-3 */
@@ -242,9 +267,6 @@ export const paraQuien = {
         ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 14 o posterior, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
     },
   ],
-  /** CA-NEG-5 / CA-QUIEN-5 (docs/gtm/03-alcance-landing.md del repo privado): cifra visible junto al "4 veces", no solo en enlace. */
-  nota:
-    '4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).',
 } as const
 
 export const beta = {

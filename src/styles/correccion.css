@@ -159,6 +159,21 @@
   max-width: 21ch;
   text-wrap: balance;
 }
+/* MAK-230: la línea que dice qué es esto, en <p> —no es un nuevo apartado de
+   la página, es la frase que sigue al titular, así que no suma un <h2> al
+   esqueleto de encabezados— pero a un cuerpo grande, en la escala de un
+   rótulo de sección. Más contenida que `.ruta-correccion h2` a propósito:
+   entre el titular y ella ya hay bastante peso en la primera pantalla, y el
+   criterio de aceptación es que quepa a 1440 px sin empujar nada fuera de
+   vista, no que compita en tamaño con el titular. */
+.ruta-correccion .tagline {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-size: clamp(1.0625rem, 0.95rem + 0.55vw, 1.25rem);
+  max-width: 34ch;
+  margin-top: 0.5rem;
+}
 .ruta-correccion h2 {
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -213,6 +228,36 @@
   background: var(--c-rojo-fuerte);
 }
 
+/* MAK-230: el «4 veces más rápido» como pieza visual — dos filas, mismo
+   trazo tachado que el resto de la página (`.tach`, medido por
+   `correccion/tachado.ts`) para «Tecleando» y tinta plena para «Hablando».
+   Compacto a propósito: vive en el hero, no puede competir en tamaño con el
+   titular ni empujar el bloque de corrección fuera de la primera pantalla. */
+.ruta-correccion .veloc {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.ruta-correccion .veloc__fila {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.ruta-correccion .veloc__modo {
+  font: 400 var(--text-small) / 1.4 var(--font-mono);
+  color: var(--c-ink-2);
+  min-width: 6.5ch;
+}
+.ruta-correccion .veloc__valor {
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem);
+}
+.ruta-correccion .veloc__valor--bien {
+  color: var(--c-ink);
+}
+
 /* --- LA APERTURA. A la izquierda lo dictado corrigiéndose; a la derecha el
        producto, porque una página que promete «hablas y aparece escrito» no
        puede enseñar cero. ---------------------------------------------------- */
@@ -223,7 +268,7 @@
     column-gap: clamp(2rem, 4vw, 4rem);
     align-items: start;
   }
-  .ruta-correccion .apertura__prod {
+  .ruta-correccion .apertura__col-prod {
     position: sticky;
     top: 2rem;
   }
