@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "verificar": "node scripts/verificar-copy.mjs",
-    "generar-og": "node scripts/generar-og.mjs"
+    "generar-og": "node scripts/generar-og.mjs",
+    "generar-producto": "node scripts/generar-producto.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -16,6 +17,7 @@
     "tailwindcss": "^4.1.3"
   },
   "devDependencies": {
-    "playwright": "^1.63.0"
+    "playwright": "^1.63.0",
+    "sharp": "^0.34.5"
   }
 }

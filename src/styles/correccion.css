@@ -274,6 +274,34 @@
   color: var(--c-ink);
 }
 
+/* MAK-229 · la píldora real, junto al bloque de dictado en bruto. Ancho tope
+   320 px: a 390 px de viewport cabe entera con margen de sobra dentro de la
+   columna (`.acto` deja ~326 px libres ahí), y en escritorio no compite en
+   tamaño con el titular — es una prueba, no la protagonista. Sin sombra ni
+   borde propios: la sombra ya viene pintada en el PNG (es la de verdad, la
+   que pinta macOS), añadir una encima la duplicaría. */
+.ruta-correccion .apertura__pildora {
+  margin-top: 1.25rem;
+}
+.ruta-correccion .apertura__pildora img {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+}
+
+/* MAK-229 · «Puliendo con Claude…» en el paso «Se pule con tu suscripción.».
+   Mismo criterio de ancho tope que la del hero, más pequeña porque aquí
+   ilustra una frase, no abre la página. */
+.ruta-correccion .paso__pildora {
+  display: block;
+  margin-top: 0.75rem;
+}
+.ruta-correccion .paso__pildora img {
+  display: block;
+  width: min(100%, 280px);
+  height: auto;
+}
+
 /* --- LA APERTURA. A la izquierda lo dictado corrigiéndose; a la derecha el
        producto, porque una página que promete «hablas y aparece escrito» no
        puede enseñar cero. ---------------------------------------------------- */
