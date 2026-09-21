@@ -45,17 +45,21 @@ const mailto = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${e
     <p class="microcopy">{beta.microcopy}</p>
 
     {/*
-      Texto legal de protección de datos, visible junto al botón y no tras un
-      enlace: es lo que hace que no haga falta checkbox de consentimiento.
-      No se reescribe sin pasar por asesor-legal.
+      Frase de primera capa (art. 13 RGPD): responsable, finalidad y remisión
+      a la política de privacidad, visible junto al botón sin necesidad de
+      clic. El checkbox de consentimiento no depende de dónde esté este
+      texto, sino de la base jurídica del tratamiento (aquí no es
+      consentimiento) — ver dictamen en MAK-227. No se reescribe el
+      contenido legal sin pasar por asesor-legal.
 
-      Ya no menciona a Formspree: desde que el alta es un `mailto:` no hay
-      encargado del tratamiento ni transferencia a EE. UU. que amparar.
+      El resto del art. 13 (base legal, plazo de conservación, destinatarios,
+      derechos, reclamación ante la AEPD) vive en /privacidad y no se repite
+      aquí.
     */}
     <p class="legalnote" id="legalnote">
       <strong>{beta.legal.titulo}</strong>{beta.legal.uno}<a href={url('/privacidad')}
         >{beta.legal.enlace}</a
-      >{beta.legal.dos}<a href={`mailto:${beta.legal.correo}`}>{beta.legal.correo}</a>{beta.legal.tres}
+      >{beta.legal.dos}
     </p>
 
     <div class="done">

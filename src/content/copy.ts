@@ -262,13 +262,12 @@ export const beta = {
   /** CA-FORM-6 · texto aprobado, exigido literal por scripts/verificar-copy.mjs — no tocar sin pasar por pm. */
   microcopy:
     'No hay lista ni newsletter: no te vamos a escribir. Guardamos tu correo solo mientras haga falta para contestarte.',
+  /** Frase de primera capa (art. 13 RGPD), aprobada por asesor-legal en MAK-227: no se reescribe sin pasar por ahí. El resto del art. 13 vive en /privacidad. */
   legal: {
     titulo: 'Protección de datos:',
-    uno: ' el responsable es Make Algo SL. Usamos tu correo solo para leer y contestar tu mensaje, y lo que cuentes solo para entender cómo se usa echo. No te apuntamos a ninguna lista, no te escribimos después y no cedemos nada a terceros. Tu mensaje llega directo a nuestro buzón, sin proveedor de formularios de por medio; los detalles y tus derechos, en la ',
+    uno: ' el responsable es Make Algo SL y usaremos tu correo solo para leer y contestar tu mensaje. Los detalles y tus derechos, en la ',
     enlace: 'política de privacidad',
-    dos: '. Puedes pedirnos que lo borremos escribiendo a ',
-    correo: 'hola@make-algo.com',
-    tres: '.',
+    dos: '.',
   },
   ok: {
     texto:
