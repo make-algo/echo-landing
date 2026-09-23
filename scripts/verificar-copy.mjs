@@ -102,7 +102,7 @@ const ORDEN = [
   ['subtítulo', 'La voz se transcribe en tu propio ordenador'],
   ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
-  ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
+  ['entradilla de la comparativa', 'Estas cuatro cosas no las hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac.'],
   ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
@@ -146,8 +146,11 @@ const INNEGOCIABLES = [
   ],
   [
     'entradilla de la comparativa · anuncia cuatro',
-    `El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no
-     hace, y son las cuatro razones por las que existe echo.`,
+    `El dictado de macOS es bueno y gratis. Estas cuatro cosas no las hace.`,
+  ],
+  [
+    'MAK-245 · ejemplo del deploy, rescatado bajo «Idiomas mezclados»',
+    `«deploy del backend en GitHub», no «depploy del Back and and Get Have».`,
   ],
   [
     'CA-CAR-5 · cuerpo de «Se pega donde ya escribes»',
@@ -178,13 +181,6 @@ const INNEGOCIABLES = [
     `echo aprende cómo escribes tú. En Ajustes le enseñas nombres propios, marcas y tono por app
      —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
      Claude lo aplica cada vez que pule tu dictado.`,
-  ],
-  [
-    'CA-ARG-5 · cuarto bloque de «Qué hace distinto»',
-    `La voz se transcribe en tu Mac; nunca sale del dispositivo. No hace falta crear ninguna cuenta
-     para descargar ni para usar echo. Y no guardamos ni enviamos a ningún sitio lo que dictas: si
-     activas el pulido, lo único que sale es el texto ya transcrito, hacia tu propia cuenta de
-     Claude o ChatGPT.`,
   ],
 ]
 
@@ -232,8 +228,11 @@ const PROHIBIDAS = [
   // CA-NEG-1 · la comparativa no vuelve a hablar de precio. «Por anunciar» era
   // la mitad nuestra de aquella fila y no aparece en ningún otro sitio del
   // copy, así que se puede prohibir en toda la página; «Gratis» no, porque «el
-  // dictado que trae macOS es bueno, es gratis y ha mejorado» es copy aprobado.
+  // dictado de macOS es bueno y gratis» es copy aprobado.
   ['CA-NEG-1 · precio en la comparativa', ['Por anunciar']],
+  // MAK-245 · «Qué hace distinto» se borra entera: la comparativa pasa a ser
+  // la única sección de diferenciación de la página.
+  ['MAK-245 · sección «Qué hace distinto» borrada', ['Qué hace distinto']],
 ]
 
 // --- Los cuatro criterios de la comparativa. Ni tres ni cinco: la entradilla
@@ -352,10 +351,9 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 9) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta nueve`)
+  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
   const ROTULOS_H2 = [
     'se pega donde ya escribes',
-    'qué hace distinto',
     'qué pasa cuando sueltas la tecla',
     'vocabulario personal',
     'qué sale de tu mac y qué no',

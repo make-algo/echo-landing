@@ -115,32 +115,6 @@ export const velocidad = {
     '4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).',
 } as const
 
-export const argumentos = {
-  rotulo: 'Qué hace distinto',
-  lista: [
-    {
-      titulo: 'Limpia el texto, no solo lo transcribe',
-      texto:
-        'Quita las muletillas y las repeticiones, aplica las correcciones que dices en voz alta («el martes, no, mejor el jueves») y puntúa sola.',
-    },
-    {
-      titulo: 'Español con inglés técnico en medio',
-      texto:
-        '«Hacemos el deploy del backend en GitHub» no se convierte en «depploy del Back and and Get Have». echo usa un modelo multilingüe que detecta el idioma solo y aguanta la mezcla dentro de la misma frase. 25 idiomas europeos.',
-    },
-    {
-      titulo: 'Sin cuotas por minuto',
-      texto:
-        'La transcripción corre en tu Mac, así que no hay servidor que pagar ni minutos que gastar. El pulido lo hace el CLI de Claude Code o el de Codex con tu propia sesión: consume tu cuota, no una nuestra. No te pedimos ninguna API key.',
-    },
-    {
-      titulo: 'Local, sin cuenta y sin guardar nada',
-      texto:
-        'La voz se transcribe en tu Mac; nunca sale del dispositivo. No hace falta crear ninguna cuenta para descargar ni para usar echo. Y no guardamos ni enviamos a ningún sitio lo que dictas: si activas el pulido, lo único que sale es el texto ya transcrito, hacia tu propia cuenta de Claude o ChatGPT.',
-    },
-  ],
-} as const
-
 export const pasos = {
   rotulo: 'Qué pasa cuando sueltas la tecla',
   lista: [
@@ -208,8 +182,7 @@ export const vocabulario = {
 
 export const comparativa = {
   titulo: 'El dictado del Mac transcribe. echo escribe.',
-  entradilla:
-    'El dictado que trae macOS es bueno, es gratis y ha mejorado. Estas son las cuatro cosas que no hace, y son las cuatro razones por las que existe echo.',
+  entradilla: 'El dictado de macOS es bueno y gratis. Estas cuatro cosas no las hace.',
   columnas: { criterio: 'Criterio', macos: 'Dictado de macOS', echo: 'echo' },
   /** Cuatro filas, y el número no es casual: la entradilla anuncia cuatro. */
   filas: [
@@ -227,6 +200,11 @@ export const comparativa = {
       criterio: 'Idiomas mezclados',
       macos: 'Un idioma fijo por sesión',
       echo: 'Detecta y mezcla, 25 idiomas',
+      /**
+       * Rescatado de la sección «Qué hace distinto» (borrada en MAK-245): el
+       * único ejemplo que no vive en ningún otro sitio del copy.
+       */
+      nota: '«deploy del backend en GitHub», no «depploy del Back and and Get Have».',
     },
     {
       criterio: 'Formato según la app',
@@ -355,10 +333,9 @@ export const correccion = {
   /** La corrección que la mano escribe encima del dictado de la apertura. */
   insercion: 'sin dictar la puntuación',
   /**
-   * Las dos notas de margen que ocupan el hueco del lado derecho a partir de
-   * 1024 px (MAK-85, punto 2.4 del pulido): texto real, leído en voz alta
-   * igual que el resto, no decoración de relleno.
+   * Nota de margen que ocupa el hueco del lado derecho a partir de 1024 px
+   * (MAK-85, punto 2.4 del pulido): texto real, leído en voz alta igual que
+   * el resto, no decoración de relleno.
    */
-  margenComparativa: 'cuatro correcciones. cero adivinadas.',
   margenPreguntas: 'la última pregunta',
 } as const
