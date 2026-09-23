@@ -8,7 +8,6 @@ import WaitlistForm from '../components/WaitlistForm.astro'
 import { url } from '../lib/site'
 import {
   apertura,
-  argumentos,
   beta,
   comparativa,
   correccion,
@@ -210,19 +209,7 @@ const cicloTextoHTML = segmentosCiclo
     {/* ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más */}
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <span class="banda" aria-hidden="true"></span>
-      <h2 class="rubric">{argumentos.rotulo}</h2>
-      <div style="display: grid; gap: 2rem; margin-top: 1.25rem">
-        {
-          argumentos.lista.map((a) => (
-            <div>
-              <h3>{a.titulo}</h3>
-              <p style="margin-top: 0.4rem; color: var(--c-ink-2)">{a.texto}</p>
-            </div>
-          ))
-        }
-      </div>
-
-      <h2 class="rubric" id="como-funciona" style="margin-top: 2.5rem">{pasos.rotulo}</h2>
+      <h2 class="rubric" id="como-funciona">{pasos.rotulo}</h2>
       <ol style="list-style: none; padding: 0; display: grid; gap: 1.25rem; margin-top: 1.25rem">
         {
           pasos.lista.map((paso) => (
@@ -270,33 +257,32 @@ const cicloTextoHTML = segmentosCiclo
       </p>
     </section>
 
-    {/* ACTO 4 · cuatro correcciones, ni una más. El lado derecho, desde
-         1024 px, lleva la nota de margen que refuerza lo que la tabla ya
-         demuestra en ese punto del scroll (MAK-85, punto 2.4). */}
-    <section class="acto acto--margen" style="margin-top: clamp(4rem, 9vw, 8rem)">
+    {/* ACTO 4 · cuatro correcciones, ni una más. */}
+    <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
       <div class="regla" aria-hidden="true"></div>
-      <div class="acto__cuerpo">
-        <h2 id="comparacion">{comparativa.titulo}</h2>
-        <p class="c-lead">{comparativa.entradilla}</p>
+      <h2 id="comparacion">{comparativa.titulo}</h2>
+      <p class="c-lead">{comparativa.entradilla}</p>
 
-        <div style="margin-top: 2rem">
-          {
-            comparativa.filas.map((fila) => (
-              <div class="corr" data-fila-comparativa>
-                <p class="crit">{fila.criterio}</p>
-                <p>
-                  <span class="sr-only">{comparativa.columnas.macos}: </span>
-                  <span class="mal tach">{fila.macos}</span>
-                </p>
-                <p class="bien">
-                  <span class="sr-only">{comparativa.columnas.echo}: </span>{fila.echo}
-                </p>
-              </div>
-            ))
-          }
-        </div>
+      <div style="margin-top: 2rem">
+        {
+          comparativa.filas.map((fila) => (
+            <div class="corr" data-fila-comparativa>
+              <p class="crit">{fila.criterio}</p>
+              <p>
+                <span class="sr-only">{comparativa.columnas.macos}: </span>
+                <span class="mal tach">{fila.macos}</span>
+              </p>
+              <p class="bien">
+                <span class="sr-only">{comparativa.columnas.echo}: </span>{fila.echo}
+              </p>
+              {/* MAK-245: el ejemplo del deploy, rescatado de la sección
+                   «Qué hace distinto» al borrarla — único sitio del copy
+                   donde vivía. */}
+              {'nota' in fila && <p class="microcopy" style="margin-top: 0.5rem">{fila.nota}</p>}
+            </div>
+          ))
+        }
       </div>
-      <p class="margen">{v.margenComparativa}</p>
     </section>
 
     {/* ACTO 5 · cero marcas. La página ya está limpia. */}
