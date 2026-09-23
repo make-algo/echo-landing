@@ -579,38 +579,6 @@
   color: var(--c-ink-2);
 }
 
-/* --- EL HUECO DEL ESCRITORIO. Fuera de la apertura (con su columna fija), el
-       resto de la página es una sola columna de prosa: en 1440 px eso deja el
-       lado derecho vacío en los actos más largos en vertical. Ninguna tramo de
-       la página es aire sin trabajo, así que ese hueco lleva una nota de
-       margen real —texto que se lee en voz alta igual que el resto, no
-       decoración— en el mismo vocabulario mono-rojo de `.rubric`. Descartado:
-       un contador animado por scroll (JS extra, riesgo de jank, y la densidad
-       de marcas que ya baja acto a acto cuenta esa historia sin necesitar un
-       número que se mueva). MAK-85, punto 2.4. --------------------------------- */
-@media (min-width: 1024px) {
-  .ruta-correccion .acto--margen {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: clamp(2rem, 4vw, 4rem);
-    align-items: start;
-  }
-  /* La regla negra sigue cruzando el acto entero, no solo la columna de prosa. */
-  .ruta-correccion .acto--margen > .regla {
-    grid-column: 1 / -1;
-  }
-  .ruta-correccion .margen {
-    grid-column: 2;
-    align-self: start;
-    position: sticky;
-    top: 2rem;
-    font: 400 var(--text-small) / 1.5 var(--font-mono);
-    color: var(--c-rojo);
-    max-width: 14ch;
-    text-align: right;
-  }
-}
-
 @media (max-width: 819px) {
   .ruta-correccion .sucio {
     max-width: none;

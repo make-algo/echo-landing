@@ -340,6 +340,10 @@ for (const [ruta, fichero] of RUTAS) {
       if (!texto.includes(celda)) mal(ruta, `falta la celda «${celda}» de la comparativa`)
   }
 
+  // --- MAK-249: cuatro preguntas frecuentes, ni una más.
+  const preguntas = (html.match(/<details class="qa">/g) ?? []).length
+  if (preguntas !== 4) mal(ruta, `las preguntas frecuentes son ${preguntas} y hacen falta cuatro`)
+
   // --- El árbol de accesibilidad: sin las capas decorativas, el copy aprobado
   //     sigue entero, seguido y en el orden del argumento.
   const oido = accesible(html)

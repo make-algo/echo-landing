@@ -211,6 +211,10 @@ export const preguntas = {
   rotulo: 'Preguntas',
   lista: [
     {
+      p: '¿Cuánto cuesta?',
+      r: '14 días de prueba completa, sin tarjeta. Después, 12 € al año con IVA incluido, para hasta tres Macs. Se paga desde la propia app y se cancela cuando quieras.',
+    },
+    {
       p: '¿Necesito pagar Claude?',
       r: 'Vale Claude Pro o Max, y también ChatGPT Plus: lo que ya pagas hace una cosa más. Sin ninguna de las dos, echo sigue funcionando con el pulido desactivado: transcripción local y puntuación por voz.',
     },
@@ -221,18 +225,6 @@ export const preguntas = {
     {
       p: '¿Qué Mac necesito?',
       r: 'macOS 14 (Sonoma) o posterior y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
-    },
-    {
-      p: '¿En qué idiomas funciona?',
-      r: '25 idiomas europeos, con detección automática y mezcla dentro de la misma frase.',
-    },
-    {
-      p: '¿Cuánto cuesta?',
-      r: '14 días de prueba completa, sin tarjeta. Después, 12 € al año con IVA incluido, para hasta tres Macs. Se paga desde la propia app y se cancela cuando quieras.',
-    },
-    {
-      p: '¿Cuándo puedo descargarlo?',
-      r: 'Ya. La descarga está arriba, sin lista de espera ni invitación: 14 días de prueba completa y después decides.',
     },
   ],
 } as const
@@ -256,10 +248,4 @@ export const correccion = {
   capaLimpia: 'pegado en tu app · ya editado',
   /** La corrección que la mano escribe encima del dictado de la apertura. */
   insercion: 'sin dictar la puntuación',
-  /**
-   * Nota de margen que ocupa el hueco del lado derecho a partir de 1024 px
-   * (MAK-85, punto 2.4 del pulido): texto real, leído en voz alta igual que
-   * el resto, no decoración de relleno.
-   */
-  margenPreguntas: 'la última pregunta',
 } as const
