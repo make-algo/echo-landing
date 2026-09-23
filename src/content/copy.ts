@@ -248,11 +248,7 @@ export const privacidad = {
   rotulo: 'Qué sale de tu Mac y qué no',
   /** CA-INT-1 */
   principal:
-    'Tu voz no sale nunca de tu Mac: la transcripción es local. Si activas el pulido, el texto transcrito —no el audio— se envía a Claude o a ChatGPT con tu propia cuenta, igual que si lo hubieras pegado tú en el chat. Si prefieres que no salga nada, desactiva el pulido: echo sigue funcionando.',
-  notas: [
-    'No tenemos servidores en medio: echo habla con el CLI que ya tienes instalado, no con una API nuestra.',
-    'No guardamos ni enviamos a ninguna parte lo que dictas. El audio solo se guarda en tu disco si tú lo activas para hacer pruebas.',
-  ],
+    'Tu voz no sale nunca de tu Mac. Si activas el pulido, sale el texto —no el audio— hacia tu propia cuenta de Claude o ChatGPT. Sin pulido, no sale nada. No tenemos servidores ni guardamos lo que dictas.',
 } as const
 
 export const paraQuien = {
@@ -311,10 +307,6 @@ export const preguntas = {
     {
       p: '¿Necesito pagar Claude?',
       r: 'Vale Claude Pro o Max, y también ChatGPT Plus: lo que ya pagas hace una cosa más. Sin ninguna de las dos, echo sigue funcionando con el pulido desactivado: transcripción local y puntuación por voz.',
-    },
-    {
-      p: '¿Se envía mi voz a algún sitio?',
-      r: 'No, nunca. La transcripción es local. Con el pulido activado sale el texto —no el audio— a tu propia cuenta de Claude o ChatGPT; desactivado, no sale nada.',
     },
     {
       p: '¿Cuánto tarda?',

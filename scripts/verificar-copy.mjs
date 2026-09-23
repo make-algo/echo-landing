@@ -104,7 +104,7 @@ const ORDEN = [
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
-  ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac: la transcripción es local.'],
+  ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac.'],
   ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
   ['microcopy del alta', 'No hay lista ni newsletter: no te vamos a escribir.'],
 ]
@@ -115,10 +115,9 @@ const ORDEN = [
 const INNEGOCIABLES = [
   [
     'CA-INT-1 · párrafo de privacidad',
-    `Tu voz no sale nunca de tu Mac: la transcripción es local. Si activas el pulido, el texto
-     transcrito —no el audio— se envía a Claude o a ChatGPT con tu propia cuenta, igual que si lo
-     hubieras pegado tú en el chat. Si prefieres que no salga nada, desactiva el pulido: echo sigue
-     funcionando.`,
+    `Tu voz no sale nunca de tu Mac. Si activas el pulido, sale el texto —no el audio— hacia tu
+     propia cuenta de Claude o ChatGPT. Sin pulido, no sale nada. No tenemos servidores ni
+     guardamos lo que dictas.`,
   ],
   [
     'CA-INT-2 · cierre de la comparativa',
