@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "verificar": "node scripts/verificar-copy.mjs",
+    "verificar:pliegue": "node scripts/verificar-pliegue.mjs",
     "generar-og": "node scripts/generar-og.mjs",
     "generar-producto": "node scripts/generar-producto.mjs"
   },

@@ -302,6 +302,39 @@
   height: auto;
 }
 
+/* MAK-244 (revisión) · a 1024–1439 px el héroe no cabía en el pliegue de un
+   MacBook Air 13" (1280×800): el CTA quedaba ~162 px por debajo de y=800.
+   Decisión de Álvaro: se aprieta el ritmo vertical del héroe y el cuerpo de
+   `.sucio`/`<h1>` SOLO en este tramo — a 1440 px o más, y por debajo de
+   1024 px, el héroe queda exactamente igual que antes. No se toca copy ni
+   se quita ninguna pieza, solo se reduce. El tachado sigue midiéndose en
+   tiempo real sobre el tamaño ya reducido (`correccion/tachado.ts` observa
+   resize con `ResizeObserver`), así que el trazo sigue cayendo sobre el
+   texto (MAK-242). */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .ruta-correccion .apertura-acto {
+    padding-top: 0.75rem;
+  }
+  .ruta-correccion .apertura .sucio {
+    font-size: 2.75rem;
+  }
+  .ruta-correccion .apertura h1 {
+    font-size: 2rem;
+  }
+  .ruta-correccion .apertura .rubric {
+    margin-bottom: 6px;
+  }
+  .ruta-correccion .apertura .regla {
+    margin-block: 1rem;
+  }
+  .ruta-correccion .apertura .tagline {
+    margin-top: 0.3rem;
+  }
+  .ruta-correccion .apertura .btn {
+    margin-top: 1.25rem;
+  }
+}
+
 /* --- LA APERTURA. A la izquierda lo dictado corrigiéndose; a la derecha el
        producto, porque una página que promete «hablas y aparece escrito» no
        puede enseñar cero. ---------------------------------------------------- */
