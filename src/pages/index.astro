@@ -290,6 +290,13 @@ const cicloTextoHTML = segmentosCiclo
       <p class="final">
         {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
       </p>
+      {/* MAK-251: tras el cierre de la comparativa no quedaba más CTA que la
+           cabecera pegajosa. Mismo botón y misma línea de condiciones del
+           héroe, sin copy nuevo. */}
+      <p style="margin-top: 1.5rem"><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
+      <p class="c-dim" style="margin-top: 1.25rem">
+        {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
+      </p>
     </section>
 
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
