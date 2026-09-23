@@ -99,7 +99,9 @@ function accesible(html) {
 const ORDEN = [
   ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
   ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
-  ['subtítulo', 'La voz se transcribe en tu propio ordenador'],
+  // El espacio antes de la coma es el hueco que deja `visible()` al quitar el
+  // `</strong>` que cierra «14 días gratis» — no hay hueco real en el HTML.
+  ['condiciones bajo el CTA · MAK-244', '14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.'],
   ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas cuatro cosas no las hace'],
@@ -172,9 +174,13 @@ const INNEGOCIABLES = [
     `Hablando ~150 palabras por minuto`,
   ],
   [
-    'CA-NEG-5/CA-QUIEN-5 · nota con las dos cifras de referencia',
-    `4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a
-     tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).`,
+    'MAK-244 · fuente de la comparación de velocidad',
+    `Medias de referencia: habla conversacional frente a tecleo de un adulto sin formación.`,
+  ],
+  [
+    // Mismo hueco artificial de `visible()` explicado junto a `ORDEN` arriba.
+    'MAK-244 · condiciones en una línea bajo el CTA',
+    `14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.`,
   ],
   [
     'CA-VOC-2 · cuerpo de «Vocabulario personal»',
@@ -482,12 +488,12 @@ else if (!/12\s*€\s*al año/.test(visible(portada.slice(desdeCTA, desdeCTA + 8
   fallos.push('el precio ya no aparece junto al primer botón (se habrá quedado solo en la FAQ)')
 else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
 
-// --- MAK-230 · la cifra y su fuente siguen juntas, y las dos en el hero.
+// --- MAK-230/MAK-244 · la cifra y su fuente siguen juntas, y las dos en el hero.
 //
-//     Si el «4 veces» vuelve a mudarse de sección, la fuente tiene que
-//     mudarse con él (CA-NEG-5/CA-QUIEN-5) — y las dos filas de la
-//     comparación (Tecleando/Hablando) tienen que seguir viviendo dentro del
-//     primer acto (el hero), no más abajo en el scroll.
+//     Si la fuente vuelve a mudarse de sección, tiene que mudarse con la
+//     cifra — y las dos filas de la comparación (Tecleando/Hablando) tienen
+//     que seguir viviendo dentro del primer acto (el hero), no más abajo en
+//     el scroll.
 {
   const heroFin = portada.indexOf('id="donde-se-pega"')
   const desdeHablando = portada.indexOf('Hablando')
@@ -496,9 +502,24 @@ else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
     fallos.push('MAK-230: la comparación de velocidad ya no vive dentro del hero')
   else {
     const entreFilaYFuente = visible(portada.slice(desdeHablando, desdeHablando + 600))
-    if (!entreFilaYFuente.includes('4 veces más rápido que teclear'))
-      fallos.push('MAK-230: la fuente de la comparación de velocidad se separó de la cifra')
-    else console.log('ok  MAK-230 · comparación de velocidad en el hero, cifra y fuente juntas')
+    if (!entreFilaYFuente.includes('Medias de referencia: habla conversacional frente a tecleo de un adulto sin formación.'))
+      fallos.push('MAK-244: la fuente de la comparación de velocidad se separó de la cifra')
+    else console.log('ok  MAK-230/MAK-244 · comparación de velocidad en el hero, cifra y fuente juntas')
+  }
+}
+
+// --- MAK-244 · «donde estabas» aparece una sola vez en el héroe. Con el
+//     subtítulo fuera, solo puede quedar en el tagline; si vuelve a
+//     duplicarse es la sobreexplicación que prohíbe `tics-de-ia`.
+{
+  const heroFin = portada.indexOf('id="donde-se-pega"')
+  if (heroFin < 0) fallos.push('MAK-244: no se encuentra el final del hero (#donde-se-pega)')
+  else {
+    const heroTexto = visible(portada.slice(0, heroFin))
+    const apariciones = heroTexto.match(/donde estabas/g) ?? []
+    if (apariciones.length !== 1)
+      fallos.push(`MAK-244: «donde estabas» aparece ${apariciones.length} veces en el héroe y debe aparecer una sola`)
+    else console.log('ok  MAK-244 · «donde estabas» aparece una sola vez en el héroe')
   }
 }
 
