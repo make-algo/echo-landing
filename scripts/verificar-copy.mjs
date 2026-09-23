@@ -107,7 +107,7 @@ const ORDEN = [
   ['entradilla de la comparativa', 'Estas cuatro cosas no las hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac.'],
-  ['microcopy del alta', 'No hay lista ni newsletter: no te vamos a escribir.'],
+  ['línea de contacto', '¿Dudas o algo que no funciona? Escríbenos'],
 ]
 
 // --- Las redacciones innegociables: copy aprobado que va literal o no va.
@@ -126,9 +126,8 @@ const INNEGOCIABLES = [
      dictas párrafos y te cansa editarlos después.`,
   ],
   [
-    'CA-FORM-6 · microcopy bajo el botón',
-    `No hay lista ni newsletter: no te vamos a escribir. Guardamos tu correo solo mientras haga
-     falta para contestarte.`,
+    'MAK-243 · línea de contacto',
+    `¿Dudas o algo que no funciona? Escríbenos`,
   ],
   [
     'titular · literal y entero',
@@ -222,6 +221,15 @@ const PROHIBIDAS = [
   [
     'CA-FAQ-1 · FAQ de la lista de espera retirada',
     ['beta privada por tandas', 'condiciones de early-bird', 'todavía no está decidido'],
+  ],
+  [
+    'MAK-243 · restos de la sección «Escríbenos» con formulario',
+    [
+      'No hay lista ni newsletter',
+      '¿Para qué lo usas?',
+      'rellénalas y dale a enviar',
+      'Se lee todo',
+    ],
   ],
   // CA-NEG-1 · la comparativa no vuelve a hablar de precio. «Por anunciar» era
   // la mitad nuestra de aquella fila y no aparece en ningún otro sitio del
@@ -349,7 +357,7 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 6) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta seis`)
+  if (h2s.length !== 5) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta cinco`)
   const ROTULOS_H2 = [
     'se pega donde ya escribes',
     'qué pasa cuando sueltas la tecla',

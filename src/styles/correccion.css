@@ -548,68 +548,7 @@
   max-width: 22ch;
 }
 
-/* --- EL ALTA: mismo sistema. Líneas de escritura, ni una caja. ------------ */
-.ruta-correccion .beta__body,
-.ruta-correccion .beta__body > form,
-.ruta-correccion .beta__body > .done {
-  /* El alta no se parte en dos columnas como en el control: en estas dos
-     direcciones el eje es uno solo y meter una segunda columna lo rompería. */
-  display: block;
-  max-width: 38rem;
-}
-.ruta-correccion .legalnote {
-  max-width: 38rem;
-  margin-top: 1.5rem;
-}
-.ruta-correccion .beta__body:has(form:not([hidden])) {
-  min-height: 0;
-}
-.ruta-correccion .field > label {
-  font: 400 var(--text-small) / 1.5 var(--font-mono);
-  color: var(--c-ink-2);
-  font-weight: 400;
-  text-transform: lowercase;
-}
-.ruta-correccion input[type='email'],
-.ruta-correccion textarea {
-  background: transparent;
-  border: 0;
-  border-bottom: 4px solid var(--c-ink);
-  padding: 0.5rem 0;
-  font-size: 1.1875rem;
-  font-weight: 500;
-}
-/* El campo se reconoce como rellenable sin abrir el inspector: el subrayado
-   se engrosa y se pone rojo al pasar el ratón o enfocar — la misma señal
-   («rojo es que esto está vivo») que ya usa el resto del sistema, no una
-   caja nueva (MAK-85, punto 3). */
-.ruta-correccion input[type='email']:hover,
-.ruta-correccion textarea:hover {
-  border-bottom-color: var(--c-rojo);
-}
-.ruta-correccion input:focus-visible,
-.ruta-correccion textarea:focus-visible {
-  border-bottom-width: 6px;
-  border-bottom-color: var(--c-rojo);
-}
-.ruta-correccion textarea {
-  font-weight: 400;
-  font-size: 1.0625rem;
-  resize: vertical;
-}
-.ruta-correccion .field--bad input[type='email'] {
-  border-bottom-color: var(--c-rojo);
-}
-.ruta-correccion .radio input {
-  accent-color: var(--c-rojo);
-}
-.ruta-correccion .notice,
-.ruta-correccion .alert {
-  border-width: 0 0 0 4px;
-  border-color: var(--c-rojo);
-  background: transparent;
-  padding: 0.25rem 0 0.25rem 0.9rem;
-}
+/* --- PREGUNTAS Y CONTACTO: mismo sistema. Líneas de escritura, ni una caja. */
 .ruta-correccion .faq {
   border-bottom: 2px solid var(--c-ink);
   max-width: 52rem;

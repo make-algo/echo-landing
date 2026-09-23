@@ -193,33 +193,18 @@ export const privacidad = {
     'Tu voz no sale nunca de tu Mac. Si activas el pulido, sale el texto —no el audio— hacia tu propia cuenta de Claude o ChatGPT. Sin pulido, no sale nada. No tenemos servidores ni guardamos lo que dictas.',
 } as const
 
-export const beta = {
-  titulo: 'Escríbenos',
-  entradilla:
-    'La descarga ya está arriba. Si la pruebas y quieres contarnos qué tal te va —o qué te falla—, escríbenos. Lo leemos todo.',
-  uso: {
-    etiqueta: '¿Para qué lo usas?',
-  },
-  sub: {
-    etiqueta: '¿Tienes Claude o ChatGPT de pago?',
-    opciones: ['Claude', 'ChatGPT', 'Las dos', 'Ninguna'],
-  },
-  boton: 'Escríbenos por email',
-  /** CA-FORM-6 · texto aprobado, exigido literal por scripts/verificar-copy.mjs — no tocar sin pasar por pm. */
-  microcopy:
-    'No hay lista ni newsletter: no te vamos a escribir. Guardamos tu correo solo mientras haga falta para contestarte.',
-  /** Frase de primera capa (art. 13 RGPD), aprobada por asesor-legal en MAK-227: no se reescribe sin pasar por ahí. El resto del art. 13 vive en /privacidad. */
-  legal: {
-    titulo: 'Protección de datos:',
-    uno: ' el responsable es Make Algo SL y usaremos tu correo solo para leer y contestar tu mensaje. Los detalles y tus derechos, en la ',
-    enlace: 'política de privacidad',
-    dos: '.',
-  },
-  ok: {
-    texto:
-      'Se abre tu programa de correo con el asunto y las preguntas ya escritas: rellénalas y dale a enviar.',
-    extra: 'Si quieres acelerar: cuéntanos cómo dictas hoy y qué te falla. Se lee todo.',
-  },
+/**
+ * MAK-243: sustituye a la sección «Escríbenos» de seis piezas (título,
+ * entradilla, formulario, microcopy, aviso legal y confirmación) por un
+ * único enlace `mailto:` sin cuerpo prerrellenado. `destino` y `asunto`
+ * están aquí porque son la parte literal exigida por
+ * `scripts/verificar-copy.mjs`, no porque haya más lógica que envolver.
+ */
+export const contacto = {
+  texto: '¿Dudas o algo que no funciona? ',
+  boton: 'Escríbenos',
+  destino: 'hola@make-algo.com',
+  asunto: 'echo',
 } as const
 
 export const preguntas = {
