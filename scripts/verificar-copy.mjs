@@ -174,6 +174,18 @@ const INNEGOCIABLES = [
      —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
      Claude lo aplica cada vez que pule tu dictado.`,
   ],
+  [
+    'MAK-247 · paso 1 «Se transcribe en tu Mac»',
+    `Décimas de segundo, sin conexión.`,
+  ],
+  [
+    'MAK-247 · paso 2 «Se pule con tu suscripción»',
+    `Claude o ChatGPT, con tu sesión: 1,5 a 2,5 segundos, y solo cuando el texto lo necesita.`,
+  ],
+  [
+    'MAK-247 · paso 3 «Se pega donde estabas»',
+    `En la app activa, con el formato que le toca.`,
+  ],
 ]
 
 // --- Criterios negativos: lo que no puede aparecer en la página.
@@ -657,6 +669,34 @@ else {
   }
   if (!fallos.some((f) => f.startsWith('MAK-229')))
     console.log('ok  MAK-229 · la píldora real está en el héroe y en el paso de pulido, con AVIF/WebP/PNG')
+}
+
+// --- MAK-247 · los tres pasos de «Qué pasa cuando sueltas la tecla», cada uno
+//     en una línea: el cuerpo de cada paso (sin el título) no puede pasar de
+//     20 palabras, y los dos tiempos («Décimas de segundo», «1,5 a 2,5
+//     segundos») aparecen una sola vez en toda la página — antes se repetían
+//     en la FAQ «¿Cuánto tarda?», que por eso se retiró.
+{
+  const pasosBloque = portada.match(/<h2[^>]*id="como-funciona"[\s\S]*?<\/ol>/)?.[0]
+  if (!pasosBloque) fallos.push('MAK-247: no se encuentra la sección «Qué pasa cuando sueltas la tecla»')
+  else {
+    const cuerpos = [...pasosBloque.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map(([, inner]) => visible(inner))
+    if (cuerpos.length !== 3) fallos.push(`MAK-247: hay ${cuerpos.length} pasos y hacen falta tres`)
+    for (const [i, cuerpo] of cuerpos.entries()) {
+      const palabras = cuerpo.split(' ').filter(Boolean).length
+      if (palabras > 20) fallos.push(`MAK-247: el paso ${i + 1} tiene ${palabras} palabras de cuerpo (máximo 20)`)
+    }
+    if (!fallos.some((f) => f.startsWith('MAK-247') && f.includes('palabras')))
+      console.log('ok  MAK-247 · ningún paso pasa de 20 palabras de cuerpo')
+  }
+
+  const textoPortada = visible(portada)
+  for (const tiempo of ['Décimas de segundo', '1,5 a 2,5 segundos']) {
+    const veces = textoPortada.split(tiempo).length - 1
+    if (veces !== 1) fallos.push(`MAK-247: «${tiempo}» aparece ${veces} veces en la página y debería aparecer una`)
+  }
+  if (!fallos.some((f) => f.startsWith('MAK-247') && f.includes('aparece')))
+    console.log('ok  MAK-247 · los tiempos aparecen una sola vez en la página')
 }
 
 // --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no

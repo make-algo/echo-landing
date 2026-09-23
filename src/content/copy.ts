@@ -117,31 +117,21 @@ export const pasos = {
       titulo: 'Se transcribe en tu Mac.',
       /** `dato` es la cifra que el escéptico viene a buscar: sube a tinta plena. */
       partes: [
-        { dato: true, texto: 'Décimas de segundo.' },
-        { dato: false, texto: ' Modelo local, sin conexión.' },
+        { dato: true, texto: 'Décimas de segundo,' },
+        { dato: false, texto: ' sin conexión.' },
       ],
     },
     {
       titulo: 'Se pule con tu suscripción.',
       partes: [
-        { dato: false, texto: 'El texto transcrito pasa por Claude o ChatGPT, con tu sesión. ' },
-        { dato: true, texto: 'De 1,5 a 2,5 segundos.' },
-        {
-          dato: false,
-          texto:
-            ' Puedes dejarlo en «solo cuando haga falta», que es como viene: los dictados que ya salen limpios se pegan al instante.',
-        },
+        { dato: false, texto: 'Claude o ChatGPT, con tu sesión: ' },
+        { dato: true, texto: '1,5 a 2,5 segundos,' },
+        { dato: false, texto: ' y solo cuando el texto lo necesita.' },
       ],
     },
     {
       titulo: 'Se pega donde estabas.',
-      partes: [
-        {
-          dato: false,
-          texto:
-            'En la app activa, con el formato que le corresponda. Y se queda en el portapapeles por si lo quieres pegar otra vez.',
-        },
-      ],
+      partes: [{ dato: false, texto: 'En la app activa, con el formato que le toca.' }],
     },
   ],
 } as const
@@ -259,10 +249,6 @@ export const preguntas = {
     {
       p: '¿Necesito pagar Claude?',
       r: 'Vale Claude Pro o Max, y también ChatGPT Plus: lo que ya pagas hace una cosa más. Sin ninguna de las dos, echo sigue funcionando con el pulido desactivado: transcripción local y puntuación por voz.',
-    },
-    {
-      p: '¿Cuánto tarda?',
-      r: 'La transcripción, décimas de segundo. El pulido, entre 1,5 y 2,5 segundos con Claude. Por defecto solo se pule cuando hace falta, así que la mayoría de los dictados se pegan al instante.',
     },
     {
       p: '¿Y si falla Claude o no tengo conexión?',
