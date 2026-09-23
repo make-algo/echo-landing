@@ -209,40 +209,6 @@
     .win__field--to { display: none; }
   }
 
-  /* --- Alta --------------------------------------------------------------
-     Sin tarjeta: la caja centrada rompía el eje de toda la página. No hay
-     formulario ni estados de envío que reservar en altura: el bloque es
-     estático, así que no hay salto de layout que evitar. */
-  /* Una sola columna de conversión, en el eje A. La letra legal estaba a la
-     derecha, a la altura del botón y con su propio arranque: competía con el
-     punto de conversión y añadía un margen izquierdo más. Debajo del
-     microcopy sigue estando a la vista y sin enlace de por medio —que es lo
-     que exige el consentimiento— y deja de disputarle el sitio al botón. */
-  .beta__body { max-width: var(--container-narrow); }
-  @media (min-width: 768px) {
-    .beta__body { max-width: none; }
-    .beta__body > .beta__cta { grid-column: 1 / 8; }
-  }
-  .beta__cta { margin-top: 48px; }
-
-  /* Debajo del microcopy hay dos textos grises seguidos y no dicen lo mismo:
-     uno quita el miedo a dejar el correo, el otro cumple la ley. La regla fina
-     marca el cambio de registro; sin ella el bloque legal pesaba tanto como el
-     resto del bloque. */
-  .legalnote {
-    font-size: var(--text-micro); line-height: 1.5;
-    color: var(--color-ink-3);
-    border-top: 1px solid var(--color-line);
-    margin-top: 32px; padding-top: 20px;
-    max-width: var(--container-measure);
-  }
-
-  .done { margin-top: 36px; max-width: var(--container-measure); }
-  .done p:first-of-type {
-    font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink);
-  }
-  .done p + p { margin-top: 16px; color: var(--color-ink-2); }
-
   /* --- Preguntas --------------------------------------------------------
      `<details>` nativo a una columna: nueve preguntas siempre abiertas
      ocupaban dos pantallas y media, y a dos columnas los filetes nunca

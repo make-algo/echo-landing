@@ -4,12 +4,11 @@ import Escrito from '../components/demo/Escrito.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
 import Icono from '../components/Icono.astro'
-import WaitlistForm from '../components/WaitlistForm.astro'
 import { url } from '../lib/site'
 import {
   apertura,
-  beta,
   comparativa,
+  contacto,
   correccion,
   demo,
   dondeSePega,
@@ -71,6 +70,9 @@ const cicloTextoHTML = segmentosCiclo
     s.clase ? `<span class="${s.clase}" style="--d: ${s.delay}">${letras(s.texto)}</span>` : letras(s.texto)
   )
   .join('')
+
+/** MAK-243: mailto pelado, sin cuerpo prerrellenado — solo destinatario y asunto. */
+const mailtoContacto = `mailto:${contacto.destino}?subject=${encodeURIComponent(contacto.asunto)}`
 ---
 
 <Base ogTitle={titular} ogImage="/og.png" ogImageAlt="echo, dictado para Mac que escribe limpio">
@@ -293,21 +295,9 @@ const cicloTextoHTML = segmentosCiclo
       <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">{privacidad.principal}</p>
     </section>
 
-    {/* ACTO 6 · el alta, en el mismo sistema y sin una sola caja */}
-    <section class="acto" id="beta" style="margin-top: clamp(4rem, 9vw, 8rem)">
-      <div class="regla" aria-hidden="true"></div>
-      <h2>{beta.titulo}</h2>
-      <p class="c-lead">{beta.entradilla}</p>
-      <WaitlistForm />
-    </section>
-
     {/* El lado derecho lleva su propia nota de margen: la última pregunta
          antes del cierre limpio (MAK-85, punto 2.4). */}
-    <section
-      class="acto acto--margen"
-      id="preguntas"
-      style="margin-top: clamp(3.5rem, 8vw, 7rem); padding-bottom: clamp(3rem, 7vw, 6rem)"
-    >
+    <section class="acto acto--margen" id="preguntas" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <div class="acto__cuerpo">
         <h2 class="rubric">{preguntas.rotulo}</h2>
         <div class="faq" style="margin-top: 1.25rem">
@@ -322,6 +312,18 @@ const cicloTextoHTML = segmentosCiclo
         </div>
       </div>
       <p class="margen">{v.margenPreguntas}</p>
+    </section>
+
+    {/* MAK-243: la sección «Escríbenos» (seis piezas de la época de lista de
+         espera) se reduce a una sola línea centrada con un mailto pelado. */}
+    <section
+      class="acto"
+      id="contacto"
+      style="margin-top: clamp(3.5rem, 8vw, 7rem); padding-bottom: clamp(3rem, 7vw, 6rem); text-align: center"
+    >
+      <p class="c-lead">
+        {contacto.texto}<a class="top__cta" href={mailtoContacto}>{contacto.boton}</a>
+      </p>
     </section>
   </main>
 
