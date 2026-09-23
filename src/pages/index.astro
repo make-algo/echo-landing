@@ -295,23 +295,18 @@ const mailtoContacto = `mailto:${contacto.destino}?subject=${encodeURIComponent(
       <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">{privacidad.principal}</p>
     </section>
 
-    {/* El lado derecho lleva su propia nota de margen: la última pregunta
-         antes del cierre limpio (MAK-85, punto 2.4). */}
-    <section class="acto acto--margen" id="preguntas" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
-      <div class="acto__cuerpo">
-        <h2 class="rubric">{preguntas.rotulo}</h2>
-        <div class="faq" style="margin-top: 1.25rem">
-          {
-            preguntas.lista.map((q) => (
-              <details class="qa">
-                <summary>{q.p}</summary>
-                <p>{q.r}</p>
-              </details>
-            ))
-          }
-        </div>
+    <section class="acto" id="preguntas" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <h2 class="rubric">{preguntas.rotulo}</h2>
+      <div class="faq" style="margin-top: 1.25rem">
+        {
+          preguntas.lista.map((q) => (
+            <details class="qa">
+              <summary>{q.p}</summary>
+              <p>{q.r}</p>
+            </details>
+          ))
+        }
       </div>
-      <p class="margen">{v.margenPreguntas}</p>
     </section>
 
     {/* MAK-243: la sección «Escríbenos» (seis piezas de la época de lista de
