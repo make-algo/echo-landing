@@ -95,9 +95,9 @@ const cicloTextoHTML = segmentosCiclo
           <p class="rubric">{v.capaLimpia}</p>
           <h1>{titular}</h1>
           {/* MAK-230: qué es esto, en grande, inmediatamente debajo del
-               bloque limpio. Se añade, no sustituye al subtítulo. */}
+               bloque limpio. MAK-244: el subtítulo se quita — este tagline
+               es lo único que queda de esa línea en el hero. */}
           <p class="tagline">{apertura.tagline}</p>
-          <p class="c-lead">{apertura.subtitulo}</p>
           <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
           <p class="c-dim" style="margin-top: 1.25rem">
             {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}

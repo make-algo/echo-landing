@@ -49,15 +49,13 @@ export const apertura = {
    * Copy literal, aprobado en la issue — no se reescribe.
    */
   tagline: 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.',
-  /**
-   * MAK-230 (revisión): ya no abre con «Dictado para Mac.» — el tagline de
-   * justo encima lo dice ya, y dos frases seguidas con las mismas tres
-   * palabras es la sobreexplicación que prohíbe `tics-de-ia`. No se pierde
-   * nada: el subtítulo pasa a arrancar directo en la explicación.
-   */
-  subtitulo:
-    'La voz se transcribe en tu propio ordenador; el texto lo pule la suscripción de Claude o ChatGPT que ya pagas. Aparece pegado donde estabas escribiendo.',
   cta: 'Descargar echo',
+  /**
+   * MAK-244: el subtítulo se borra — lo que contaba ya lo cuenta «Qué pasa
+   * cuando sueltas la tecla», con más detalle — y las condiciones bajo el CTA
+   * bajan de 35 palabras a una línea. «Hasta tres Macs», «IVA incluido» y
+   * «sin cuenta ni formulario» ya están en la FAQ de precio.
+   */
   requisito: {
     /**
      * Segmentado como `pasos.lista[].partes` y por lo mismo: el precio es la
@@ -66,14 +64,10 @@ export const apertura = {
      * frase sigue siendo una y seguida en el HTML: nada se mete en medio.
      */
     aviso: [
-      { dato: false, texto: '14 días de prueba completa y, después, ' },
-      { dato: true, texto: '12 € al año' },
-      {
-        dato: false,
-        texto: ' con IVA incluido, para hasta tres Macs. Descarga directa, sin cuenta ni formulario.',
-      },
+      { dato: true, texto: '14 días gratis' },
+      { dato: false, texto: ', luego 12 € al año.' },
     ],
-    maquina: 'macOS 14 o posterior en Apple Silicon.',
+    maquina: 'Mac con Apple Silicon y macOS 14 o posterior.',
   },
 } as const
 
@@ -109,8 +103,11 @@ export const velocidad = {
     { modo: 'Tecleando', ppm: '~40 palabras por minuto' },
     { modo: 'Hablando', ppm: '~150 palabras por minuto' },
   ],
-  fuente:
-    '4 veces más rápido que teclear: habla conversacional, ~150 palabras por minuto, frente a tecleo de un adulto sin formación, ~40 palabras por minuto (medias de referencia).',
+  /**
+   * MAK-244: ya no repite las dos cifras de las filas justo encima; se deja
+   * solo la fuente de la comparación.
+   */
+  fuente: 'Medias de referencia: habla conversacional frente a tecleo de un adulto sin formación.',
 } as const
 
 export const pasos = {
