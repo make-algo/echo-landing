@@ -349,7 +349,7 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
+  if (h2s.length !== 6) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta seis`)
   const ROTULOS_H2 = [
     'se pega donde ya escribes',
     'qué pasa cuando sueltas la tecla',
