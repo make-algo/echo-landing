@@ -148,8 +148,8 @@ const INNEGOCIABLES = [
   ],
   [
     'CA-CAR-5 · cuerpo de «Se pega donde ya escribes»',
-    `Correo, chat, terminal, notas, código… Hablas más rápido de lo que tecleas, y el texto aparece
-     limpio esté donde esté el cursor.`,
+    `Y con tu tono en cada una: en Ajustes le dices «en Slack, informal» o «escribe make-algo así», y
+     lo aplica cada vez.`,
   ],
   [
     'MAK-230 · comparación de velocidad, fila «Tecleando»',
@@ -167,12 +167,6 @@ const INNEGOCIABLES = [
     // Mismo hueco artificial de `visible()` explicado junto a `ORDEN` arriba.
     'MAK-244 · condiciones en una línea bajo el CTA',
     `14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.`,
-  ],
-  [
-    'CA-VOC-2 · cuerpo de «Vocabulario personal»',
-    `echo aprende cómo escribes tú. En Ajustes le enseñas nombres propios, marcas y tono por app
-     —«escribe make-algo así», «trata Álvaro como nombre propio», «en Slack, tono informal»— y
-     Claude lo aplica cada vez que pule tu dictado.`,
   ],
   [
     'MAK-247 · paso 1 «Se transcribe en tu Mac»',
@@ -355,11 +349,10 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
+  if (h2s.length !== 6) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta seis`)
   const ROTULOS_H2 = [
     'se pega donde ya escribes',
     'qué pasa cuando sueltas la tecla',
-    'vocabulario personal',
     'qué sale de tu mac y qué no',
     'preguntas',
   ]
