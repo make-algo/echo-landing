@@ -13,7 +13,6 @@ import {
   correccion,
   demo,
   dondeSePega,
-  paraQuien,
   pasos,
   preguntas,
   privacidad,
@@ -295,11 +294,6 @@ const cicloTextoHTML = segmentosCiclo
     <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
       <h2 class="rubric">{privacidad.rotulo}</h2>
       <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">{privacidad.principal}</p>
-
-      <h2 class="rubric" style="margin-top: 2.5rem">{paraQuien.rotulo}</h2>
-      <div style="display: grid; gap: 1.25rem; margin-top: 1.25rem">
-        {paraQuien.parrafos.map((p) => <p><strong>{p.fuerte}</strong>{p.resto}</p>)}
-      </div>
     </section>
 
     {/* ACTO 6 · el alta, en el mismo sistema y sin una sola caja */}
