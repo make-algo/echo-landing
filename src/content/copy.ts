@@ -101,10 +101,8 @@ export const dondeSePega = {
 } as const
 
 /**
- * MAK-230: el «4 veces más rápido» sube de la sección «Para quién es» a
- * pieza visual en el hero, en el mismo lenguaje de corrección que ya usa la
- * página (tachado/limpio). La cifra y su fuente se mueven juntas — se
- * quitan de `paraQuien` para no repetirse.
+ * MAK-230: el «4 veces más rápido» sube a pieza visual en el hero, en el
+ * mismo lenguaje de corrección que ya usa la página (tachado/limpio).
  */
 export const velocidad = {
   filas: [
@@ -249,27 +247,6 @@ export const privacidad = {
   /** CA-INT-1 */
   principal:
     'Tu voz no sale nunca de tu Mac. Si activas el pulido, sale el texto —no el audio— hacia tu propia cuenta de Claude o ChatGPT. Sin pulido, no sale nada. No tenemos servidores ni guardamos lo que dictas.',
-} as const
-
-export const paraQuien = {
-  rotulo: 'Para quién es',
-  parrafos: [
-    {
-      /**
-       * MAK-230: el «4 veces más rápido» y su cifra suben al hero como
-       * pieza visual (ver `velocidad`); esta prosa ya no lo repite.
-       */
-      fuerte: 'Te va a servir si',
-      resto:
-        ' escribes mucho a lo largo del día: prompts, mensajes, issues, correos, documentos. Si trabajas en dos idiomas a la vez. Si ya pagas Claude o ChatGPT y te parece bien que hagan una cosa más. Si teclear te duele o te cuesta.',
-    },
-    {
-      /** CA-INT-3 */
-      fuerte: 'No te va a servir si',
-      resto:
-        ' dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si tu Mac no es Apple Silicon con macOS 14 o posterior, o si lo que dictas está bajo secreto profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.',
-    },
-  ],
 } as const
 
 export const beta = {

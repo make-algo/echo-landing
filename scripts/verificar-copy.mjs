@@ -105,7 +105,6 @@ const ORDEN = [
   ['entradilla de la comparativa', 'Estas son las cuatro cosas que no hace'],
   ['cierre de la comparativa', 'Si dictas frases sueltas y el dictado del Mac te vale, quédate con él. echo es para cuando dictas párrafos y te cansa editarlos después.'],
   ['párrafo de privacidad', 'Tu voz no sale nunca de tu Mac.'],
-  ['para quién NO es', 'No te va a servir si dictas frases sueltas de vez en cuando'],
   ['microcopy del alta', 'No hay lista ni newsletter: no te vamos a escribir.'],
 ]
 
@@ -130,13 +129,6 @@ const INNEGOCIABLES = [
      falta para contestarte.`,
   ],
   [
-    'CA-INT-3 · para quién NO es',
-    `No te va a servir si dictas frases sueltas de vez en cuando (el dictado del Mac te sobra), si
-     tu Mac no es Apple Silicon con macOS 14 o posterior, o si lo que dictas está bajo secreto
-     profesional y no puede salir de tu ordenador ni en texto: para eso hoy tendrías que usar echo
-     con el pulido desactivado, y entonces te falta justo la parte que lo hace interesante.`,
-  ],
-  [
     'titular · literal y entero',
     `Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.`,
   ],
@@ -153,12 +145,6 @@ const INNEGOCIABLES = [
     'CA-CAR-5 · cuerpo de «Se pega donde ya escribes»',
     `Correo, chat, terminal, notas, código… Hablas más rápido de lo que tecleas, y el texto aparece
      limpio esté donde esté el cursor.`,
-  ],
-  [
-    // MAK-230: el «4 veces» deja de repetirse en prosa; se comprueba como
-    // pieza visual del hero, más abajo en este mismo array.
-    'MAK-230 · «para quién es» sin repetir el multiplicador',
-    `escribes mucho a lo largo del día: prompts, mensajes, issues, correos, documentos.`,
   ],
   [
     'MAK-230 · comparación de velocidad, fila «Tecleando»',
@@ -352,14 +338,13 @@ for (const [ruta, fichero] of RUTAS) {
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 9) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta nueve`)
+  if (h2s.length !== 8) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta ocho`)
   const ROTULOS_H2 = [
     'se pega donde ya escribes',
     'qué hace distinto',
     'qué pasa cuando sueltas la tecla',
     'vocabulario personal',
     'qué sale de tu mac y qué no',
-    'para quién es',
     'preguntas',
   ]
   for (const rotulo of ROTULOS_H2) {
