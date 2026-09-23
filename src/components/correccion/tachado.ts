@@ -114,14 +114,26 @@ function repintar(contenedor: HTMLElement): void {
 }
 
 /** Arranca el tachado medido y lo mantiene cierto ante lo que mueve el ancho de
- *  las palabras: la carga de la fuente real y el redimensionado de ventana. */
+ *  las palabras: la carga de la fuente real, el redimensionado de ventana y
+ *  el propio contenido cambiando de alto bajo el trazo (la demo del ciclo
+ *  bruto/final, la píldora que carga tarde). */
 export function iniciarTachado(contenedor: HTMLElement): void {
   repintar(contenedor)
   document.fonts?.ready.then(() => repintar(contenedor))
 
   let pendiente: ReturnType<typeof setTimeout> | undefined
-  addEventListener('resize', () => {
+  const repintarConDebounce = () => {
     clearTimeout(pendiente)
     pendiente = setTimeout(() => repintar(contenedor), 120)
-  })
+  }
+
+  addEventListener('resize', repintarConDebounce)
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const observador = new ResizeObserver(repintarConDebounce)
+    for (const raiz of contenedor.querySelectorAll<HTMLElement>('.acto, .apertura')) {
+      observador.observe(raiz)
+    }
+    if (contenedor.matches('.acto, .apertura')) observador.observe(contenedor)
+  }
 }
