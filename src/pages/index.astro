@@ -17,7 +17,6 @@ import {
   preguntas,
   privacidad,
   velocidad,
-  vocabulario,
 } from '../content/copy'
 import '../styles/correccion.css'
 
@@ -202,7 +201,9 @@ const cicloTextoHTML = segmentosCiclo
           ))
         }
       </ul>
-      <p class="c-lead" style="margin-top: 1.5rem">{dondeSePega.cuerpo}</p>
+      <p class="c-lead" style="margin-top: 1.5rem">
+        {dondeSePega.cuerpo.map((s) => (s.enfasis ? <em>{s.texto}</em> : s.texto))}
+      </p>
     </section>
 
     {/* ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más */}
@@ -245,19 +246,10 @@ const cicloTextoHTML = segmentosCiclo
       </ol>
     </section>
 
-    {/* ACTO 3bis · «Vocabulario personal» (MAK-194/195), entre «Cómo funciona»
-         (#como-funciona, el h2 de arriba) y «Comparación» (#comparacion,
-         siguiente acto). Mismo patrón que privacidad/para-quién: rótulo mono
-         + un párrafo. */}
-    <section class="acto" id="vocabulario" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
-      <h2 class="rubric">{vocabulario.titulo}</h2>
-      <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">
-        {vocabulario.cuerpo.map((s) => (s.enfasis ? <em>{s.texto}</em> : s.texto))}
-      </p>
-    </section>
-
-    {/* ACTO 4 · cuatro correcciones, ni una más. */}
-    <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
+    {/* ACTO 4 · cuatro correcciones, ni una más. El lado derecho, desde
+         1024 px, lleva la nota de margen que refuerza lo que la tabla ya
+         demuestra en ese punto del scroll (MAK-85, punto 2.4). */}
+    <section class="acto acto--margen" style="margin-top: clamp(4rem, 9vw, 8rem)">
       <div class="regla" aria-hidden="true"></div>
       <h2 id="comparacion">{comparativa.titulo}</h2>
       <p class="c-lead">{comparativa.entradilla}</p>
