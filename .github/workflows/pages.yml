@@ -3,6 +3,11 @@ name: Deploy landing to GitHub Pages
 on:
   push:
     branches: [main]
+  # Cada PR pasa la misma compilación y comprobación de copy antes de poder
+  # fusionarse (protección de `main`): así un choque entre PR paralelos se
+  # para en el PR y no rompe el despliegue.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -10,10 +15,11 @@ permissions:
   pages: write
   id-token: write
 
-# Un despliegue a la vez; no cancelamos el que ya está en vuelo.
+# Un despliegue a la vez; no cancelamos el que ya está en vuelo. Los PR van
+# en su propio grupo y un push nuevo al PR cancela la comprobación anterior.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -29,11 +35,13 @@ jobs:
       # noindex o cuela un recurso de un dominio ajeno, el despliegue falla
       # aquí en vez de publicarse en silencio.
       - run: npm run verificar
-      - uses: actions/upload-pages-artifact@v3
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
