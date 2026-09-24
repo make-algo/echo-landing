@@ -8,6 +8,11 @@ import { url } from '../lib/site'
  * Texto legal íntegro. No se reescribe ni se resume: el criterio y las notas de
  * implementación viven en el repo de la app, en docs/legal/condiciones.md.
  *
+ * v2 (MAK-254): plan mensual y programa de invitaciones. Secciones renumeradas:
+ * 7 es nueva (programa de invitaciones) y 8-17 son las antiguas 7-16 corridas un
+ * puesto. La garantía de §6 pasa de «14 días desde el cobro» a «14 días desde el
+ * primer cobro con importe» — no volver a la redacción antigua en ningún texto.
+ *
  * Esta URL es la que Stripe pide en Settings › Public details › Terms of service.
  * Sin ella, el checkout rechaza `consent_collection[terms_of_service]=required`
  * y /comprar devuelve un 500.
@@ -15,7 +20,7 @@ import { url } from '../lib/site'
  * Al cambiar el texto hay que subir CONDICIONES_VERSION en server/src/index.js,
  * o no se sabrá qué versión aceptó cada cliente.
  */
-const actualizado = '17 de septiembre de 2026'
+const actualizado = '24 de septiembre de 2026'
 ---
 
 <Base
@@ -41,8 +46,8 @@ const actualizado = '17 de septiembre de 2026'
         </p>
         <p>
           Estas condiciones regulan la descarga y el uso de echo y, si te suscribes, la
-          suscripción. Al instalar echo aceptas los apartados 7 a 12; al suscribirte aceptas
-          además los apartados 4 a 6.
+          suscripción. Al instalar echo aceptas los apartados 8 a 13; al suscribirte aceptas
+          además los apartados 4 a 7.
         </p>
 
         <h2>2. Qué es echo y qué necesitas para usarlo</h2>
@@ -96,20 +101,27 @@ const actualizado = '17 de septiembre de 2026'
         <h2>5. Precio, pago y renovación</h2>
         <ul>
           <li>
-            La suscripción cuesta <strong>12 € al año, IVA incluido</strong>, y vale para
-            <strong>hasta tres Macs</strong> tuyos.
+            La suscripción tiene <strong>dos modalidades, a elegir: 3 € al mes o 12 € al
+            año</strong>, IVA incluido en las dos. Cualquiera de ellas vale para <strong>hasta
+            tres Macs</strong> tuyos; la única diferencia es el periodo y el precio.
           </li>
           <li>El pago lo procesa <strong>Stripe</strong>. No vemos ni guardamos los datos de tu tarjeta.</li>
           <li>
-            <strong>La suscripción se renueva automáticamente</strong> cada año, al mismo precio,
-            salvo que la canceles antes. Si vamos a subir el precio, te avisamos por correo
-            <strong>con al menos 30 días</strong> de antelación; si no te vale, cancelas antes de
-            la renovación.
+            <strong>La suscripción se renueva automáticamente al final de cada periodo</strong>
+            —cada mes o cada año, según la modalidad— al mismo precio, salvo que la canceles
+            antes. Si vamos a subir el precio, te avisamos por correo <strong>con al menos 30
+            días</strong> de antelación; si no te vale, cancelas antes de la renovación.
           </li>
           <li>
-            <strong>Puedes cancelar cuando quieras</strong>, sin dar explicaciones, desde Ajustes ›
-            Licencia, que te lleva al portal de Stripe. Al cancelar, echo te sigue funcionando
-            hasta el final del periodo que ya has pagado; no hay penalización ni permanencia.
+            <strong>Puedes cambiar de modalidad cuando quieras</strong> —de mensual a anual o al
+            revés— desde Ajustes › Licencia, que te lleva al portal de Stripe. El cambio se
+            aplica con prorrateo: la parte del periodo que ya has pagado y no has consumido se
+            descuenta del precio nuevo.
+          </li>
+          <li>
+            <strong>Puedes cancelar cuando quieras</strong>, sin dar explicaciones, desde el mismo
+            portal. Al cancelar, echo te sigue funcionando hasta el final del periodo que ya has
+            pagado; no hay penalización ni permanencia.
           </li>
           <li>
             Si un cobro falla, te avisamos e intentamos cobrarlo de nuevo. Si sigue sin poder
@@ -132,13 +144,64 @@ const actualizado = '17 de septiembre de 2026'
         </p>
         <p>
           <strong>Con independencia de lo anterior, te damos nuestra propia garantía de
-          devolución:</strong> si en los primeros 14 días desde el cobro echo no te convence,
-          escríbenos a <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> y te devolvemos
-          el dinero íntegro, sin preguntas. Nos parece justo, porque antes has tenido 14 días de
-          prueba para decidirlo.
+          devolución:</strong> si echo no te convence, escríbenos a
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> dentro de los <strong>14
+          días siguientes al primer cobro con importe</strong> —el primero en el que pagas
+          algo; si tu primer cobro fue de 0 € por un descuento, cuenta el primero de verdad— y
+          te lo devolvemos íntegro, sin preguntas. La garantía cubre <strong>solo ese primer
+          cobro</strong>: las renovaciones no se devuelven, pero puedes cancelar cuando quieras
+          y echo te sigue funcionando hasta el final del periodo que ya has pagado. Nos parece
+          justo, porque antes has tenido 14 días de prueba para decidirlo.
         </p>
 
-        <h2>7. Tu licencia de uso</h2>
+        <h2>7. Programa de invitaciones</h2>
+        <p>
+          Si tienes una suscripción de echo activa contratada a través de Stripe, puedes invitar
+          a otras personas con un código propio, que se crea desde Ajustes › Invita a un amigo.
+        </p>
+        <ul>
+          <li>
+            <strong>Qué gana tu invitado:</strong> un descuento de <strong>3 € en su primer
+            cobro</strong>. Si elige la modalidad mensual, su primer mes le sale gratis.
+          </li>
+          <li>
+            <strong>Qué ganas tú:</strong> <strong>3 € de saldo</strong> en tu cuenta de cliente
+            de Stripe por cada invitado que llega a pagar. El saldo se descuenta solo de tus
+            siguientes facturas y se acumula.
+          </li>
+          <li>
+            <strong>Cuándo se abona:</strong> 14 días después del primer cobro con importe de tu
+            invitado, siempre que ese cobro no se haya devuelto. Coincide con su garantía de
+            devolución de §6: el premio se abona cuando el pago ya es firme.
+          </li>
+          <li>
+            <strong>Tope:</strong> como máximo <strong>12 invitaciones premiadas por año
+            natural</strong> por persona.
+          </li>
+        </ul>
+        <p>Reglas del programa:</p>
+        <ul>
+          <li>
+            <strong>El saldo no tiene valor en dinero.</strong> Solo sirve como descuento en
+            facturas de echo: no se puede canjear por efectivo, transferir ni ceder a otra
+            persona. Si tu suscripción termina, el saldo que no hayas consumido se pierde.
+          </li>
+          <li>
+            <strong>El código es para invitar a otras personas.</strong> La autoinvitación
+            —usar tu propio código, o invitarte a ti mismo con otro correo, otro equipo tuyo o
+            la misma tarjeta— <strong>anula el premio</strong>, y podemos anular también los
+            premios obtenidos con cualquier otro uso fraudulento o abusivo del programa y
+            excluir de él a quien lo haga.
+          </li>
+          <li>
+            <strong>Podemos modificar o terminar el programa</strong>, avisándolo en la web y en
+            la aplicación <strong>con al menos 15 días de antelación</strong>. Terminarlo no
+            afecta a lo ya ganado: conservas el saldo ya abonado y los premios de invitados que
+            ya hubieran hecho su primer pago con importe antes de esa fecha.
+          </li>
+        </ul>
+
+        <h2>8. Tu licencia de uso</h2>
         <p>
           No te vendemos el software: te damos una <strong>licencia de uso personal, no exclusiva,
           intransferible y revocable</strong> para instalar y usar echo en hasta tres Macs que
@@ -156,7 +219,7 @@ const actualizado = '17 de septiembre de 2026'
           de este apartado limita esos derechos.
         </p>
 
-        <h2>8. Software de terceros y marcas</h2>
+        <h2>9. Software de terceros y marcas</h2>
         <p>
           echo incorpora <strong>FluidAudio</strong>, con licencia Apache 2.0, y utiliza el modelo
           de reconocimiento <strong>Parakeet TDT 0.6b v3 de NVIDIA</strong>, con licencia
@@ -169,7 +232,7 @@ const actualizado = '17 de septiembre de 2026'
           NVIDIA ni Apple; sus marcas se citan únicamente para describir con qué funciona echo.
         </p>
 
-        <h2>9. Actualizaciones</h2>
+        <h2>10. Actualizaciones</h2>
         <p>
           echo comprueba periódicamente si hay una versión nueva y puede instalarla. Mientras tu
           suscripción esté activa te proporcionaremos las actualizaciones necesarias para que echo
@@ -178,7 +241,7 @@ const actualizado = '17 de septiembre de 2026'
           ofrecemos, no respondemos de la falta de conformidad que se deba únicamente a eso.
         </p>
 
-        <h2>10. Si Anthropic u OpenAI cambian las reglas</h2>
+        <h2>11. Si Anthropic u OpenAI cambian las reglas</h2>
         <p>
           El pulido depende de servicios de terceros que no controlamos. Pueden cambiar sus
           condiciones, sus precios o su disponibilidad, o dejar de permitir este uso.
@@ -191,7 +254,7 @@ const actualizado = '17 de septiembre de 2026'
           puedes resolver la suscripción y te devolvemos la parte proporcional no consumida.
         </p>
 
-        <h2>11. Garantía legal de conformidad</h2>
+        <h2>12. Garantía legal de conformidad</h2>
         <p>
           Respondemos ante ti de la falta de conformidad de echo durante <strong>toda la vigencia
           de tu suscripción</strong>, conforme a los artículos 115 y siguientes del texto refundido
@@ -200,7 +263,7 @@ const actualizado = '17 de septiembre de 2026'
           que hace, escríbenos a <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
         </p>
 
-        <h2>12. Responsabilidad</h2>
+        <h2>13. Responsabilidad</h2>
         <p>
           Respondemos de los daños y perjuicios previsibles que te causemos por incumplir estas
           condiciones.
@@ -224,7 +287,7 @@ const actualizado = '17 de septiembre de 2026'
           </li>
         </ul>
 
-        <h2>13. Suspensión y terminación</h2>
+        <h2>14. Suspensión y terminación</h2>
         <p>
           Podemos suspender o terminar tu licencia si no se paga la suscripción o si usas echo de
           una forma que infrinja estas condiciones o la ley. Te avisaremos antes y te daremos un
@@ -232,7 +295,7 @@ const actualizado = '17 de septiembre de 2026'
           terminar cuando quieras cancelando la suscripción y desinstalando echo.
         </p>
 
-        <h2>14. Cambios en estas condiciones</h2>
+        <h2>15. Cambios en estas condiciones</h2>
         <p>
           Podemos modificarlas por motivos legales, técnicos o de funcionamiento del servicio. Te
           avisaremos por correo <strong>con al menos 30 días</strong> de antelación. Si los cambios
@@ -240,13 +303,13 @@ const actualizado = '17 de septiembre de 2026'
           proporcional no consumida.
         </p>
 
-        <h2>15. Tus datos</h2>
+        <h2>16. Tus datos</h2>
         <p>
           Qué tratamos, por qué y cómo ejercer tus derechos está en la
           <a href={url('/privacidad')}>política de privacidad</a>.
         </p>
 
-        <h2>16. Ley aplicable y reclamaciones</h2>
+        <h2>17. Ley aplicable y reclamaciones</h2>
         <p>
           Estas condiciones se rigen por la <strong>ley española</strong>. Si eres consumidor,
           conservas el derecho a reclamar ante los juzgados y tribunales de tu propio domicilio, y
