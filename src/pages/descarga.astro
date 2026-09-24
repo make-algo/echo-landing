@@ -27,7 +27,7 @@ import { servidor, url } from '../lib/site'
  * aplica desde que se instala, aunque nunca se pague.
  */
 const precio = '12 € al año, IVA incluido'
-const version = '1.0.2'
+const version = '1.0.4'
 // El instalador se llama como la marca, en minúscula. La 1.0.1 es la única que
 // quedó subida con el nombre viejo y no se renombra: renombrar un asset publicado
 // rompe el enlace que circula y el canal de actualizaciones de quien aún no se ha
@@ -36,7 +36,7 @@ const version = '1.0.2'
 // bien solo y esta excepción se puede borrar.
 const archivo = `${version === '1.0.1' ? 'Echo' : 'echo'}-${version}.dmg`
 const tamanoMB = '13,1'
-const sha256 = '13e8352aef60a4a0b92db35642fa145b95af708a091577f64692dc4fe7ce0e67'
+const sha256 = 'd193ac33b19e2d48b4fc3497224ca6d10867531dfb8c4fd7571dd367f544793e'
 const descargaUrl = `${servidor}/descargar?v=${version}`
 ---
 
