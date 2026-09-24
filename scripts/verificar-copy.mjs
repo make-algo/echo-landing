@@ -101,7 +101,7 @@ const ORDEN = [
   ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
   // El espacio antes de la coma es el hueco que deja `visible()` al quitar el
   // `</strong>` que cierra «14 días gratis» — no hay hueco real en el HTML.
-  ['condiciones bajo el CTA · MAK-244', '14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.'],
+  ['condiciones bajo el CTA · MAK-244/MAK-263', '14 días gratis , luego 3 € al mes o 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.'],
   ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas cuatro cosas no las hace'],
@@ -164,8 +164,8 @@ const INNEGOCIABLES = [
   ],
   [
     // Mismo hueco artificial de `visible()` explicado junto a `ORDEN` arriba.
-    'MAK-244 · condiciones en una línea bajo el CTA',
-    `14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.`,
+    'MAK-244/MAK-263 · condiciones en una línea bajo el CTA',
+    `14 días gratis , luego 3 € al mes o 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.`,
   ],
   [
     'MAK-247 · paso 1 «Se transcribe en tu Mac»',
@@ -340,9 +340,10 @@ for (const [ruta, fichero] of RUTAS) {
       if (!texto.includes(celda)) mal(ruta, `falta la celda «${celda}» de la comparativa`)
   }
 
-  // --- MAK-249: cuatro preguntas frecuentes, ni una más.
+  // --- MAK-249 (ampliado en MAK-263 con la FAQ de invitaciones): cinco
+  //     preguntas frecuentes, ni una más.
   const preguntas = (html.match(/<details class="qa">/g) ?? []).length
-  if (preguntas !== 4) mal(ruta, `las preguntas frecuentes son ${preguntas} y hacen falta cuatro`)
+  if (preguntas !== 5) mal(ruta, `las preguntas frecuentes son ${preguntas} y hacen falta cinco`)
 
   // --- El árbol de accesibilidad: sin las capas decorativas, el copy aprobado
   //     sigue entero, seguido y en el orden del argumento.
@@ -486,9 +487,16 @@ else console.log(`ok  requisito · las ${paginas.length} páginas piden macOS ${
 const portada = readFileSync('dist/index.html', 'utf8')
 const desdeCTA = portada.indexOf('<a class="btn" href="/descarga">')
 if (desdeCTA < 0) fallos.push('no hay CTA de descarga en el hero: no se puede comprobar el precio')
-else if (!/12\s*€\s*al año/.test(visible(portada.slice(desdeCTA, desdeCTA + 800))))
-  fallos.push('el precio ya no aparece junto al primer botón (se habrá quedado solo en la FAQ)')
-else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
+else {
+  const cercaDelCTA = visible(portada.slice(desdeCTA, desdeCTA + 800))
+  if (!/12\s*€\s*al año/.test(cercaDelCTA))
+    fallos.push('el precio anual ya no aparece junto al primer botón (se habrá quedado solo en la FAQ)')
+  else console.log('ok  precio · «12 € al año» va junto al CTA del hero')
+  // MAK-263: el mensual se añade junto al anual, no lo sustituye.
+  if (!/3\s*€\s*al mes/.test(cercaDelCTA))
+    fallos.push('MAK-263: el precio mensual ya no aparece junto al primer botón')
+  else console.log('ok  MAK-263 · «3 € al mes» va junto al CTA del hero')
+}
 
 // --- MAK-230/MAK-244 · la cifra y su fuente siguen juntas, y las dos en el hero.
 //
@@ -798,6 +806,44 @@ else {
   if (!privacidadTexto.includes('Si usas el programa de invitaciones.'))
     fallos.push('MAK-257: /privacidad no lleva el párrafo del programa de invitaciones')
   else console.log('ok  MAK-257 · /privacidad lleva el párrafo del programa de invitaciones')
+}
+
+// --- MAK-263 · los dos precios coinciden en todas las páginas. Cada comprobación
+//     literal de arriba mira una sola página o una sola frase; esta recorre TODAS
+//     las páginas construidas y compara cualquier cifra «€ al mes» / «€ al año»
+//     contra las dos aprobadas — si una página se queda con un precio antiguo o
+//     inventa uno distinto, se cuela sin que ninguna comprobación puntual lo note.
+{
+  const PRECIO_MENSUAL = '3 € al mes'
+  const PRECIO_ANUAL = '12 € al año'
+  const inconsistentes = []
+  for (const f of paginas) {
+    const texto = visible(readFileSync(f, 'utf8'))
+    for (const m of texto.matchAll(/\d+(?:,\d+)?\s*€\s*al\s*mes/g))
+      if (m[0] !== PRECIO_MENSUAL) inconsistentes.push(`${f}: «${m[0]}» (esperado «${PRECIO_MENSUAL}»)`)
+    for (const m of texto.matchAll(/\d+(?:,\d+)?\s*€\s*al\s*año/g))
+      if (m[0] !== PRECIO_ANUAL) inconsistentes.push(`${f}: «${m[0]}» (esperado «${PRECIO_ANUAL}»)`)
+  }
+  if (inconsistentes.length) fallos.push(`MAK-263: precios inconsistentes entre páginas: ${inconsistentes.join(', ')}`)
+  else
+    console.log(
+      `ok  MAK-263 · «${PRECIO_MENSUAL}» y «${PRECIO_ANUAL}» son iguales en las ${paginas.length} páginas`
+    )
+}
+
+// --- MAK-263 · ninguna página dice ya «suscripción anual» como si fuera la
+//     única opción: desde el plan mensual, esa frase deja fuera la mitad del
+//     experimento (D1). No se prohíbe la palabra «anual» —condiciones necesita
+//     nombrar la modalidad—, solo la redacción que la presenta como la única.
+{
+  const soloAnual = []
+  for (const f of paginas) {
+    const texto = visible(readFileSync(f, 'utf8'))
+    if (/\buna suscripción anual\b/i.test(texto)) soloAnual.push(f)
+  }
+  if (soloAnual.length)
+    fallos.push(`MAK-263: «suscripción anual» aparece como única opción en: ${soloAnual.join(', ')}`)
+  else console.log('ok  MAK-263 · ninguna página dice «suscripción anual» como única opción')
 }
 
 if (fallos.length) {

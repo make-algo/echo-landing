@@ -63,9 +63,11 @@ export const apertura = {
      * gris del resto de la línea no se lee, así que sube a tinta plena. La
      * frase sigue siendo una y seguida en el HTML: nada se mete en medio.
      */
+    /** MAK-263: se añade el mensual junto al anual (experimento D1). «12 €
+     * al año» sigue siendo la cifra que más convence y no se retira de aquí. */
     aviso: [
       { dato: true, texto: '14 días gratis' },
-      { dato: false, texto: ', luego 12 € al año.' },
+      { dato: false, texto: ', luego 3 € al mes o 12 € al año.' },
     ],
     maquina: 'Mac con Apple Silicon y macOS 14 o posterior.',
   },
@@ -209,10 +211,14 @@ export const contacto = {
 
 export const preguntas = {
   rotulo: 'Preguntas',
+  /**
+   * MAK-263: cinco preguntas, no cuatro — se añade la del programa de
+   * invitaciones (E7). `scripts/verificar-copy.mjs` comprueba el conteo.
+   */
   lista: [
     {
       p: '¿Cuánto cuesta?',
-      r: '14 días de prueba completa, sin tarjeta. Después, 12 € al año con IVA incluido, para hasta tres Macs. Se paga desde la propia app y se cancela cuando quieras.',
+      r: '14 días de prueba completa, sin tarjeta. Después, 3 € al mes o 12 € al año, IVA incluido, para hasta tres Macs: eliges la modalidad y puedes cambiarla cuando quieras desde la propia app. Se cancela cuando quieras, y el primer cobro con importe tiene 14 días de garantía de devolución.',
     },
     {
       p: '¿Necesito pagar Claude?',
@@ -225,6 +231,10 @@ export const preguntas = {
     {
       p: '¿Qué Mac necesito?',
       r: 'macOS 14 (Sonoma) o posterior y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
+    },
+    {
+      p: '¿Cómo funciona el programa de invitaciones?',
+      r: 'Con suscripción activa, invitas con tu propio código: quien se suscribe con él tiene 3 € de descuento en su primer cobro, y tú recibes 3 € de saldo en Stripe por cada invitado que llega a pagar, hasta un tope de 12 € al año. El saldo se descuenta solo de tu próxima factura.',
     },
   ],
 } as const

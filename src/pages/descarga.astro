@@ -28,8 +28,11 @@ import { ultimaVersion } from '../lib/ultima-version'
  * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí. Las
  * condiciones se enlazan desde aquí porque su apartado 7 —la licencia de uso—
  * aplica desde que se instala, aunque nunca se pague.
+ *
+ * MAK-263: dos modalidades, no una — 3 € al mes o 12 € al año (D1, experimento
+ * decidido por Álvaro). Las dos con IVA incluido, para hasta tres Macs.
  */
-const precio = '12 € al año, IVA incluido'
+const precio = '3 € al mes o 12 € al año, IVA incluido'
 const { version, archivo, mb: tamanoMB, sha256 } = ultimaVersion()
 const descargaUrl = `${servidor}/descargar?v=${version}`
 ---
