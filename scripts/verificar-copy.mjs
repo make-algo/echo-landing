@@ -421,11 +421,13 @@ function cargas(texto) {
   return urls
 }
 
-// `/og` no es una ruta de la landing: es el molde que `generar-og.mjs` capta
-// para `public/og.png` (MAK-231), no lleva `<Base>` y por tanto no lleva ni el
-// beacon de medición ni nada que dependa de esa capa. Fuera de las comprobaciones
-// que asumen que toda página construida es una página que alguien visita.
-const paginas = ficheros('dist', '.html').filter((f) => f !== 'dist/og/index.html')
+// `/og` y `/og-invitacion` no son rutas de la landing: son los moldes que
+// `generar-og.mjs` capta para `public/og*.png` (MAK-231/MAK-264), no llevan
+// `<Base>` y por tanto no llevan ni el beacon de medición ni nada que dependa
+// de esa capa. Fuera de las comprobaciones que asumen que toda página
+// construida es una página que alguien visita.
+const MOLDES_OG = ['dist/og/index.html', 'dist/og-invitacion/index.html']
+const paginas = ficheros('dist', '.html').filter((f) => !MOLDES_OG.includes(f))
 const hojas = ficheros('dist', '.css')
 const terceros = []
 for (const f of [...paginas, ...hojas]) {
@@ -666,27 +668,37 @@ else console.log('ok  robots.txt · el sitio es indexable')
 //     tarjeta de texto gris. `/og` es el molde que genera la imagen, no una
 //     ruta de la landing, así que queda fuera de esta comprobación.
 const RUTAS_OG = ['dist/index.html', 'dist/descarga/index.html', 'dist/privacidad/index.html',
-  'dist/aviso-legal/index.html', 'dist/condiciones/index.html', 'dist/404.html']
+  'dist/aviso-legal/index.html', 'dist/condiciones/index.html', 'dist/404.html', 'dist/invitacion/index.html']
 const sinOgImage = RUTAS_OG.filter((f) => !/<meta property="og:image" content="[^"]+"/.test(readFileSync(f, 'utf8')))
 if (sinOgImage.length) fallos.push(`falta og:image en: ${sinOgImage.join(', ')}`)
 else console.log(`ok  og:image · presente en las ${RUTAS_OG.length} rutas publicadas`)
 
-// `/og` sí se construye y se publica, y el `robots.txt` del sitio permite
-// todo: sin un `noindex` propio, el molde de la tarjeta acabaría indexado como
-// si fuera una página de echo. El sitemap no basta — no es una lista de lo
-// permitido, solo de lo sugerido.
-const ogHtml = readFileSync('dist/og/index.html', 'utf8')
-if (!/<meta name="robots" content="noindex/.test(ogHtml))
-  fallos.push('dist/og/index.html se publica sin noindex: el molde de la tarjeta es indexable')
-else console.log('ok  /og · el molde de la tarjeta lleva noindex y no se indexa')
+// `/invitacion` lleva su propia imagen (MAK-264), distinta de la del resto del
+// sitio: si alguna vez comparte `og.png` por error, el enlace de invitación
+// deja de anunciar el descuento y se pierde en silencio.
+const invitacionHtml = readFileSync('dist/invitacion/index.html', 'utf8')
+if (!/<meta property="og:image" content="[^"]*og-invitacion\.png"/.test(invitacionHtml))
+  fallos.push('/invitacion no usa su propia imagen (og-invitacion.png)')
+else console.log('ok  MAK-264 · /invitacion usa su propia imagen de Open Graph')
 
-if (!existsSync('public/og.png') && !existsSync('public/og.jpg'))
-  fallos.push('no existe public/og.png (ni public/og.jpg)')
-else {
-  const ogFichero = existsSync('public/og.png') ? 'public/og.png' : 'public/og.jpg'
-  const { size: ogSize } = statSync(ogFichero)
-  if (ogSize > 300 * 1024) fallos.push(`${ogFichero} supera 300 KB (${(ogSize / 1024).toFixed(1)} KB)`)
-  else console.log(`ok  ${ogFichero} · ${(ogSize / 1024).toFixed(1)} KB, por debajo de 300 KB`)
+// `/og` y `/og-invitacion` sí se construyen y se publican, y el `robots.txt`
+// del sitio permite todo: sin un `noindex` propio, los moldes de la tarjeta
+// acabarían indexados como si fueran páginas de echo. El sitemap no basta —
+// no es una lista de lo permitido, solo de lo sugerido.
+for (const molde of MOLDES_OG) {
+  const moldeHtml = readFileSync(molde, 'utf8')
+  if (!/<meta name="robots" content="noindex/.test(moldeHtml))
+    fallos.push(`${molde} se publica sin noindex: el molde de la tarjeta es indexable`)
+  else console.log(`ok  ${molde} · lleva noindex y no se indexa`)
+}
+
+for (const ogFichero of ['public/og.png', 'public/og-invitacion.png']) {
+  if (!existsSync(ogFichero)) fallos.push(`no existe ${ogFichero}`)
+  else {
+    const { size: ogSize } = statSync(ogFichero)
+    if (ogSize > 300 * 1024) fallos.push(`${ogFichero} supera 300 KB (${(ogSize / 1024).toFixed(1)} KB)`)
+    else console.log(`ok  ${ogFichero} · ${(ogSize / 1024).toFixed(1)} KB, por debajo de 300 KB`)
+  }
 }
 
 // --- MAK-229 · la píldora real, en sus dos sitios, y sin que un refactor se
@@ -798,6 +810,33 @@ else {
   if (!privacidadTexto.includes('Si usas el programa de invitaciones.'))
     fallos.push('MAK-257: /privacidad no lleva el párrafo del programa de invitaciones')
   else console.log('ok  MAK-257 · /privacidad lleva el párrafo del programa de invitaciones')
+}
+
+// --- MAK-264 · /invitacion: los dos bloques (con código y sin código) tienen
+//     que salir del build, el guion de invitado va con el esquema propio de la
+//     app y ninguna versión de la página baja de los 3 € prometidos. Como la
+//     página es estática, el código NUNCA puede quedar horneado en el HTML —
+//     lo escribe el script del navegador al vuelo — así que basta con que la
+//     plantilla del enlace no lleve ya un valor detrás de `code=`.
+const INVITACION = 'dist/invitacion/index.html'
+if (!existsSync(INVITACION)) fallos.push(`no existe ${INVITACION}`)
+else {
+  const invitacionHtml = readFileSync(INVITACION, 'utf8')
+  const invitacionTexto = visible(invitacionHtml)
+  if (!invitacionHtml.includes('id="invitacion-con-codigo"') || !invitacionHtml.includes('id="invitacion-sin-codigo"'))
+    fallos.push('MAK-264: /invitacion no tiene los dos bloques (con código y sin código)')
+  if (!/id="invitacion-con-codigo"[^>]*\shidden/.test(invitacionHtml))
+    fallos.push('MAK-264: el bloque con código no sale oculto por defecto (rompería sin JS o con `?c=` inválido)')
+  if (invitacionHtml.includes('id="invitacion-sin-codigo"') && /id="invitacion-sin-codigo"[^>]*\shidden/.test(invitacionHtml))
+    fallos.push('MAK-264: el bloque sin código sale oculto por defecto (la página se rompería sin JS)')
+  if (!invitacionHtml.includes("'echo://referral?code='"))
+    fallos.push('MAK-264: el script de /invitacion no construye el enlace echo://referral?code=')
+  if (/id="invitacion-ya-tengo"[^>]*href="echo:\/\/referral\?code=[^"#]/.test(invitacionHtml))
+    fallos.push('MAK-264: /invitacion lleva un código horneado en el HTML publicado (debería ser siempre estático)')
+  if (!invitacionTexto.includes('3 €'))
+    fallos.push('MAK-264: /invitacion no menciona los 3 € de descuento')
+  if (!fallos.some((f) => f.startsWith('MAK-264')))
+    console.log('ok  MAK-264 · /invitacion sale con los dos bloques, el enlace echo:// y sin código horneado')
 }
 
 if (fallos.length) {

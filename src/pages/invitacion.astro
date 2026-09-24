@@ -1,0 +1,136 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { url } from '../lib/site'
+import { invitacion } from '../content/copy'
+
+/**
+ * `/invitacion` (MAK-264): la página que recibe quien sigue el enlace de invitación de otra
+ * persona (E6/E8/E9 del plan mensual y referidos, docs/product/plan-mensual-y-referidos.md).
+ *
+ * El código de invitación viaja en `?c=AMIGO-XXXX` y esta página es estática (build sin
+ * servidor), así que no hay forma de leerlo al construir: lo lee un script propio en el
+ * navegador, sin cargar nada de fuera y sin cookies (CA-INV-1). El marcado sale del build ya con
+ * los dos bloques —con código y sin código— y el script solo decide cuál queda visible; así la
+ * página nunca se rompe si `?c=` falta o trae algo que no tiene forma de código (CA-INV-2): se
+ * queda en el estado «sin código», que explica el programa igual.
+ *
+ * El formato exacto de los códigos lo fija el Worker de invitaciones (MAK-259, todavía en
+ * `backlog`): aquí se valida con un patrón permisivo —letras, números y guiones, sin espacios ni
+ * html— porque lo único que esta página necesita saber es si hay ALGO con pinta de código, no
+ * validarlo contra el servidor.
+ *
+ * El beacon de visitas (en `Base.astro`) manda `location.pathname`, nunca `location.search`: el
+ * código no le llega aunque la URL lo lleve (CA-INV-3), sin que esta página tenga que hacer nada
+ * aparte.
+ */
+---
+
+<Base
+  title="Te invitan a echo — 3 € de descuento en tu primer cobro"
+  description="Alguien que ya usa echo te invita: con su código, tu primer cobro sale 3 € más barato."
+  path="/invitacion"
+  ogImage="/og-invitacion.png"
+  ogImageAlt="echo, dictado para Mac — 3 € de descuento con un código de invitación"
+>
+  <Header />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <p class="rubric">{invitacion.rotulo}</p>
+        <h1 style="font-size: var(--text-h2)">{invitacion.titular}</h1>
+        <p class="lead" style="margin-top: 12px;">{invitacion.entradilla}</p>
+
+        <div id="invitacion-con-codigo" hidden>
+          <p style="margin-top: 32px;">
+            <span class="rubric" style="margin-bottom: 4px;">{invitacion.conCodigo.etiqueta}</span
+            ><br />
+            <strong id="invitacion-codigo" class="codigo"></strong>
+          </p>
+          <p class="microcopy">{invitacion.conCodigo.explicacion}</p>
+          <p style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a class="btn" href={url('/descarga')}>{invitacion.conCodigo.ctaDescargar}</a>
+            <a class="btn btn--outline" id="invitacion-ya-tengo" href="#"
+              >{invitacion.conCodigo.ctaTengo}</a
+            >
+          </p>
+        </div>
+
+        <div id="invitacion-sin-codigo">
+          <p class="microcopy">{invitacion.sinCodigo.explicacion}</p>
+          <p style="margin-top: 24px;">
+            <a class="btn" href={url('/descarga')}>{invitacion.sinCodigo.ctaDescargar}</a>
+          </p>
+        </div>
+
+        <p class="microcopy" style="margin-top: 32px;">{invitacion.reciprocidad}</p>
+
+        <p class="microcopy">
+          Al instalar echo aceptas las
+          <a href={url('/condiciones')}>condiciones de uso y suscripción</a>, que incluyen el
+          programa de invitaciones.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+
+  <script is:inline>
+    // Lee `?c=` con lo que ya trae el navegador: sin `fetch`, sin cookies, sin
+    // localStorage y sin cargar nada de fuera. Si no hay parámetro o no tiene
+    // pinta de código, la página se queda como salió del build: el bloque
+    // «sin código» ya está visible y el «con código» ya está oculto.
+    ;(function () {
+      var CODIGO_VALIDO = /^[A-Za-z0-9-]{4,32}$/
+      var parametros
+      try {
+        parametros = new URLSearchParams(window.location.search)
+      } catch {
+        return
+      }
+      var crudo = parametros.get('c')
+      if (!crudo || !CODIGO_VALIDO.test(crudo)) return
+
+      var codigo = crudo.toUpperCase()
+      var conCodigo = document.getElementById('invitacion-con-codigo')
+      var sinCodigo = document.getElementById('invitacion-sin-codigo')
+      var valor = document.getElementById('invitacion-codigo')
+      var yaTengo = document.getElementById('invitacion-ya-tengo')
+      if (!conCodigo || !sinCodigo || !valor || !yaTengo) return
+
+      valor.textContent = codigo
+      yaTengo.setAttribute('href', 'echo://referral?code=' + encodeURIComponent(codigo))
+      sinCodigo.hidden = true
+      conCodigo.hidden = false
+    })()
+  </script>
+</Base>
+
+<style>
+  .codigo {
+    font: 500 var(--text-lead) / 1.2 var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+
+  .btn--outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 14px 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--color-ink);
+    font: 500 var(--text-body) / 1.2 var(--font-sans);
+    text-decoration: none;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+  .btn--outline:hover {
+    background: var(--color-paper-sunk);
+    border-color: var(--color-ink-3);
+  }
+</style>

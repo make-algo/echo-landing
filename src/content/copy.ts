@@ -236,6 +236,37 @@ export const pie = {
   privacidad: 'Privacidad',
 } as const
 
+/**
+ * `/invitacion` (MAK-264, E6/E8/E9): quien llega aquí viene de un enlace que le ha pasado alguien
+ * que ya usa echo. El código va en `?c=` y lo lee un script propio en el navegador — la página se
+ * construye estática, así que el HTML publicado nunca lleva un código concreto dentro; lo que
+ * cambia con o sin `?c=` es qué bloque queda visible.
+ *
+ * Precio y programa: condiciones aprobadas en `docs/legal/condiciones.md` §5/§7 (make-algo/echo#66).
+ */
+export const invitacion = {
+  rotulo: 'Invitación',
+  titular: 'Te invita alguien que ya usa echo',
+  /** Visible siempre, con o sin código: es el resumen del programa en una frase. */
+  entradilla:
+    'Con el código de quien te invita, tu primer cobro sale 3 € más barato. echo sigue teniendo 14 días de prueba gratis antes de eso.',
+  conCodigo: {
+    etiqueta: 'Tu código',
+    explicacion:
+      'Descarga echo y añádelo en Ajustes › Licencia antes de suscribirte, o pulsa «Ya tengo echo» si ya lo tienes instalado.',
+    ctaDescargar: 'Descargar echo',
+    ctaTengo: 'Ya tengo echo',
+  },
+  sinCodigo: {
+    explicacion:
+      'Este enlace no trae un código válido. Sin código, echo funciona igual: 14 días de prueba gratis y luego 3 € al mes o 12 € al año.',
+    ctaDescargar: 'Descargar echo',
+  },
+  /** Visible siempre: lo que gana quien invita, para que el enlace no parezca solo publicidad de echo. */
+  reciprocidad:
+    'Quien te invita gana 3 € de saldo en su suscripción cuando tu primer cobro queda hecho.',
+} as const
+
 export const saltar = 'Saltar al contenido'
 
 /**
