@@ -565,6 +565,61 @@ else if (!readFileSync(DESCARGA, 'utf8').includes(`<a class="btn" href="${SERVID
   fallos.push('el botón de /descarga no pasa por el contador: las descargas dejarían de medirse')
 else console.log('ok  medición · el botón de descarga pasa por el contador')
 
+// --- La web ofrece la versión que sirve el canal, no una anterior.
+//
+//     Esto pasó de verdad: /descarga llevaba la versión, el tamaño y el SHA-256
+//     copiados a mano, y durante tres días ofreció la 1.0.2 mientras el canal ya
+//     servía la 1.0.4. Quien llegaba por la web se descargaba una versión vieja
+//     y esperaba a que Sparkle le ofreciera las dos siguientes; nada falló, solo
+//     que nadie se acordó de tocar el `.astro`.
+//
+//     Desde entonces la página lo saca de `public/appcast.xml` y
+//     `public/descarga.json` (los escribe `publicar-actualizacion.sh` en el mismo
+//     commit, y ese commit despliega Pages). Lo que se comprueba aquí es el
+//     resultado en el HTML publicado: que sea de verdad la versión más nueva del
+//     canal, con su nombre de archivo y su hash. Si alguien vuelve a escribirla a
+//     mano, el despliegue falla en vez de quedarse atrás en silencio.
+const APPCAST = 'public/appcast.xml'
+const MANIFIESTO = 'public/descarga.json'
+if (!existsSync(APPCAST) || !existsSync(MANIFIESTO))
+  fallos.push(`faltan ${APPCAST} o ${MANIFIESTO}: la página no sabría qué versión ofrecer`)
+else {
+  const canal = readFileSync(APPCAST, 'utf8')
+    .split('<item>')
+    .slice(1)
+    .map((item) => ({
+      build: Number(item.match(/<sparkle:version>(\d+)</)?.[1]),
+      version: item.match(/<sparkle:shortVersionString>([^<]+)</)?.[1],
+      archivo: [...item.matchAll(/<enclosure\b[^>]*>/g)]
+        .map(([e]) => e)
+        .find((e) => !e.includes('sparkle:deltaFrom'))
+        ?.match(/url="([^"]+)"/)?.[1]
+        ?.split('/')
+        .pop(),
+    }))
+    .sort((a, b) => b.build - a.build)[0]
+  const manifiesto = JSON.parse(readFileSync(MANIFIESTO, 'utf8'))
+  const html = readFileSync(DESCARGA, 'utf8')
+  const esperado = [
+    [`echo ${canal.version}`, `la versión del canal (${canal.version})`],
+    [`?v=${canal.version}`, 'el botón con esa versión'],
+    [canal.archivo, `el nombre del instalador publicado (${canal.archivo})`],
+    [manifiesto.sha256, 'el SHA-256 de esa versión'],
+  ]
+  const ausentes = esperado.filter(([aguja]) => !aguja || !html.includes(aguja))
+  if (manifiesto.version !== canal.version)
+    fallos.push(
+      `${MANIFIESTO} va por la ${manifiesto.version} y el canal sirve la ${canal.version}: ` +
+        'el SHA-256 publicado no sería del archivo que se descarga'
+    )
+  else if (ausentes.length)
+    fallos.push(`/descarga no ofrece ${ausentes.map(([, q]) => q).join(', ')}`)
+  else
+    console.log(
+      `ok  versión · /descarga ofrece la ${canal.version} (build ${canal.build}), la del canal`
+    )
+}
+
 // Y que no se cuele una analítica de terceros por la puerta de atrás: la
 // comprobación de arriba mira atributos de carga, y un fragmento de Google
 // Analytics pegado en línea no tiene `src` que mirar.

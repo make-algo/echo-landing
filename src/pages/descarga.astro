@@ -3,16 +3,19 @@ import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
 import { servidor, url } from '../lib/site'
+import { ultimaVersion } from '../lib/ultima-version'
 
 /**
  * Mini landing de descarga (a petición directa de Álvaro). El .dmg no vive en
  * este repo: se sirve desde la release de larga vida «actualizaciones» de
  * este mismo repositorio público, la misma que alimenta el canal de
- * actualizaciones de Sparkle (`scripts/publicar-actualizacion.sh`, en el repo
- * de la app, sube ahí cada versión y poda las antiguas). Actualizar
- * `version`/`tamanoMB`/`sha256` en cada release que se quiera ofrecer aquí —
- * los tres salen de `gh release view actualizaciones --repo
- * make-algo/echo-landing --json assets`.
+ * actualizaciones de Sparkle.
+ *
+ * Versión, nombre del instalador, tamaño y SHA-256 no se escriben aquí: los
+ * saca `ultimaVersion()` de lo que el publicador deja en este repositorio
+ * (`public/appcast.xml` y `public/descarga.json`), así que al publicar una
+ * versión esta página se actualiza sola. Antes eran constantes a mano y la web
+ * ofreció la 1.0.2 mientras el canal ya servía la 1.0.4.
  *
  * El botón no apunta al .dmg: pasa por `/descargar` de nuestro servidor, que
  * cuenta y redirige. Es la única forma de saber cuánta gente descarga echo,
@@ -27,16 +30,7 @@ import { servidor, url } from '../lib/site'
  * aplica desde que se instala, aunque nunca se pague.
  */
 const precio = '12 € al año, IVA incluido'
-const version = '1.0.4'
-// El instalador se llama como la marca, en minúscula. La 1.0.1 es la única que
-// quedó subida con el nombre viejo y no se renombra: renombrar un asset publicado
-// rompe el enlace que circula y el canal de actualizaciones de quien aún no se ha
-// actualizado. El nombre se decide por versión —igual que en el Worker, que hace
-// lo mismo en `/descargar`—, así que al subir la versión de arriba esto sale ya
-// bien solo y esta excepción se puede borrar.
-const archivo = `${version === '1.0.1' ? 'Echo' : 'echo'}-${version}.dmg`
-const tamanoMB = '13,1'
-const sha256 = 'd193ac33b19e2d48b4fc3497224ca6d10867531dfb8c4fd7571dd367f544793e'
+const { version, archivo, mb: tamanoMB, sha256 } = ultimaVersion()
 const descargaUrl = `${servidor}/descargar?v=${version}`
 ---
 
