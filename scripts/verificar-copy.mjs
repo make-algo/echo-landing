@@ -766,6 +766,40 @@ const enSitemap = (sitemap.match(/<loc>([^<]*)<\/loc>/g) ?? []).length
 if (enSitemap !== 1) fallos.push(`el sitemap tiene ${enSitemap} URL y debería tener una`)
 else console.log('ok  sitemap · una sola URL')
 
+// --- MAK-257 · /condiciones publica el plan mensual, el anual y la garantía del
+//     primer cobro con importe (docs/legal/condiciones.md v2, make-algo/echo#66).
+//     La redacción antigua de la garantía («14 días desde el cobro», sin
+//     «primer») convertía la devolución en mensual con el plan nuevo: si vuelve
+//     a colarse, el despliegue se cae aquí en vez de a mano en la revisión.
+const CONDICIONES = 'dist/condiciones/index.html'
+if (!existsSync(CONDICIONES)) fallos.push(`no existe ${CONDICIONES}`)
+else {
+  const condicionesTexto = visible(readFileSync(CONDICIONES, 'utf8'))
+  const PRECIOS_CONDICIONES = ['3 € al mes', '12 € al año']
+  for (const precio of PRECIOS_CONDICIONES)
+    if (!condicionesTexto.includes(precio)) fallos.push(`MAK-257: /condiciones no dice «${precio}»`)
+  const GARANTIA = '14 días siguientes al primer cobro con importe'
+  if (!condicionesTexto.includes(GARANTIA)) fallos.push(`MAK-257: /condiciones no dice «${GARANTIA}»`)
+  if (/\d+\s*días\s+desde\s+el\s+cobro\b/i.test(condicionesTexto))
+    fallos.push('MAK-257: /condiciones vuelve a usar la garantía antigua («días desde el cobro», sin «primer»)')
+  if (!/programa de invitaciones/i.test(condicionesTexto))
+    fallos.push('MAK-257: /condiciones no menciona el programa de invitaciones (§7)')
+  if (condicionesTexto.includes(PRECIOS_CONDICIONES[0]) && condicionesTexto.includes(PRECIOS_CONDICIONES[1]))
+    console.log('ok  MAK-257 · /condiciones enseña los dos precios y la garantía del primer cobro con importe')
+}
+
+// --- MAK-257 · /privacidad recoge el párrafo del programa de invitaciones:
+//     a quien invita solo se le enseñan cifras de sus invitados, nunca datos
+//     personales suyos (registro-actividades.md, actividades 2 y 3).
+const PRIVACIDAD = 'dist/privacidad/index.html'
+if (!existsSync(PRIVACIDAD)) fallos.push(`no existe ${PRIVACIDAD}`)
+else {
+  const privacidadTexto = visible(readFileSync(PRIVACIDAD, 'utf8'))
+  if (!privacidadTexto.includes('Si usas el programa de invitaciones.'))
+    fallos.push('MAK-257: /privacidad no lleva el párrafo del programa de invitaciones')
+  else console.log('ok  MAK-257 · /privacidad lleva el párrafo del programa de invitaciones')
+}
+
 if (fallos.length) {
   console.error('\nFALLA la comprobación de copy:\n' + fallos.map((f) => `  ✗ ${f}`).join('\n'))
   process.exit(1)
