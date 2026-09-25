@@ -201,10 +201,14 @@ const INNEGOCIABLES_ES = [
 
 // --- MAK-274 (revisión): equivalente en inglés (docs/product/landing-copy-en.md,
 //     sección «Para verificar-copy.mjs en /en/»). El ejemplo de idiomas
-//     mezclados queda fuera a propósito: el documento aprobado deja su nota
-//     pendiente de un dictado real en macOS en inglés y no se puede fijar
-//     todavía (ver el comentario en `en.ts`).
+//     mezclados entra desde el 25-09-2026 con el resultado real del reconocedor
+//     de Apple en en-US (ver el comentario junto a la nota en `en.ts`); antes
+//     llevaba un marcador en español que se veía en la página publicada.
 const INNEGOCIABLES_EN = [
+  [
+    'MAK-245 · ejemplo de idiomas mezclados, sin marcador en español',
+    `«the demo with Iñaki is on jueves», not «the demo with Vineke is on Juebes».`,
+  ],
   [
     'CA-INT-1 · párrafo de privacidad',
     `Your voice never leaves your Mac. If you turn on polishing, the text —never the audio— goes to
@@ -717,6 +721,33 @@ if (!existsSync(DESCARGA)) fallos.push(`no existe ${DESCARGA}`)
 else if (!readFileSync(DESCARGA, 'utf8').includes(`<a class="btn" href="${SERVIDOR}/descargar?v=`))
   fallos.push('el botón de /descarga no pasa por el contador: las descargas dejarían de medirse')
 else console.log('ok  medición · el botón de descarga pasa por el contador')
+
+// --- /descarga en dos idiomas y en la MISMA URL (25-09-2026): un `/en/download`
+//     partiría en dos las métricas por ruta, así que el HTML lleva los dos
+//     bloques y un guion en línea elige. Se comprueba que estén los dos, que el
+//     inglés no lleve marcadores ni restos en español, que las dos versiones
+//     ofrezcan el mismo instalador y que ninguna descarga salte el contador.
+if (existsSync(DESCARGA)) {
+  const html = readFileSync(DESCARGA, 'utf8')
+  const antes = fallos.length
+  // Astro añade su `data-astro-cid-…` a los <div> porque la página lleva <style>.
+  const es = html.search(/<div data-lang="es"[^>]*>/)
+  const en = html.search(/<div data-lang="en"[^>]*>/)
+  if (es < 0 || en < 0) fallos.push('/descarga no lleva los dos bloques de idioma (data-lang="es" y data-lang="en")')
+  else {
+    const textoEn = visible(html.slice(en))
+    for (const resto of ['Descargar echo', 'Requiere macOS', 'Aviso legal', 'Condiciones', 'Privacidad', 'RESULTADO'])
+      if (textoEn.includes(resto)) fallos.push(`/descarga (bloque en inglés) todavía dice «${resto}»`)
+    for (const frase of ['Download echo', 'Requires macOS 14 or later', 'terms of use and subscription', 'privacy policy'])
+      if (!textoEn.includes(frase)) fallos.push(`/descarga (bloque en inglés) no dice «${frase}»`)
+    const botones = html.match(new RegExp(`<a class="btn" href="${SERVIDOR}/descargar\\?v=[^"]+"`, 'g')) ?? []
+    if (botones.length !== 2 || new Set(botones).size !== 1)
+      fallos.push(`/descarga debería tener dos botones de descarga iguales (uno por idioma) y tiene ${botones.length}`)
+    if (!/<script[^>]*>[\s\S]*document\.referrer[\s\S]*navigator\.language[\s\S]*<\/script>/.test(html))
+      fallos.push('/descarga no lleva el guion en línea que elige el idioma (referrer de /en/ o navegador en inglés)')
+  }
+  if (fallos.length === antes) console.log('ok  /descarga · dos idiomas en la misma URL, inglés sin restos en español y un solo instalador')
+}
 
 // --- /invitacion (MAK-261/E6): la página a la que apunta el enlace que la app
 //     da a quien invita. Tres cosas que no pueden romperse sin que nadie lo
