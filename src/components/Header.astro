@@ -1,6 +1,12 @@
 ---
 import { url } from '../lib/site'
-import { cabecera } from '../content/copy'
+import { DEFAULT_LOCALE, getCopy, type Locale } from '../i18n/copy'
+
+interface Props {
+  lang?: Locale
+}
+const { lang = DEFAULT_LOCALE } = Astro.props
+const { cabecera } = getCopy(lang)
 
 /**
  * Cabecera mínima: la marca en pantalla y un acceso permanente al alta.
@@ -10,12 +16,15 @@ import { cabecera } from '../content/copy'
  *
  * Pegajosa en las cinco rutas (MAK-231): el botón de descarga sigue visible
  * pasada la primera pantalla, sin volver arriba. El CSS vive en `global.css`.
+ *
+ * El logo lleva a la portada EN ESTE idioma (MAK-274); la descarga sigue
+ * yendo a `/descarga`, que todavía no existe en inglés.
  */
 ---
 
 <header class="top">
   <div class="wrap">
-    <a class="wordmark" href={url('/')}>{cabecera.marca}</a>
+    <a class="wordmark" href={url('/', lang)}>{cabecera.marca}</a>
     <a class="top__cta" href={url('/descarga')}>{cabecera.cta}</a>
   </div>
 </header>
