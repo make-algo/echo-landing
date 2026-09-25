@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
+import { url } from '../lib/site'
 
 /**
  * Texto legal íntegro. No se reescribe ni se resume.
@@ -19,6 +20,7 @@ import Header from '../components/Header.astro'
 <Base
   title="Aviso legal — echo, dictado para Mac"
   path="/aviso-legal"
+  translations={{ es: '/aviso-legal', en: '/legal-notice' }}
   ogImage="/og.png"
   ogImageAlt="echo, dictado para Mac que escribe limpio"
 >
@@ -73,5 +75,5 @@ import Header from '../components/Header.astro'
       </div>
     </div>
   </main>
-  <Footer />
+  <Footer otroIdiomaHref={url('/legal-notice', 'en')} />
 </Base>

@@ -1,0 +1,262 @@
+---
+import Base from '../../layouts/Base.astro'
+import Footer from '../../components/Footer.astro'
+import Header from '../../components/Header.astro'
+import { url } from '../../lib/site'
+
+/**
+ * Traducción de cortesía de `/privacidad`, párrafo a párrafo y sin resumir: la
+ * política española es la vinculante y el registro del art. 30 sigue viviendo
+ * en el repo de la app (docs/legal/registro-actividades.md). Si cambia la
+ * política en español, cambia esta traducción en el mismo commit.
+ */
+const actualizado = '24 September 2026'
+---
+
+<Base
+  title="Privacy policy — echo, dictation for Mac"
+  description="Privacy policy of echo, the dictation app for Mac by Make Algo SL."
+  path="/privacy"
+  lang="en"
+  translations={{ es: '/privacidad', en: '/privacy' }}
+  ogImage="/og.png"
+  ogImageAlt="echo, dictation for Mac that writes it clean"
+>
+  <Header lang="en" />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Privacy policy</h1>
+        <p class="microcopy">
+          This is a courtesy translation. The <a href={url('/privacidad')}>Spanish version</a> is
+          the binding one; if the two differ, the Spanish text prevails.
+        </p>
+
+        <h2>Who is the data controller</h2>
+        <p>
+          Make Algo SL, Tax ID (NIF) B88875018, Calle General Pardiñas, 114 — 28006 Madrid, Spain.
+          Email: <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
+        </p>
+        <p>
+          There are three moments when we process your data, and they are different: when you write
+          to us, when you subscribe and when you use echo on your Mac. They are set out separately
+          because they have nothing in common. Apart from those is what only happens if you
+          authorise it: the app's usage metrics.
+        </p>
+
+        <h2>If you write to us</h2>
+        <p>
+          <strong>What we collect.</strong> Your email address and whatever you tell us in the
+          message. The email opens with the subject already filled in and two optional questions in
+          the body —what you use echo for and whether you pay for Claude or ChatGPT—, but you decide
+          what you answer and what you add. This website has no form and no database behind it: the
+          message arrives in our mailbox and stays there.
+        </p>
+        <p>
+          <strong>What for.</strong> To read and answer your message, and to use what you tell us to
+          understand how echo is used and improve it. Nothing else: no mailing list, we won't write
+          to you afterwards, no newsletter, no advertising, no sharing your data with third parties
+          and no automated decisions with legal effects on you.
+        </p>
+        <p>
+          <strong>Legal basis.</strong> Your consent (Art. 6(1)(a) GDPR), which you give by the very
+          act of writing to us. You can withdraw it at any time by writing to
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>; withdrawing it does not affect
+          the processing carried out until then.
+        </p>
+        <p>
+          <strong>How long we keep it.</strong> Just long enough to reply and, at most, 12 months
+          from your last message. If you ask us to delete it sooner, we delete it.
+        </p>
+
+        <h2>If you subscribe to echo</h2>
+        <p>
+          <strong>What we collect.</strong> Your email address, the licence key we issue to you, an
+          identifier of each Mac where you activate it, the activation dates and the record that
+          you accepted the terms when purchasing. <strong>We never see or store your card
+          details</strong>: Stripe processes the payment from start to finish.
+        </p>
+        <p>
+          The Mac identifier is a cryptographic digest of its internal serial number: it doesn't
+          contain your name or say who you are, but it is tied to your licence, so we treat it as
+          personal data and not as anonymous data.
+        </p>
+        <p>
+          <strong>What for.</strong> To issue your licence, so that echo can check it is still
+          valid, to limit each key to the number of Macs you subscribed for, to help you if there is
+          a problem, and to meet our accounting and tax obligations.
+        </p>
+        <p>
+          <strong>Legal basis.</strong> The performance of our contract with you (Art. 6(1)(b)
+          GDPR). The record of your acceptance of the terms and the invoicing also rest on
+          compliance with legal obligations (Art. 6(1)(c) GDPR).
+        </p>
+        <p>
+          <strong>How long we keep it.</strong> For as long as you have the subscription and,
+          afterwards, for the periods required by tax and commercial law, which run up to six years.
+          That is why, if you ask for erasure during that period, what we do is
+          <strong>block your data</strong> —it is taken out of use and kept available only for the
+          tax authorities or a court— and erase it when the period ends. This is what Article 32 of
+          the Spanish Data Protection Act (LOPDGDD) allows.
+        </p>
+        <p>
+          <strong>If you only try echo and don't buy.</strong> We keep only that Mac's identifier
+          and the date the trial started, so that the 14 days can't be restarted by reinstalling.
+          Basis: our legitimate interest in the free trial working as advertised (Art. 6(1)(f)
+          GDPR); the data doesn't identify you on its own and isn't used for anything else.
+        </p>
+        <p>
+          <strong>If you use the referral programme.</strong> When someone subscribes with your
+          code, we store that relationship (their subscription, your key and the code) to apply
+          their discount, credit your balance and check there is no cheating (for example, inviting
+          yourself with another email address or the same card). Of your invitees you will only see
+          figures: how many people have used your code and how many rewards you have earned. We will
+          never show you their email, their name or any other data, nor show them anything of yours.
+          If you save an invitation code during the free trial, we remember it together with your
+          Mac's identifier so we can apply the discount if you subscribe.
+        </p>
+
+        <h2>When you use echo on your Mac</h2>
+        <p>
+          <strong>Your voice never leaves your computer.</strong> Speech recognition runs entirely
+          on your Mac, offline.
+        </p>
+        <p>
+          <strong>If you turn on AI polishing, the transcribed text does leave</strong>, but not
+          towards us: echo runs on your Mac the official Anthropic or OpenAI application, which
+          sends that text <strong>with your own account</strong>, just as if you had pasted it into
+          their chat yourself. We don't see it, receive it or store it. That transfer is governed by
+          the privacy policy of <a
+            href="https://www.anthropic.com/legal/privacy"
+            rel="noopener">Anthropic</a
+          > or <a href="https://openai.com/policies/privacy-policy" rel="noopener">OpenAI</a>,
+          depending on which you use. If you'd rather nothing leaves, turn polishing off: echo keeps
+          working.
+        </p>
+        <p>
+          <strong>echo checks for new versions.</strong> To do so it requests, every few hours, a
+          file hosted on this same website, which gives our hosting provider your IP address and the
+          version you have installed. That information doesn't reach us, and you can turn off the
+          automatic check in Settings.
+        </p>
+        <p>
+          <strong>Recordings stay on your Mac.</strong> echo can save the audio of your dictations
+          so that you can compare recognition engines, but it <strong>comes turned off</strong> and,
+          if you turn it on, those files don't leave your computer. The same goes for the activity
+          log that echo writes in your logs folder.
+        </p>
+
+        <h2>App usage metrics (only if you say yes)</h2>
+        <p>
+          <strong>We ask you when you set up echo, with two buttons and nothing pre-selected.</strong>
+          If you say no, or don't answer, no identifier is created and nothing is sent: you don't
+          appear in any record of ours. You can change your mind at any time in Settings › Usage
+          metrics.
+        </p>
+        <p>
+          <strong>What we count if you accept.</strong> Which setup steps you have completed and
+          where you stopped, whether you reached your first dictation, and <strong>how many</strong>
+          dictations, polishes and errors you make per day. Also the echo version, the macOS
+          version, which recognition engine you use and which account you polish with. It is sent
+          once at launch and once an hour, in a batch.
+        </p>
+        <p>
+          <strong>What we never count.</strong> What you dictate, the audio, which app you paste
+          the text into, your window titles and your IP address. The list of what can be sent is
+          closed both in the app and on our server, and anything not on it is discarded on arrival.
+          The rule we follow to decide whether something can be measured is: would it allow
+          reconstructing what someone dictated or where they pasted it? If the answer is yes, it
+          isn't measured.
+        </p>
+        <p>
+          <strong>The identifier is pseudonymous, not anonymous.</strong> It's a random number
+          created when you accept; it doesn't derive from your machine or its serial number, and it
+          is <strong>never linked</strong> to your licence's Mac identifier or to your email. But it
+          stays with that installation over time —it's what lets us see whether people still use
+          echo weeks later—, so we treat it as personal data and don't sell it to you as anonymous.
+        </p>
+        <p>
+          <strong>Legal basis.</strong> Your consent (Art. 6(1)(a) GDPR).
+          <strong>Withdrawing it isn't just stopping the sending:</strong> when you turn it off,
+          echo asks our server to delete what that installation had sent, and it is deleted. What
+          remains are counts with no identifier in them, because by then they are nobody's data.
+        </p>
+        <p>
+          <strong>How long we keep it.</strong> For as long as the product exists or until you
+          withdraw consent, whichever comes first.
+        </p>
+
+        <h2>Who else processes your data</h2>
+        <p>We work with four providers, each for one thing:</p>
+        <ul>
+          <li>
+            <strong>GitHub, Inc.</strong> (United States) hosts this website and the update feed.
+            Like any hosting, it processes the technical data of your visit —for instance, the IP
+            address— to serve the pages and protect them.
+          </li>
+          <li>
+            <strong>Google</strong> (United States) provides the email service our mailbox runs on.
+            Your message is sent by your own email program, with your provider.
+          </li>
+          <li>
+            <strong>Cloudflare, Inc.</strong> (United States) provides the licence server. The
+            database is hosted in its European region.
+          </li>
+          <li>
+            <strong>Stripe</strong> processes payments and handles your card details, which never
+            pass through our systems.
+          </li>
+        </ul>
+        <p>
+          All four are certified under the <strong>EU–US Data Privacy Framework</strong>, the
+          European Commission's adequacy decision that covers those transfers (Art. 45 GDPR). Beyond
+          this, we don't share your data with anyone unless legally required.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+          You can ask us for access, rectification, erasure, objection, restriction of processing
+          and portability by writing to <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
+          We will reply within one month at most. If you are a customer, bear in mind the blocking
+          for tax retention periods explained above. If you believe we haven't handled it properly,
+          you can lodge a complaint with the Spanish Data Protection Agency (<a
+            href="https://www.aepd.es"
+            rel="noopener">www.aepd.es</a
+          >).
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+          This website uses no cookies, neither its own nor third parties'. If that ever changes, we
+          will update this policy and, where the law requires it, ask for your consent first.
+        </p>
+
+        <h2>How we count visits</h2>
+        <p>
+          We want to know how many people visit this website and how many download echo, so when
+          you open a page your browser tells us <strong>which page you opened, which website you
+          came from and from which country</strong>. With that we add one to a counter, and that's
+          it: we don't store your IP address, which browser you use, or any identifier that
+          distinguishes you from someone else, so <strong>we can't reconstruct your visit or
+          recognise you if you come back</strong>. Nor do we give it to anyone: the counter is on
+          our own server and this website loads no third-party scripts —no Google Analytics or
+          anything like it—.
+        </p>
+        <p>
+          We do this on the basis of legitimate interest (Art. 6(1)(f) GDPR): knowing whether the
+          website is any use, which is the minimum needed to improve it. As it is an aggregate
+          count, that interest doesn't compete with any right of yours, because no data that is
+          yours remains. The counters are kept for as long as the product exists.
+        </p>
+
+        <p>
+          The terms of service are in the
+          <a href={url('/terms', 'en')}>terms of use and subscription</a>.
+        </p>
+
+        <p><em>Last updated: {actualizado}.</em></p>
+      </div>
+    </div>
+  </main>
+  <Footer lang="en" otroIdiomaHref={url('/privacidad')} />
+</Base>

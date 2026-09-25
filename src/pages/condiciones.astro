@@ -27,6 +27,7 @@ const actualizado = '24 de septiembre de 2026'
   title="Condiciones de uso y suscripción — echo, dictado para Mac"
   description="Condiciones de uso y suscripción de echo, el dictado para Mac de Make Algo SL."
   path="/condiciones"
+  translations={{ es: '/condiciones', en: '/terms' }}
   ogImage="/og.png"
   ogImageAlt="echo, dictado para Mac que escribe limpio"
 >
@@ -324,5 +325,5 @@ const actualizado = '24 de septiembre de 2026'
       </div>
     </div>
   </main>
-  <Footer />
+  <Footer otroIdiomaHref={url('/terms', 'en')} />
 </Base>
