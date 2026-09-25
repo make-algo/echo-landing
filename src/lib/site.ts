@@ -20,10 +20,10 @@ export function url(path: string, lang: Locale = DEFAULT_LOCALE): string {
 
 /**
  * Las páginas legales, una ruta por idioma (sin el prefijo de idioma: se pasan
- * a `url(ruta, lang)`). Las inglesas son traducciones de cortesía de las
- * españolas, que son las vinculantes; existen para que todo lo que enlaza la
- * web en inglés esté en inglés, legales incluidas (los directorios
- * internacionales lo exigen: TAAFT devolvió la primera ficha por eso).
+ * a `url(ruta, lang)`). Las inglesas son traducciones literales de las
+ * españolas; existen para que todo lo que enlaza la web en inglés esté en
+ * inglés, legales incluidas (los directorios internacionales lo exigen: TAAFT
+ * devolvió la primera ficha por eso).
  */
 export const RUTAS_LEGALES: Record<Locale, { avisoLegal: string; condiciones: string; privacidad: string }> = {
   es: { avisoLegal: '/aviso-legal', condiciones: '/condiciones', privacidad: '/privacidad' },
