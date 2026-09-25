@@ -28,10 +28,21 @@ import { ultimaVersion } from '../lib/ultima-version'
  * suscripción (art. 97 TRLGDCU): si cambia en Stripe, cambia aquí. Las
  * condiciones se enlazan desde aquí porque su apartado 7 —la licencia de uso—
  * aplica desde que se instala, aunque nunca se pague.
+ *
+ * Dos idiomas en la MISMA URL (decisión de Gonzalo, 25-09-2026): las métricas
+ * de visitas y descargas van por ruta, y un `/en/download` las partiría en
+ * dos. El HTML lleva los dos bloques, `data-lang="es"` y `data-lang="en"`;
+ * el CSS enseña solo el español hasta que el guion en línea de arriba decide:
+ * inglés si se llega desde `/en/` (referrer de la misma web) o, sin referrer
+ * propio, si el navegador está en inglés. Sin JavaScript se ve el español,
+ * como siempre. El selector del pie alterna sin cambiar la URL.
  */
 const precio = '12 € al año o 3 € al mes, IVA incluido'
+const precioEn = '€12 a year or €3 a month, VAT included'
 const { version, archivo, mb: tamanoMB, sha256 } = ultimaVersion()
+const tamanoMBEn = tamanoMB.replace(',', '.')
 const descargaUrl = `${servidor}/descargar?v=${version}`
+const tituloEn = 'Download echo, dictation for Mac'
 ---
 
 <Base
@@ -41,54 +52,155 @@ const descargaUrl = `${servidor}/descargar?v=${version}`
   ogImage="/og.png"
   ogImageAlt="echo, dictado para Mac que escribe limpio"
 >
-  <Header />
-  <main id="contenido" class="section">
-    <div class="wrap">
-      <div class="prose">
-        <p class="rubric">Descarga</p>
-        <h1 style="font-size: var(--text-h2)">echo {version}, dictado para Mac</h1>
-        <p class="lead" style="margin-top: 12px;">
-          Dictado en el propio Mac: mantén ⌥, habla y suelta. El texto aparece pulido donde
-          estabas escribiendo.
-        </p>
+  {/*
+    Decide el idioma antes de que se pinte nada: va en línea y antes de los dos
+    bloques, y solo toca un atributo de <html> que el CSS de abajo lee. Nada se
+    carga de fuera (CA-NEG-9) y la URL no cambia (métricas por ruta).
+  */}
+  <script is:inline define:vars={{ tituloEn }}>
+    ;(function () {
+      try {
+        var raiz = document.documentElement
+        function aplicar(idioma) {
+          raiz.setAttribute('data-idioma', idioma)
+          raiz.lang = idioma
+          document.title = idioma === 'en' ? tituloEn : 'Descargar echo, dictado para Mac'
+          // El enlace «saltar al contenido» de <Base> apunta a #contenido: que
+          // sea el <main> del idioma que se ve.
+          var mains = document.querySelectorAll('[data-lang] main')
+          for (var i = 0; i < mains.length; i++) {
+            var propio = mains[i].closest('[data-lang]').getAttribute('data-lang') === idioma
+            if (propio) mains[i].id = 'contenido'
+            else mains[i].removeAttribute('id')
+          }
+        }
+        var origen = ''
+        try {
+          origen = document.referrer ? new URL(document.referrer).origin : ''
+        } catch (e) {}
+        var propio = origen === location.origin
+        var desdeIngles = propio && /^\/en(\/|$)/.test(new URL(document.referrer).pathname)
+        var navegadorIngles = /^en\b/i.test(navigator.language || '')
+        if (desdeIngles || (!propio && navegadorIngles)) aplicar('en')
+        document.addEventListener('click', function (e) {
+          var a = e.target && e.target.closest ? e.target.closest('a[hreflang]') : null
+          if (!a || a.getAttribute('href') !== '#') return
+          e.preventDefault()
+          aplicar(a.getAttribute('hreflang') === 'en' ? 'en' : 'es')
+        })
+      } catch (e) {}
+    })()
+  </script>
 
-        <p style="margin-top: 32px;">
-          <a class="btn" href={descargaUrl}>Descargar echo {version} (.dmg, {tamanoMB} MB)</a>
-        </p>
-        <p class="microcopy">
-          Requiere macOS 14 o posterior en Apple Silicon. Firmado y notarizado por Make Algo SL:
-          macOS no debería avisar de que viene de un origen no identificado.
-        </p>
-        <p class="microcopy">
-          14 días de prueba completa por Mac, sin tarjeta. Pasado ese plazo, {precio}, para hasta
-          tres Macs: se contrata y se cancela desde Ajustes › Licencia dentro de la propia app.
-        </p>
-        <p class="microcopy">
-          Al instalar echo aceptas las
-          <a href={url('/condiciones')}>condiciones de uso y suscripción</a>; qué datos tratamos y
-          cómo ejercer tus derechos, en la <a href={url('/privacidad')}>política de privacidad</a>.
-        </p>
-
-        <div class="divisor">
-          <h2>Instalar</h2>
-          <p>
-            Abre el <code>.dmg</code> y arrastra echo a Aplicaciones. Al abrirlo por primera vez,
-            un asistente comprueba los permisos (Accesibilidad y Micrófono), te deja elegir la tecla
-            para dictar y la prueba ahí mismo: si otra aplicación del Mac ya usa esa misma tecla, te
-            lo dice y eliges otra.
+  <div data-lang="es">
+    <Header />
+    <main id="contenido" class="section">
+      <div class="wrap">
+        <div class="prose">
+          <p class="rubric">Descarga</p>
+          <h1 style="font-size: var(--text-h2)">echo {version}, dictado para Mac</h1>
+          <p class="lead" style="margin-top: 12px;">
+            Dictado en el propio Mac: mantén ⌥, habla y suelta. El texto aparece pulido donde
+            estabas escribiendo.
           </p>
 
-          <h2 style="margin-top: 40px">Comprobar el archivo</h2>
-          <p>
-            SHA-256 de <code>{archivo}</code>:<br />
-            <code style="word-break: break-all;">{sha256}</code>
+          <p style="margin-top: 32px;">
+            <a class="btn" href={descargaUrl}>Descargar echo {version} (.dmg, {tamanoMB} MB)</a>
           </p>
+          <p class="microcopy">
+            Requiere macOS 14 o posterior en Apple Silicon. Firmado y notarizado por Make Algo SL:
+            macOS no debería avisar de que viene de un origen no identificado.
+          </p>
+          <p class="microcopy">
+            14 días de prueba completa por Mac, sin tarjeta. Pasado ese plazo, {precio}, para hasta
+            tres Macs: se contrata y se cancela desde Ajustes › Licencia dentro de la propia app.
+          </p>
+          <p class="microcopy">
+            Al instalar echo aceptas las
+            <a href={url('/condiciones')}>condiciones de uso y suscripción</a>; qué datos tratamos y
+            cómo ejercer tus derechos, en la <a href={url('/privacidad')}>política de privacidad</a>.
+          </p>
+
+          <div class="divisor">
+            <h2>Instalar</h2>
+            <p>
+              Abre el <code>.dmg</code> y arrastra echo a Aplicaciones. Al abrirlo por primera vez,
+              un asistente comprueba los permisos (Accesibilidad y Micrófono), te deja elegir la
+              tecla para dictar y la prueba ahí mismo: si otra aplicación del Mac ya usa esa misma
+              tecla, te lo dice y eliges otra.
+            </p>
+
+            <h2 style="margin-top: 40px">Comprobar el archivo</h2>
+            <p>
+              SHA-256 de <code>{archivo}</code>:<br />
+              <code style="word-break: break-all;">{sha256}</code>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
-  <Footer />
+    </main>
+    <Footer otroIdiomaHref="#" />
+  </div>
+
+  <div data-lang="en">
+    <Header lang="en" />
+    <main class="section">
+      <div class="wrap">
+        <div class="prose">
+          <p class="rubric">Download</p>
+          <h1 style="font-size: var(--text-h2)">echo {version}, dictation for Mac</h1>
+          <p class="lead" style="margin-top: 12px;">
+            Dictation on your own Mac: hold ⌥, talk, release. The text appears polished right
+            where you were typing.
+          </p>
+
+          <p style="margin-top: 32px;">
+            <a class="btn" href={descargaUrl}>Download echo {version} (.dmg, {tamanoMBEn} MB)</a>
+          </p>
+          <p class="microcopy">
+            Requires macOS 14 or later on Apple Silicon. Signed and notarized by Make Algo SL:
+            macOS shouldn't warn that it comes from an unidentified developer.
+          </p>
+          <p class="microcopy">
+            14-day full trial per Mac, no card needed. After that, {precioEn}, for up to three
+            Macs: you subscribe and cancel from Settings › Licence inside the app itself.
+          </p>
+          <p class="microcopy">
+            By installing echo you accept the
+            <a href={url('/terms', 'en')}>terms of use and subscription</a>; what data we process
+            and how to exercise your rights is in the
+            <a href={url('/privacy', 'en')}>privacy policy</a>.
+          </p>
+
+          <div class="divisor">
+            <h2>Install</h2>
+            <p>
+              Open the <code>.dmg</code> and drag echo to Applications. The first time you open it,
+              an assistant checks the permissions (Accessibility and Microphone), lets you choose
+              the key to dictate with and tests it right there: if another app on your Mac already
+              uses that key, it tells you and you pick another one.
+            </p>
+
+            <h2 style="margin-top: 40px">Check the file</h2>
+            <p>
+              SHA-256 of <code>{archivo}</code>:<br />
+              <code style="word-break: break-all;">{sha256}</code>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer lang="en" otroIdiomaHref="#" />
+  </div>
 </Base>
+
+<style is:global>
+  /* Un idioma a la vez, en la misma URL: el español es el que se ve sin
+     JavaScript; `data-idioma="en"` en <html> lo pone el guion de arriba. */
+  body [data-lang='en'] { display: none; }
+  html[data-idioma='en'] body [data-lang='en'] { display: block; }
+  html[data-idioma='en'] body [data-lang='es'] { display: none; }
+</style>
 
 <style>
   /* La descarga ya está resuelta arriba: lo que sigue es referencia de

@@ -8,13 +8,9 @@ import type { Copy } from './types'
  * copy de la portada al día; el resto de rutas (`/en/download`,
  * `/en/invitation`, 404, `og.astro`, `site.ts`) las rellena esa sub-issue.
  *
- * Pendiente antes de publicar de verdad (nota de la fila «Mixed languages»,
- * ver `comparativa.filas`): el ejemplo de idiomas mezclados necesita que
- * alguien dicte «the demo with Iñaki is on jueves» con el dictado de macOS EN
- * INGLÉS y pegue el resultado real donde ahora pone
- * `<RESULTADO REAL DEL DICTADO DE macOS>` — es exactamente lo que pide el
- * documento aprobado, y no es algo que se pueda inventar ni que un agente
- * pueda ejecutar (hace falta un Mac dictando de verdad).
+ * La nota de la fila «Mixed languages» (ver `comparativa.filas`) lleva el
+ * resultado real del reconocedor de Apple en inglés; cómo se obtuvo, junto a
+ * la propia nota.
  */
 export const en: Copy = {
   demo: {
@@ -124,7 +120,15 @@ export const en: Copy = {
         criterio: 'Mixed languages',
         macos: 'One fixed language per session',
         echo: 'Detects and mixes 25 languages',
-        nota: '«the demo with Iñaki is on jueves», not «<RESULTADO REAL DEL DICTADO DE macOS>».',
+        /**
+         * Resultado real del reconocedor de Apple en en-US (25-09-2026), por el
+         * mismo método con el que se obtuvo el ejemplo español («depploy del
+         * Back and and Get Have»): la frase sintetizada con `say -v Samantha` y
+         * transcrita con `echo --transcribe <aiff> en-US` (motor Apple). No es
+         * una persona dictando en macOS; si alguien lo dicta de verdad y sale
+         * otra cosa, se cambia por eso.
+         */
+        nota: '«the demo with Iñaki is on jueves», not «the demo with Vineke is on Juebes».',
       },
       {
         criterio: 'Formatting for each app',
