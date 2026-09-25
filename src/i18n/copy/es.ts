@@ -185,4 +185,18 @@ export const es: Copy = {
     capaLimpia: 'pegado en tu app · ya editado',
     insercion: 'sin dictar la puntuación',
   },
+
+  heroSucio: {
+    segmentos: [
+      { texto: 'eh…', tachado: true },
+      { texto: ' hablas y aparece escrito', tachado: false },
+      { texto: ', o sea', tachado: true },
+      { texto: ', sin muletillas, ', tachado: false },
+      { texto: 'sin ir diciendo coma, punto,', tachado: true },
+      { insercion: true },
+      { texto: ' ', tachado: false },
+      { texto: 'y eh,', tachado: true },
+      { texto: ' sin cambiar de idioma', tachado: false },
+    ],
+  },
 }

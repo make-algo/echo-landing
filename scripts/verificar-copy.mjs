@@ -100,7 +100,7 @@ function accesible(html) {
  * página. Esto no lo garantiza la comprobación de arriba: una variante puede
  * tener las frases sueltas por el documento y en otro orden y seguir pasándola.
  */
-const ORDEN = [
+const ORDEN_ES = [
   ['titular', 'Habla y aparece escrito. Sin muletillas, sin dictar la puntuación y sin cambiar de idioma.'],
   ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
   // El espacio antes de la coma es el hueco que deja `visible()` al quitar el
@@ -114,10 +114,24 @@ const ORDEN = [
   ['línea de contacto', '¿Dudas o algo que no funciona? Escríbenos'],
 ]
 
+// --- MAK-274 (revisión): equivalente en inglés, sobre el copy aprobado de
+//     docs/product/landing-copy-en.md (repo privado `echo`, MAK-272).
+const ORDEN_EN = [
+  ['titular', 'Talk, and it’s written. No filler words, no dictating punctuation, no switching languages.'],
+  ['tagline · MAK-230', 'Dictation for Mac. You talk, and clean text appears right where you were.'],
+  ['condiciones bajo el CTA · MAK-244', '14 days free , then €12 a year or €3 a month. Mac with Apple Silicon and macOS 14 or later.'],
+  ['comparación de velocidad · Typing', 'Typing ~40 words per minute'],
+  ['comparación de velocidad · Talking', 'Talking ~150 words per minute'],
+  ['entradilla de la comparativa', 'It doesn’t do these four things'],
+  ['cierre de la comparativa', 'If you dictate the odd sentence and Mac dictation does the job, stick with it. echo is for when you dictate whole paragraphs and you’re tired of fixing them afterwards.'],
+  ['párrafo de privacidad', 'Your voice never leaves your Mac.'],
+  ['línea de contacto', 'Questions, or something not working? Email us'],
+]
+
 // --- Las redacciones innegociables: copy aprobado que va literal o no va.
 //     Se exigen SEGUIDAS, así que ninguna composición puede partirlas en dos
 //     cajas con otra cosa en medio.
-const INNEGOCIABLES = [
+const INNEGOCIABLES_ES = [
   [
     'CA-INT-1 · párrafo de privacidad',
     `Tu voz no sale nunca de tu Mac. Si activas el pulido, sale el texto —no el audio— hacia tu
@@ -185,8 +199,76 @@ const INNEGOCIABLES = [
   ],
 ]
 
+// --- MAK-274 (revisión): equivalente en inglés (docs/product/landing-copy-en.md,
+//     sección «Para verificar-copy.mjs en /en/»). El ejemplo de idiomas
+//     mezclados queda fuera a propósito: el documento aprobado deja su nota
+//     pendiente de un dictado real en macOS en inglés y no se puede fijar
+//     todavía (ver el comentario en `en.ts`).
+const INNEGOCIABLES_EN = [
+  [
+    'CA-INT-1 · párrafo de privacidad',
+    `Your voice never leaves your Mac. If you turn on polishing, the text —never the audio— goes to
+     your own Claude or ChatGPT account. With polishing off, nothing leaves. What you dictate never
+     goes through our servers, and we don’t keep it.`,
+  ],
+  [
+    'CA-INT-2 · cierre de la comparativa',
+    `If you dictate the odd sentence and Mac dictation does the job, stick with it. echo is for when
+     you dictate whole paragraphs and you’re tired of fixing them afterwards.`,
+  ],
+  [
+    'MAK-243 · línea de contacto',
+    `Questions, or something not working? Email us`,
+  ],
+  [
+    'titular · literal y entero',
+    `Talk, and it’s written. No filler words, no dictating punctuation, no switching languages.`,
+  ],
+  [
+    'MAK-230 · tagline debajo del bloque limpio',
+    `Dictation for Mac. You talk, and clean text appears right where you were.`,
+  ],
+  [
+    'entradilla de la comparativa · anuncia cuatro',
+    `macOS dictation is good, and it’s free. It doesn’t do these four things.`,
+  ],
+  [
+    'CA-CAR-5 · cuerpo de «Se pega donde ya escribes»',
+    `And in your tone for each one: in Settings you tell it “casual in Slack” or “spell make-algo
+     like this”, and it does it every time.`,
+  ],
+  [
+    'MAK-230 · comparación de velocidad, fila «Typing»',
+    `Typing ~40 words per minute`,
+  ],
+  [
+    'MAK-230 · comparación de velocidad, fila «Talking»',
+    `Talking ~150 words per minute`,
+  ],
+  [
+    'MAK-244 · fuente de la comparación de velocidad',
+    `Reference averages: conversational speech versus an adult with no typing training.`,
+  ],
+  [
+    'MAK-244 · condiciones en una línea bajo el CTA',
+    `14 days free , then €12 a year or €3 a month. Mac with Apple Silicon and macOS 14 or later.`,
+  ],
+  [
+    'MAK-247 · paso 1 «Se transcribe en tu Mac»',
+    `Tenths of a second, offline.`,
+  ],
+  [
+    'MAK-247 · paso 2 «Se pule con tu suscripción»',
+    `Claude or ChatGPT, signed in as you: 1.5 to 2.5 seconds, and only when the text needs it.`,
+  ],
+  [
+    'MAK-247 · paso 3 «Se pega donde estabas»',
+    `Into the active app, formatted the way that app needs.`,
+  ],
+]
+
 // --- Criterios negativos: lo que no puede aparecer en la página.
-const PROHIBIDAS = [
+const PROHIBIDAS_ES = [
   [
     'CA-PRIV-4',
     [
@@ -245,23 +327,89 @@ const PROHIBIDAS = [
   ['MAK-245 · sección «Qué hace distinto» borrada', ['Qué hace distinto']],
 ]
 
+// --- MAK-274 (revisión): el documento aprobado solo pide, para `/en/`, los
+//     mismos competidores/multiplicadores que en español más su propia lista
+//     de tono — no traduce el resto de categorías (contadores retirados,
+//     restos del formulario viejo...), que nunca existieron en inglés.
+const PROHIBIDAS_EN = [
+  ['CA-NEG-4/7 · competidores', ['Wispr', 'Superwhisper', 'Aqua Voice', 'Trustpilot']],
+  ['CA-NEG-5 · múltiplos de velocidad', ['10x', '3x', 'x3']],
+  [
+    'CA-NEG-8 · palabras prohibidas por el tono',
+    [
+      '100% private',
+      '100% local',
+      'fully local',
+      'completely private',
+      'total privacy',
+      'revolutionary',
+      'AI-powered',
+      'effortless',
+      'game changer',
+      'the best',
+      'the fastest way to',
+      'seamless',
+    ],
+  ],
+]
+
 // --- Los cuatro criterios de la comparativa. Ni tres ni cinco: la entradilla
 //     anuncia «las cuatro cosas que no hace».
-const COMPARATIVA = [
+const COMPARATIVA_ES = [
   ['Muletillas y repeticiones', 'Las transcribe tal cual', 'Las quita'],
   ['Puntuación', 'La dictas tú, palabra por palabra', 'La pone sola'],
   ['Idiomas mezclados', 'Un idioma fijo por sesión', 'Detecta y mezcla, 25 idiomas'],
   ['Formato según la app', 'No lo cambia', 'Correo, chat o terminal, distinto'],
 ]
+const COMPARATIVA_EN = [
+  ['Filler words and repetitions', 'Types them as they come', 'Takes them out'],
+  ['Punctuation', 'You dictate it, mark by mark', 'Adds it for you'],
+  ['Mixed languages', 'One fixed language per session', 'Detects and mixes 25 languages'],
+  ['Formatting for each app', 'Always the same', 'Email, chat or terminal, each its own way'],
+]
 
-// --- MAK-274: cada idioma tiene su propia lista de cadenas innegociables y
-//     prohibidas. `/en/` publica copy provisional EN ESPAÑOL hasta que la
-//     sub-issue 4 traiga la traducción aprobada, así que por ahora reutiliza
-//     literalmente las listas de `es`; el día que `en.ts` traduzca de verdad,
-//     estas dos líneas son las que hay que tocar para darle sus propias
-//     cadenas en inglés.
-const INNEGOCIABLES_POR_IDIOMA = { es: INNEGOCIABLES, en: INNEGOCIABLES }
-const PROHIBIDAS_POR_IDIOMA = { es: PROHIBIDAS, en: PROHIBIDAS }
+// --- MAK-85 · rótulos de sección, uno por idioma.
+const ROTULOS_H2_ES = [
+  'se pega donde ya escribes',
+  'qué pasa cuando sueltas la tecla',
+  'qué sale de tu mac y qué no',
+  'preguntas',
+]
+const ROTULOS_H2_EN = [
+  'pastes wherever you already write',
+  'what happens when you let go of the key',
+  'what leaves your mac, and what doesn’t',
+  'questions',
+]
+
+// --- CA-LOGO-1: la etiqueta de cada pieza traduce; el nombre de marca en el
+//     `<title>` del SVG no (son nombres propios).
+const PIEZAS_ES = [
+  ['Gmail', 'Correo'],
+  ['Slack', 'Chat de equipo'],
+  ['GitHub', 'Issues y PRs'],
+  ['VS Code', 'Editor de código'],
+  ['Notion', 'Notas y documentos'],
+  ['Linear', 'Gestión de producto'],
+]
+const PIEZAS_EN = [
+  ['Gmail', 'Email'],
+  ['Slack', 'Team chat'],
+  ['GitHub', 'Issues and PRs'],
+  ['VS Code', 'Code editor'],
+  ['Notion', 'Notes and docs'],
+  ['Linear', 'Product management'],
+]
+
+// --- MAK-274: cada idioma tiene su propia lista de cadenas innegociables,
+//     prohibidas, comparativa, rótulos y piezas — copy aprobado desde MAK-272
+//     (docs/product/landing-copy-en.md del repo privado `echo`).
+const INNEGOCIABLES_POR_IDIOMA = { es: INNEGOCIABLES_ES, en: INNEGOCIABLES_EN }
+const PROHIBIDAS_POR_IDIOMA = { es: PROHIBIDAS_ES, en: PROHIBIDAS_EN }
+const ORDEN_POR_IDIOMA = { es: ORDEN_ES, en: ORDEN_EN }
+const COMPARATIVA_POR_IDIOMA = { es: COMPARATIVA_ES, en: COMPARATIVA_EN }
+const ROTULOS_H2_POR_IDIOMA = { es: ROTULOS_H2_ES, en: ROTULOS_H2_EN }
+const PIEZAS_POR_IDIOMA = { es: PIEZAS_ES, en: PIEZAS_EN }
 
 const fallos = []
 const mal = (ruta, mensaje) => fallos.push(`${ruta}: ${mensaje}`)
@@ -297,16 +445,8 @@ for (const [ruta, fichero, idioma] of RUTAS) {
     // CA-LOGO-1: las seis piezas, en este orden exacto, con la etiqueta de
     // categoría (contenido accesible) y el nombre de marca exacto en el
     // `<title>` del SVG (decorativo, aria-hidden — CA-LOGO-5).
-    const PIEZAS = [
-      ['Gmail', 'Correo'],
-      ['Slack', 'Chat de equipo'],
-      ['GitHub', 'Issues y PRs'],
-      ['VS Code', 'Editor de código'],
-      ['Notion', 'Notas y documentos'],
-      ['Linear', 'Gestión de producto'],
-    ]
     let desdeEtiqueta = -1
-    for (const [marca, etiqueta] of PIEZAS) {
+    for (const [marca, etiqueta] of PIEZAS_POR_IDIOMA[idioma]) {
       const donde = franja.indexOf(etiqueta)
       if (donde < 0) mal(ruta, `CA-LOGO-1: falta la etiqueta «${etiqueta}» en la franja`)
       else if (donde < desdeEtiqueta) mal(ruta, `CA-LOGO-1: «${etiqueta}» llega fuera de orden en la franja`)
@@ -348,7 +488,7 @@ for (const [ruta, fichero, idioma] of RUTAS) {
   //     comparativa de una forma distinta y ya no hay siempre una <table>.
   const filas = (html.match(/data-fila-comparativa/g) ?? []).length
   if (filas !== 4) mal(ruta, `la comparativa tiene ${filas} filas y la entradilla anuncia cuatro`)
-  for (const [criterio, macos, echo] of COMPARATIVA) {
+  for (const [criterio, macos, echo] of COMPARATIVA_POR_IDIOMA[idioma]) {
     for (const celda of [criterio, macos, echo])
       if (!texto.includes(celda)) mal(ruta, `falta la celda «${celda}» de la comparativa`)
   }
@@ -361,7 +501,7 @@ for (const [ruta, fichero, idioma] of RUTAS) {
   //     sigue entero, seguido y en el orden del argumento.
   const oido = accesible(html)
   let desde = -1
-  for (const [nombre, frase] of ORDEN) {
+  for (const [nombre, frase] of ORDEN_POR_IDIOMA[idioma]) {
     const donde = oido.indexOf(frase)
     if (donde < 0) mal(ruta, `${nombre}: no llega entero al árbol de accesibilidad`)
     else if (donde < desde) mal(ruta, `${nombre}: llega fuera de orden en el árbol de accesibilidad`)
@@ -375,13 +515,7 @@ for (const [ruta, fichero, idioma] of RUTAS) {
     visible(inner).toLowerCase()
   )
   if (h2s.length !== 5) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta cinco`)
-  const ROTULOS_H2 = [
-    'se pega donde ya escribes',
-    'qué pasa cuando sueltas la tecla',
-    'qué sale de tu mac y qué no',
-    'preguntas',
-  ]
-  for (const rotulo of ROTULOS_H2) {
+  for (const rotulo of ROTULOS_H2_POR_IDIOMA[idioma]) {
     if (!h2s.some((h) => h.includes(rotulo))) mal(ruta, `el rótulo «${rotulo}» no es un <h2>`)
   }
 

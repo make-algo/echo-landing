@@ -19,6 +19,7 @@ const {
   correccion,
   demo,
   dondeSePega,
+  heroSucio,
   pasos,
   preguntas,
   privacidad,
@@ -63,17 +64,20 @@ function letras(texto: string) {
     })
     .join('')
 }
-const segmentosCiclo = [
-  { texto: 'eh…', clase: 'ciclo__tach', delay: '0s' },
-  { texto: ' hablas y aparece escrito', clase: null },
-  { texto: ', o sea', clase: 'ciclo__tach', delay: '.5s' },
-  { texto: ', sin muletillas, ', clase: null },
-  { texto: 'sin ir diciendo coma, punto,', clase: 'ciclo__tach', delay: '1s' },
-  { texto: v.insercion, clase: 'ciclo__ins', delay: '1.2s' },
-  { texto: ' ', clase: null },
-  { texto: 'y eh,', clase: 'ciclo__tach', delay: '1.6s' },
-  { texto: ' sin cambiar de idioma', clase: null },
-] as const
+/**
+ * MAK-274 (revisión): `heroSucio.segmentos` es el copy —por idioma—, pero los
+ * tiempos de la animación (`delay`) son maquetación, no texto, así que se
+ * quedan aquí. Se asignan en orden a los segmentos «marcados» (tachados o la
+ * inserción): tanto `es` como `en` tienen los mismos cinco, en la misma
+ * posición narrativa, así que la secuencia de retardos vale para los dos.
+ */
+const DELAYS_MARCADOS = ['0s', '.5s', '1s', '1.2s', '1.6s']
+let indiceMarcado = 0
+const segmentosCiclo = heroSucio.segmentos.map((s) => {
+  if ('insercion' in s && s.insercion) return { texto: correccion.insercion, clase: 'ciclo__ins', delay: DELAYS_MARCADOS[indiceMarcado++] }
+  if (s.tachado) return { texto: s.texto, clase: 'ciclo__tach', delay: DELAYS_MARCADOS[indiceMarcado++] }
+  return { texto: s.texto, clase: null as null, delay: null as string | null }
+})
 const cicloTextoHTML = segmentosCiclo
   .map((s) =>
     s.clase ? `<span class="${s.clase}" style="--d: ${s.delay}">${letras(s.texto)}</span>` : letras(s.texto)
@@ -104,10 +108,17 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
         <div>
           <p class="rubric">{v.capaSucia}</p>
           <p class="sucio" aria-hidden="true">
-            <span class="tach">eh…</span> hablas y aparece escrito<span class="tach">, o sea</span>,
-            sin muletillas, <span class="tach">sin ir diciendo coma, punto,</span><span class="ins"
-              >{v.insercion}</span
-            > <span class="tach">y eh,</span> sin cambiar de idioma
+            {
+              heroSucio.segmentos.map((s) =>
+                'insercion' in s && s.insercion ? (
+                  <span class="ins">{correccion.insercion}</span>
+                ) : s.tachado ? (
+                  <span class="tach">{s.texto}</span>
+                ) : (
+                  s.texto
+                )
+              )
+            }
           </p>
 
           <div class="regla" aria-hidden="true"></div>

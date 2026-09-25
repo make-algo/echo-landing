@@ -89,4 +89,14 @@ export interface Copy {
     capaLimpia: string
     insercion: string
   }
+  /**
+   * MAK-274 (revisión, tras el comentario del copy aprobado en inglés): la
+   * línea sucia del héroe estaba escrita a mano dos veces en `Landing.astro`
+   * (`segmentosCiclo` y el `<p class="sucio">`) y solo en español. Un
+   * segmento con `insercion: true` no lleva `texto`: el renderer pone ahí
+   * `correccion.insercion`, que es donde vive ese trozo — así no se duplica.
+   */
+  heroSucio: {
+    segmentos: ({ texto: string; tachado: boolean; insercion?: false } | { insercion: true })[]
+  }
 }
