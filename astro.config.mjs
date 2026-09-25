@@ -8,8 +8,9 @@ import sitemap from '@astrojs/sitemap'
 export default defineConfig({
   site: 'https://echo.make-algo.com',
   integrations: [
-    // Una sola ruta indexable: el resto (404) no entra en el sitemap.
-    sitemap({ filter: (page) => page === 'https://echo.make-algo.com/' }),
+    // Las dos portadas, una por idioma; el resto (legales, descarga, 404) se
+    // indexa si Google llega, pero no se le sugiere.
+    sitemap({ filter: (page) => ['https://echo.make-algo.com/', 'https://echo.make-algo.com/en/'].includes(page) }),
   ],
   vite: { plugins: [tailwindcss()] },
 })

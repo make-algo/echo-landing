@@ -4,9 +4,9 @@ import type { Copy } from './types'
  * Copy en inglés de la landing (MAK-272, aprobado — docs/product/landing-copy-en.md
  * del repo privado `echo`). Va literal, sin tocar una coma, igual que `es.ts`.
  *
- * `/en/` sigue con `noindex` hasta MAK-275: esta issue (MAK-274) solo trae el
- * copy de la portada al día; el resto de rutas (`/en/download`,
- * `/en/invitation`, 404, `og.astro`, `site.ts`) las rellena esa sub-issue.
+ * `/en/` se indexa desde el 25-09-2026. La descarga no tiene ruta inglesa
+ * propia a propósito: `/descarga` sirve los dos idiomas en la misma URL
+ * (métricas por ruta); `/invitacion` y la 404 siguen solo en español.
  *
  * La nota de la fila «Mixed languages» (ver `comparativa.filas`) lleva el
  * resultado real del reconocedor de Apple en inglés; cómo se obtuvo, junto a
