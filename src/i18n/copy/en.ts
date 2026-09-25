@@ -173,8 +173,23 @@ export const en: Copy = {
     ],
   },
 
+  meta: {
+    titulo: 'echo, dictation for Mac that writes it clean',
+    descripcion:
+      'echo, dictation for Mac: you talk and the text appears written and punctuated where you were. Local transcription, polished by your Claude or ChatGPT.',
+    nombre: 'echo, dictation for Mac',
+    ogImageAlt: 'echo, dictation for Mac that writes it clean',
+  },
+
+  imagenes: {
+    pildoraEscuchando: 'The echo pill listening, with the voice waveform and the counter at 0:07.',
+    pildoraPuliendo:
+      'The echo pill with the terracotta waveform, a sparkles icon and the text “Polishing with Claude…”.',
+  },
+
   pie: {
     linea: 'echo, dictation for Mac. An app by Make Algo SL.',
+    descargar: 'Download',
     avisoLegal: 'Legal notice',
     condiciones: 'Terms',
     privacidad: 'Privacy',

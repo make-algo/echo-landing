@@ -77,8 +77,21 @@ export interface Copy {
     rotulo: string
     lista: { p: string; r: string }[]
   }
+  /** Pestaña, buscadores y Open Graph de la portada. `nombre` es el `og:site_name`. */
+  meta: {
+    titulo: string
+    descripcion: string
+    nombre: string
+    ogImageAlt: string
+  }
+  /** Texto alternativo de las capturas de la píldora. */
+  imagenes: {
+    pildoraEscuchando: string
+    pildoraPuliendo: string
+  }
   pie: {
     linea: string
+    descargar: string
     avisoLegal: string
     condiciones: string
     privacidad: string

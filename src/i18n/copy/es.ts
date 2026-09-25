@@ -171,8 +171,28 @@ export const es: Copy = {
     ],
   },
 
+  /**
+   * Siempre «echo, dictado para Mac», en minúscula y con el descriptor: «echo» a
+   * secas compite en búsqueda con el altavoz de Amazon, y la minúscula es el
+   * logotipo y el nombre de la app en el Mac. Antes vivía en `site.ts`.
+   */
+  meta: {
+    titulo: 'echo, dictado para Mac que escribe limpio',
+    descripcion:
+      'echo, dictado para Mac: hablas y el texto aparece escrito y puntuado donde estabas. Transcripción local y pulido con tu suscripción de Claude o ChatGPT.',
+    nombre: 'echo, dictado para Mac',
+    ogImageAlt: 'echo, dictado para Mac que escribe limpio',
+  },
+
+  imagenes: {
+    pildoraEscuchando: 'La píldora de echo escuchando, con la onda de voz y el contador en 0:07.',
+    pildoraPuliendo:
+      'La píldora de echo con la onda terracota, un icono de chispas y el texto «Puliendo con Claude…».',
+  },
+
   pie: {
     linea: 'echo, dictado para Mac. Una app de Make Algo SL.',
+    descargar: 'Descargar',
     avisoLegal: 'Aviso legal',
     condiciones: 'Condiciones',
     privacidad: 'Privacidad',

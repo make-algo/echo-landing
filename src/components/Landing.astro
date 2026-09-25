@@ -20,6 +20,8 @@ const {
   demo,
   dondeSePega,
   heroSucio,
+  imagenes,
+  meta,
   pasos,
   preguntas,
   privacidad,
@@ -94,7 +96,7 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
 <Base
   ogTitle={titular}
   ogImage="/og.png"
-  ogImageAlt="echo, dictado para Mac que escribe limpio"
+  ogImageAlt={meta.ogImageAlt}
   path="/"
   lang={lang}
   translations={{ es: '/', en: '/' }}
@@ -179,7 +181,7 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
                 src={url('/producto/hud_listening.png')}
                 width="320"
                 height="137"
-                alt="La píldora de echo escuchando, con la onda de voz y el contador en 0:07."
+                alt={imagenes.pildoraEscuchando}
                 fetchpriority="high"
                 decoding="async"
               />
@@ -266,7 +268,7 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
                     src={url('/producto/hud_polishing.png')}
                     width="280"
                     height="119"
-                    alt="La píldora de echo con la onda terracota, un icono de chispas y el texto «Puliendo con Claude…»."
+                    alt={imagenes.pildoraPuliendo}
                     loading="lazy"
                     decoding="async"
                   />

@@ -407,6 +407,12 @@ const PIEZAS_EN = [
 const INNEGOCIABLES_POR_IDIOMA = { es: INNEGOCIABLES_ES, en: INNEGOCIABLES_EN }
 const PROHIBIDAS_POR_IDIOMA = { es: PROHIBIDAS_ES, en: PROHIBIDAS_EN }
 const ORDEN_POR_IDIOMA = { es: ORDEN_ES, en: ORDEN_EN }
+/** CA-META-1: título aprobado de la portada en cada idioma (MAK-272). */
+const TITULO_POR_IDIOMA = {
+  es: 'echo, dictado para Mac que escribe limpio',
+  en: 'echo, dictation for Mac that writes it clean',
+}
+
 const COMPARATIVA_POR_IDIOMA = { es: COMPARATIVA_ES, en: COMPARATIVA_EN }
 const ROTULOS_H2_POR_IDIOMA = { es: ROTULOS_H2_ES, en: ROTULOS_H2_EN }
 const PIEZAS_POR_IDIOMA = { es: PIEZAS_ES, en: PIEZAS_EN }
@@ -474,10 +480,10 @@ for (const [ruta, fichero, idioma] of RUTAS) {
   }
 
   // --- Metadatos (CA-META-1, CA-META-2). Las variantes son pieles de la misma
-  //     página: el título y la descripción aprobados son los mismos en las cuatro.
+  //     página: el título y la descripción aprobados son los mismos en las cuatro, uno por idioma.
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''
   const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? ''
-  if (title !== 'echo, dictado para Mac que escribe limpio')
+  if (title !== TITULO_POR_IDIOMA[idioma])
     mal(ruta, `CA-META-1: el <title> no es el aprobado (es «${title}»)`)
   else if (title.length > 60) mal(ruta, `CA-META-1: el <title> supera 60 caracteres (${title.length})`)
   if (description.length === 0 || description.length > 155)
