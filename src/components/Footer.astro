@@ -27,7 +27,7 @@ const otroIdioma: Locale = lang === 'es' ? 'en' : 'es'
       de una tercera página.
     */}
     <p class="legal">
-      <a href={url('/descarga')}>Descargar</a><a href={url('/aviso-legal')}>{pie.avisoLegal}</a><a href={url('/condiciones')}>{pie.condiciones}</a><a href={url('/privacidad')}>{pie.privacidad}</a>{
+      <a href={url('/descarga')}>{pie.descargar}</a><a href={url('/aviso-legal')}>{pie.avisoLegal}</a><a href={url('/condiciones')}>{pie.condiciones}</a><a href={url('/privacidad')}>{pie.privacidad}</a>{
         otroIdiomaHref && (
           <a href={otroIdiomaHref} hreflang={otroIdioma} lang={otroIdioma}>
             {ETIQUETA_OTRO_IDIOMA[otroIdioma]}

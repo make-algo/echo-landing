@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css'
-import { absoluteUrl, servidor, site, url } from '../lib/site'
+import { absoluteUrl, servidor, url } from '../lib/site'
 import { DEFAULT_LOCALE, getCopy, type Locale } from '../i18n/copy'
 
 interface Props {
@@ -24,9 +24,10 @@ interface Props {
   translations?: Partial<Record<Locale, string>>
 }
 
+const { meta, saltar } = getCopy(Astro.props.lang ?? DEFAULT_LOCALE)
 const {
-  title = site.title,
-  description = site.description,
+  title = meta.titulo,
+  description = meta.descripcion,
   ogTitle = title,
   ogImage,
   ogImageAlt,
@@ -36,7 +37,6 @@ const {
 } = Astro.props
 
 const canonical = absoluteUrl(path, lang)
-const { saltar } = getCopy(lang)
 
 /** MAK-274: `/en/` se publica con copy provisional — noindex hasta la sub-issue 4. */
 const noindex = lang !== DEFAULT_LOCALE
@@ -76,7 +76,7 @@ const OG_LOCALES: Record<Locale, string> = { es: 'es_ES', en: 'en_US' }
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="echo, dictado para Mac" />
+    <meta property="og:site_name" content={meta.nombre} />
     <meta property="og:locale" content={OG_LOCALES[lang]} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={description} />
