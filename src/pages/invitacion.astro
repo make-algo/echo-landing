@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { url } from '../lib/site'
+
+/**
+ * Página a la que apunta el enlace de invitación que la app da a quien ya paga
+ * (`/invitacion?c=AMIGO-XXXX`, lo monta el Worker en `POST /v1/referral`).
+ *
+ * El código va en la query y se lee en el navegador, con un script propio: la
+ * página se sirve estática desde GitHub Pages y es la misma para todos. Dos
+ * cosas se cuidan a propósito:
+ *
+ *   - El código NO entra en la medición de visitas. El beacon de `Base.astro`
+ *     manda `location.pathname`, nunca la query, así que en el contador hay una
+ *     visita a `/invitacion` y ningún rastro de quién invitó a quién. Es la
+ *     misma promesa que hace la política de privacidad: a quien invita se le
+ *     enseñan cifras, no nombres. Cambiar el beacon a `location.href` rompería
+ *     eso en silencio; por eso `npm run verificar` comprueba que no hay ningún
+ *     `AMIGO-` fijo en el HTML y que el enlace de vuelta a la app existe.
+ *   - Sin cookies ni almacenamiento: el código no se guarda en ningún sitio.
+ *     Quien ya tiene echo pincha «Ya tengo echo» y el código viaja en la propia
+ *     URL `echo://referral?code=…` hasta la app, que es quien lo apunta en el
+ *     servidor. Quien no la tiene, descarga, y lo escribe luego en Ajustes.
+ *
+ * No entra en el sitemap (astro.config.mjs solo indexa la portada): es una
+ * página de llegada, no de búsqueda.
+ */
+---
+
+<Base
+  title="Te han invitado a echo, dictado para Mac"
+  description="Un amigo te invita a probar echo, dictado para Mac. 14 días gratis y 3 € de descuento en tu primer cobro."
+  path="/invitacion"
+  ogImage="/og.png"
+  ogImageAlt="echo, dictado para Mac que escribe limpio"
+>
+  <Header />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <p class="rubric">Invitación</p>
+        <h1 style="font-size: var(--text-h2)">Te han invitado a echo</h1>
+        <p class="lead" style="margin-top: 12px;">
+          Dictado para Mac: mantén una tecla, habla y suelta. El texto aparece escrito y puntuado
+          donde estabas.
+        </p>
+
+        <p id="con-codigo" hidden style="margin-top: 32px;">
+          Tu código de invitación es <code id="codigo" style="font-size: 1.1em;"></code>. Vale
+          <strong>3 € de descuento en tu primer cobro</strong>: si eliges el plan mensual, el
+          primer mes te sale gratis.
+        </p>
+        <p id="sin-codigo" style="margin-top: 32px;">
+          Este enlace no trae ningún código. Pídele a quien te invitó que te lo mande otra vez, o
+          prueba echo igualmente: son 14 días gratis.
+        </p>
+
+        <p style="margin-top: 24px;">
+          <a class="btn" href={url('/descarga')}>Descargar echo</a>
+        </p>
+        <p class="microcopy">
+          14 días de prueba completa, sin tarjeta. Al instalar, escribe el código en Ajustes ›
+          Licencia y el descuento se aplicará cuando te suscribas.
+        </p>
+
+        <p id="ya-tengo" hidden style="margin-top: 24px;">
+          ¿Ya tienes echo instalada? <a id="abrir-app" href="#">Guardar el código en echo</a> y el
+          descuento quedará listo para cuando te suscribas.
+        </p>
+
+        <p class="microcopy" style="margin-top: 32px;">
+          Cómo funciona el programa de invitaciones, en las
+          <a href={url('/condiciones')}>condiciones de uso y suscripción</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+{/*
+  `is:inline` por lo mismo que el beacon: una etiqueta sin `src`, nada que cargar de fuera. Solo
+  lee `?c=`; no escribe cookies ni `localStorage`, y si el código no tiene la forma exacta que
+  genera el servidor (AMIGO- y cuatro caracteres sin 0, 1, I ni O) se trata como si no viniera.
+*/}
+<script is:inline>
+  try {
+    var c = new URLSearchParams(location.search).get('c') || ''
+    c = c.trim().toUpperCase()
+    if (/^AMIGO-[A-Z2-9]{4}$/.test(c)) {
+      document.getElementById('codigo').textContent = c
+      document.getElementById('con-codigo').hidden = false
+      document.getElementById('sin-codigo').hidden = true
+      var a = document.getElementById('abrir-app')
+      a.href = 'echo://referral?code=' + encodeURIComponent(c)
+      document.getElementById('ya-tengo').hidden = false
+    }
+  } catch (e) {}
+</script>

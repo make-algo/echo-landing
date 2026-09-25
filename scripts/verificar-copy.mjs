@@ -565,6 +565,25 @@ else if (!readFileSync(DESCARGA, 'utf8').includes(`<a class="btn" href="${SERVID
   fallos.push('el botón de /descarga no pasa por el contador: las descargas dejarían de medirse')
 else console.log('ok  medición · el botón de descarga pasa por el contador')
 
+// --- /invitacion (MAK-261/E6): la página a la que apunta el enlace que la app
+//     da a quien invita. Tres cosas que no pueden romperse sin que nadie lo
+//     note: que exista (el Worker ya reparte enlaces a ella), que el botón de
+//     vuelta a la app siga siendo `echo://referral?code=` (es lo que la app
+//     entiende, ver LicenseManager.handle), y que ningún código AMIGO- quede
+//     fijo en el HTML: el código se lee de la query en el navegador y no debe
+//     aparecer en la página publicada ni, por tanto, en la medición de visitas.
+const INVITACION = 'dist/invitacion/index.html'
+if (!existsSync(INVITACION)) fallos.push('no existe /invitacion: el Worker reparte enlaces a una página que da 404')
+else {
+  const html = readFileSync(INVITACION, 'utf8')
+  const antes = fallos.length
+  if (!html.includes("'echo://referral?code='")) fallos.push('/invitacion no monta el enlace echo://referral?code= de vuelta a la app')
+  if (!/<a class="btn" href="\/descarga">/.test(html)) fallos.push('/invitacion no lleva el botón de descarga a /descarga')
+  if (/AMIGO-[A-Z2-9]{4}/.test(html)) fallos.push('/invitacion lleva un código AMIGO- fijo en el HTML: el código va en la query, nunca en la página')
+  if (!/<script[^>]*>[^<]*location\.search/.test(html)) fallos.push('/invitacion no lee el código de la query')
+  if (fallos.length === antes) console.log('ok  /invitacion · existe, vuelve a la app por echo://referral y no lleva ningún código fijo')
+}
+
 // --- La web ofrece la versión que sirve el canal, no una anterior.
 //
 //     Esto pasó de verdad: /descarga llevaba la versión, el tamaño y el SHA-256
