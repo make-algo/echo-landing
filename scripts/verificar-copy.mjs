@@ -101,7 +101,7 @@ const ORDEN = [
   ['tagline · MAK-230', 'Dictado para Mac. Hablas, y aparece escrito limpio donde estabas.'],
   // El espacio antes de la coma es el hueco que deja `visible()` al quitar el
   // `</strong>` que cierra «14 días gratis» — no hay hueco real en el HTML.
-  ['condiciones bajo el CTA · MAK-244', '14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.'],
+  ['condiciones bajo el CTA · MAK-244', '14 días gratis , luego 12 € al año o 3 € al mes. Mac con Apple Silicon y macOS 14 o posterior.'],
   ['comparación de velocidad · Tecleando', 'Tecleando ~40 palabras por minuto'],
   ['comparación de velocidad · Hablando', 'Hablando ~150 palabras por minuto'],
   ['entradilla de la comparativa', 'Estas cuatro cosas no las hace'],
@@ -165,7 +165,7 @@ const INNEGOCIABLES = [
   [
     // Mismo hueco artificial de `visible()` explicado junto a `ORDEN` arriba.
     'MAK-244 · condiciones en una línea bajo el CTA',
-    `14 días gratis , luego 12 € al año. Mac con Apple Silicon y macOS 14 o posterior.`,
+    `14 días gratis , luego 12 € al año o 3 € al mes. Mac con Apple Silicon y macOS 14 o posterior.`,
   ],
   [
     'MAK-247 · paso 1 «Se transcribe en tu Mac»',

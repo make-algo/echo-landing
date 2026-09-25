@@ -62,10 +62,14 @@ export const apertura = {
      * cifra que decide la comparación —doce euros al año, no al mes— y en el
      * gris del resto de la línea no se lee, así que sube a tinta plena. La
      * frase sigue siendo una y seguida en el HTML: nada se mete en medio.
+     *
+     * MAK-261 añade la modalidad mensual, pero el anual sigue yendo delante y
+     * en tinta plena: es el que decide la comparación. El mensual va detrás,
+     * como alternativa, y no como la cifra con la que se compara echo.
      */
     aviso: [
       { dato: true, texto: '14 días gratis' },
-      { dato: false, texto: ', luego 12 € al año.' },
+      { dato: false, texto: ', luego 12 € al año o 3 € al mes.' },
     ],
     maquina: 'Mac con Apple Silicon y macOS 14 o posterior.',
   },
@@ -212,7 +216,7 @@ export const preguntas = {
   lista: [
     {
       p: '¿Cuánto cuesta?',
-      r: '14 días de prueba completa, sin tarjeta. Después, 12 € al año con IVA incluido, para hasta tres Macs. Se paga desde la propia app y se cancela cuando quieras.',
+      r: '14 días de prueba completa, sin tarjeta. Después eliges: 12 € al año o 3 € al mes, IVA incluido, para hasta tres Macs. Se paga desde la propia app, puedes cambiar de modalidad cuando quieras y se cancela cuando quieras.',
     },
     {
       p: '¿Necesito pagar Claude?',
