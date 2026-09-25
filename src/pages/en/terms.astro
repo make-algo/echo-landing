@@ -5,13 +5,11 @@ import Header from '../../components/Header.astro'
 import { url } from '../../lib/site'
 
 /**
- * Traducción de cortesía de `/condiciones` (v2, MAK-254: plan mensual y
- * programa de invitaciones), sección a sección y sin resumir. El contrato
- * vinculante es el español —esta página lo dice arriba del todo— y sigue siendo
- * `/condiciones` la URL que Stripe pide en Settings › Public details y la que
- * acepta el cliente en el checkout, así que CONDICIONES_VERSION no cambia por
- * traducir. Si cambia el texto en español, cambia esta traducción en el mismo
- * commit.
+ * Traducción literal de `/condiciones` (v2, MAK-254: plan mensual y programa
+ * de invitaciones), sección a sección y sin resumir. `/condiciones` sigue
+ * siendo la URL que Stripe pide en Settings › Public details y la que acepta
+ * el cliente en el checkout, y CONDICIONES_VERSION no cambia por traducir. Si
+ * cambia el texto en español, cambia esta traducción en el mismo commit.
  */
 const actualizado = '24 September 2026'
 ---
@@ -31,10 +29,6 @@ const actualizado = '24 September 2026'
       <div class="prose">
         <h1 style="font-size: var(--text-h2)">Terms of use and subscription</h1>
         <p class="microcopy">Last updated: {actualizado}.</p>
-        <p class="microcopy">
-          This is a courtesy translation. The <a href={url('/condiciones')}>Spanish version</a> is
-          the binding one; if the two differ, the Spanish text prevails.
-        </p>
 
         <h2>1. Who we are</h2>
         <p>

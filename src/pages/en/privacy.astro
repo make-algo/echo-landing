@@ -5,10 +5,10 @@ import Header from '../../components/Header.astro'
 import { url } from '../../lib/site'
 
 /**
- * Traducción de cortesía de `/privacidad`, párrafo a párrafo y sin resumir: la
- * política española es la vinculante y el registro del art. 30 sigue viviendo
- * en el repo de la app (docs/legal/registro-actividades.md). Si cambia la
- * política en español, cambia esta traducción en el mismo commit.
+ * Traducción literal de `/privacidad`, párrafo a párrafo y sin resumir. El
+ * registro del art. 30 sigue viviendo en el repo de la app
+ * (docs/legal/registro-actividades.md). Si cambia la política en español,
+ * cambia esta traducción en el mismo commit.
  */
 const actualizado = '24 September 2026'
 ---
@@ -27,10 +27,6 @@ const actualizado = '24 September 2026'
     <div class="wrap">
       <div class="prose">
         <h1 style="font-size: var(--text-h2)">Privacy policy</h1>
-        <p class="microcopy">
-          This is a courtesy translation. The <a href={url('/privacidad')}>Spanish version</a> is
-          the binding one; if the two differ, the Spanish text prevails.
-        </p>
 
         <h2>Who is the data controller</h2>
         <p>

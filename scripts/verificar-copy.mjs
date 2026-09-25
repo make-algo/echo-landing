@@ -826,8 +826,8 @@ else console.log('ok  CA-NEG-9 · ninguna analítica de terceros')
 //     hasta la sub-issue 4, así que TIENE que llevar `noindex` — lo contrario,
 //     indexar una traducción a medias, sería peor que no tener `/en/`.
 //
-//     Las legales en inglés (traducciones de cortesía de las españolas, que son
-//     las vinculantes) heredan el mismo `noindex` de `Base.astro` mientras `/en/`
+//     Las legales en inglés (traducciones literales de las españolas) heredan
+//     el mismo `noindex` de `Base.astro` mientras `/en/`
 //     lo lleve: se levanta todo a la vez cuando se levante el de la portada.
 const PAGINAS_CON_NOINDEX_ESPERADO = new Set([
   'dist/en/index.html',
@@ -989,15 +989,14 @@ else {
 
 // --- Las legales en inglés existen y dicen lo mismo que las españolas en lo
 //     que la comprobación de arriba vigila: los dos precios, la garantía del
-//     primer cobro con importe y el programa de invitaciones. Cada una remite
-//     a su original español como texto vinculante y las tres se enlazan entre
-//     sí por hreflang, para que ni un directorio ni un buscador vean una web
-//     en inglés que remata en legales en español.
+//     primer cobro con importe y el programa de invitaciones. Cada pareja se
+//     enlaza por hreflang, para que ni un directorio ni un buscador vean una
+//     web en inglés que remata en legales en español.
 {
   const LEGALES_EN = {
-    'dist/en/terms/index.html': ['€3 a month', '€12 a year', '14 days of your first charge with an amount', 'Referral programme', 'Spanish version'],
-    'dist/en/privacy/index.html': ['If you use the referral programme.', 'Spanish version'],
-    'dist/en/legal-notice/index.html': ['B88875018', 'M-893705', 'Spanish version'],
+    'dist/en/terms/index.html': ['€3 a month', '€12 a year', '14 days of your first charge with an amount', 'Referral programme'],
+    'dist/en/privacy/index.html': ['If you use the referral programme.'],
+    'dist/en/legal-notice/index.html': ['B88875018', 'M-893705'],
   }
   const PAREJAS = [
     ['dist/en/terms/index.html', 'dist/condiciones/index.html', '/en/terms', '/condiciones'],
@@ -1017,7 +1016,7 @@ else {
     if (!htmlEn.includes(`hreflang="es" href="${PROPIO.replace(/\/$/, '')}${rutaEs}"`)) fallos.push(`${en} no enlaza por hreflang a ${rutaEs}`)
     if (!htmlEs.includes(`hreflang="en" href="${PROPIO.replace(/\/$/, '')}${rutaEn}"`)) fallos.push(`${es} no enlaza por hreflang a ${rutaEn}`)
   }
-  if (fallos.length === antes) console.log('ok  legales en inglés · /en/terms, /en/privacy y /en/legal-notice existen, dicen lo mismo y enlazan a su original')
+  if (fallos.length === antes) console.log('ok  legales en inglés · /en/terms, /en/privacy y /en/legal-notice existen, dicen lo mismo y se enlazan con su original')
 }
 
 // --- MAK-257 · /privacidad recoge el párrafo del programa de invitaciones:
