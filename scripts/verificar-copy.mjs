@@ -19,7 +19,7 @@ import { join } from 'node:path'
 
 const RUTAS = [
   ['landing / (es)', 'dist/index.html', 'es'],
-  ['landing /en/ (en, copy provisional)', 'dist/en/index.html', 'en'],
+  ['landing /en/ (en)', 'dist/en/index.html', 'en'],
 ]
 
 const faltan = RUTAS.filter(([, f]) => !existsSync(f))
@@ -848,34 +848,17 @@ if (conAnalitica.length)
   fallos.push(`CA-NEG-9: analítica de terceros en la página: ${conAnalitica.join(', ')}`)
 else console.log('ok  CA-NEG-9 · ninguna analítica de terceros')
 
-// --- Indexable desde el 15-09-2026 (decisión humana explícita en MAK-71): ninguna
-//     página en español lleva `noindex`. Si alguien lo reintroduce sin que el
-//     humano lo pida otra vez, el despliegue se cae aquí igual que antes se
-//     caía por lo contrario.
-//
-//     `/en/` es la excepción a propósito (MAK-274): publica copy provisional
-//     hasta la sub-issue 4, así que TIENE que llevar `noindex` — lo contrario,
-//     indexar una traducción a medias, sería peor que no tener `/en/`.
-//
-//     Las legales en inglés (traducciones literales de las españolas) heredan
-//     el mismo `noindex` de `Base.astro` mientras `/en/`
-//     lo lleve: se levanta todo a la vez cuando se levante el de la portada.
-const PAGINAS_CON_NOINDEX_ESPERADO = new Set([
-  'dist/en/index.html',
-  'dist/en/privacy/index.html',
-  'dist/en/terms/index.html',
-  'dist/en/legal-notice/index.html',
-])
+// --- Indexable: el español desde el 15-09-2026 (decisión humana explícita en
+//     MAK-71) y el inglés desde el 25-09-2026 (decisión de Gonzalo, con el copy
+//     aprobado, el ejemplo real de idiomas mezclados y la descarga en inglés ya
+//     publicados). Ninguna página construida lleva `noindex`; si alguien lo
+//     reintroduce sin que un humano lo pida otra vez, el despliegue se cae aquí
+//     igual que antes se caía por lo contrario. (`/og`, el molde de la tarjeta,
+//     queda fuera de `paginas` y se comprueba aparte más abajo.)
 const tieneNoindex = (f) => /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
-const conNoindexInesperado = paginas.filter((f) => !PAGINAS_CON_NOINDEX_ESPERADO.has(f) && tieneNoindex(f))
-if (conNoindexInesperado.length)
-  fallos.push(`noindex no debería estar en: ${conNoindexInesperado.join(', ')}`)
-else console.log(`ok  sin noindex fuera de lo esperado en las ${paginas.length} páginas construidas`)
-
-const sinNoindexEsperado = [...PAGINAS_CON_NOINDEX_ESPERADO].filter((f) => existsSync(f) && !tieneNoindex(f))
-if (sinNoindexEsperado.length)
-  fallos.push(`MAK-274: falta noindex en ${sinNoindexEsperado.join(', ')} (copy provisional, no debe indexarse)`)
-else console.log('ok  MAK-274 · /en/ lleva noindex (copy provisional hasta la sub-issue 4)')
+const conNoindex = paginas.filter(tieneNoindex)
+if (conNoindex.length) fallos.push(`noindex no debería estar en: ${conNoindex.join(', ')}`)
+else console.log(`ok  sin noindex en las ${paginas.length} páginas construidas (español e inglés indexables)`)
 
 // --- Y el robots.txt ya no bloquea el sitio. Volver a bloquearlo es una decisión
 //     humana, así que si alguien lo toca sin pedirlo el despliegue se cae aquí.
@@ -983,18 +966,15 @@ else {
     console.log('ok  MAK-247 · los tiempos aparecen una sola vez en la página')
 }
 
-// --- Una sola URL indexable: el resto de páginas (404, gracias, legales) no
-//     entran en el sitemap.
+// --- Dos URL en el sitemap, las dos portadas: el resto de páginas (404,
+//     legales, descarga) no se le sugieren a Google. `astro.config.mjs` las
+//     filtra; esto comprueba el resultado publicado, no la configuración.
 const sitemap = readFileSync('dist/sitemap-0.xml', 'utf8')
-const enSitemap = (sitemap.match(/<loc>([^<]*)<\/loc>/g) ?? []).length
-if (enSitemap !== 1) fallos.push(`el sitemap tiene ${enSitemap} URL y debería tener una`)
-else console.log('ok  sitemap · una sola URL')
-
-// --- MAK-274: `/en/` no entra en el sitemap todavía — copy provisional, fuera
-//     hasta la sub-issue 4. `astro.config.mjs` ya lo filtra; esto comprueba el
-//     resultado publicado, no la configuración.
-if (/\/en\//.test(sitemap)) fallos.push('MAK-274: /en/ está en el sitemap y todavía no debería')
-else console.log('ok  MAK-274 · /en/ queda fuera del sitemap')
+const locs = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/g)].map(([, l]) => l)
+const ESPERADAS_SITEMAP = ['https://echo.make-algo.com/', 'https://echo.make-algo.com/en/']
+if (locs.length !== 2 || !ESPERADAS_SITEMAP.every((u) => locs.includes(u)))
+  fallos.push(`el sitemap debería tener exactamente las dos portadas y tiene: ${locs.join(', ') || 'nada'}`)
+else console.log('ok  sitemap · las dos portadas, / y /en/')
 
 // --- MAK-257 · /condiciones publica el plan mensual, el anual y la garantía del
 //     primer cobro con importe (docs/legal/condiciones.md v2, make-algo/echo#66).
