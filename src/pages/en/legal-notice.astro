@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro'
+import Footer from '../../components/Footer.astro'
+import Header from '../../components/Header.astro'
+import { url } from '../../lib/site'
+
+/**
+ * Traducción de cortesía de `/aviso-legal`. El texto vinculante es el español;
+ * esta página lo dice arriba del todo y remite a él. Si cambia el aviso legal
+ * en español, cambia esta traducción en el mismo commit.
+ *
+ * Existe porque los directorios internacionales (TAAFT devolvió la primera
+ * ficha por «Tool does not have an English version») piden que todo lo que
+ * enlaza la web en inglés esté en inglés, legales incluidas.
+ */
+---
+
+<Base
+  title="Legal notice — echo, dictation for Mac"
+  description="Legal notice of echo, the dictation app for Mac by Make Algo SL."
+  path="/legal-notice"
+  lang="en"
+  translations={{ es: '/aviso-legal', en: '/legal-notice' }}
+  ogImage="/og.png"
+  ogImageAlt="echo, dictation for Mac that writes it clean"
+>
+  <Header lang="en" />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Legal notice</h1>
+        <p class="microcopy">
+          This is a courtesy translation. The <a href={url('/aviso-legal')}>Spanish version</a> is
+          the binding one; if the two differ, the Spanish text prevails.
+        </p>
+
+        <p>
+          In compliance with Article 10 of Spanish Law 34/2002, of 11 July, on Information Society
+          Services and Electronic Commerce, we inform you that:
+        </p>
+
+        <p>
+          <strong>Site owner:</strong> Make Algo SL<br />
+          <strong>Tax ID (NIF):</strong> B88875018<br />
+          <strong>Registered office:</strong> Calle General Pardiñas, 114 — 28006 Madrid, Spain<br />
+          <strong>Contact email:</strong> hola@make-algo.com<br />
+          <strong>Company registration:</strong> Madrid Companies Registry (Registro Mercantil de
+          Madrid), Section 8, sheet M-893705, entry 1
+        </p>
+
+        <h2>Use of the site</h2>
+        <p>
+          This site presents echo, lets you download it and gives you a contact address. The
+          download is free and requires no registration. echo includes 14 days of full use at no
+          cost; after that it requires a subscription, taken out from within the app itself, under
+          its <a href={url('/terms', 'en')}>terms of use and subscription</a>.
+        </p>
+
+        <h2>Intellectual property</h2>
+        <p>
+          The contents of this site (texts, design, logos, code) belong to Make Algo SL or its
+          licensors. Reproducing or distributing them for commercial purposes without permission is
+          not allowed.
+        </p>
+
+        <h2>Liability</h2>
+        <p>
+          Make Algo SL does not guarantee uninterrupted availability of the site and is not liable
+          for damages arising from its use or from the inability to use it, to the extent permitted
+          by law.
+        </p>
+
+        <h2>Applicable law</h2>
+        <p>
+          This notice is governed by Spanish law. Any dispute shall be submitted to the courts of
+          Madrid, unless consumer protection rules provide for a different jurisdiction.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer lang="en" otroIdiomaHref={url('/aviso-legal')} />
+</Base>

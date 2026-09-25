@@ -1,19 +1,21 @@
 ---
-import { url } from '../lib/site'
+import { RUTAS_LEGALES, url } from '../lib/site'
 import { DEFAULT_LOCALE, getCopy, type Locale } from '../i18n/copy'
 
 interface Props {
   lang?: Locale
   /**
    * Esta misma página en el otro idioma, ya resuelta con `url()`. Si no se
-   * pasa, esta página todavía no tiene versión en el otro idioma (MAK-274:
-   * solo la portada la tiene por ahora) y el selector no se pinta — mejor
-   * ningún enlace que uno que caiga en un 404.
+   * pasa, esta página todavía no tiene versión en el otro idioma (la descarga
+   * y la invitación, por ahora) y el selector no se pinta — mejor ningún
+   * enlace que uno que caiga en un 404.
    */
   otroIdiomaHref?: string
 }
 const { lang = DEFAULT_LOCALE, otroIdiomaHref } = Astro.props
 const { pie } = getCopy(lang)
+/** Las legales sí existen en los dos idiomas: cada pie enlaza a las suyas. La descarga sigue en español. */
+const legales = RUTAS_LEGALES[lang]
 const ETIQUETA_OTRO_IDIOMA: Record<Locale, string> = { es: 'Español', en: 'English' }
 const otroIdioma: Locale = lang === 'es' ? 'en' : 'es'
 ---
@@ -27,7 +29,7 @@ const otroIdioma: Locale = lang === 'es' ? 'en' : 'es'
       de una tercera página.
     */}
     <p class="legal">
-      <a href={url('/descarga')}>{pie.descargar}</a><a href={url('/aviso-legal')}>{pie.avisoLegal}</a><a href={url('/condiciones')}>{pie.condiciones}</a><a href={url('/privacidad')}>{pie.privacidad}</a>{
+      <a href={url('/descarga')}>{pie.descargar}</a><a href={url(legales.avisoLegal, lang)}>{pie.avisoLegal}</a><a href={url(legales.condiciones, lang)}>{pie.condiciones}</a><a href={url(legales.privacidad, lang)}>{pie.privacidad}</a>{
         otroIdiomaHref && (
           <a href={otroIdiomaHref} hreflang={otroIdioma} lang={otroIdioma}>
             {ETIQUETA_OTRO_IDIOMA[otroIdioma]}

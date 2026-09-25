@@ -18,6 +18,18 @@ export function url(path: string, lang: Locale = DEFAULT_LOCALE): string {
   return `${BASE.replace(/\/$/, '')}/${prefijo}${path.replace(/^\//, '')}`
 }
 
+/**
+ * Las páginas legales, una ruta por idioma (sin el prefijo de idioma: se pasan
+ * a `url(ruta, lang)`). Las inglesas son traducciones de cortesía de las
+ * españolas, que son las vinculantes; existen para que todo lo que enlaza la
+ * web en inglés esté en inglés, legales incluidas (los directorios
+ * internacionales lo exigen: TAAFT devolvió la primera ficha por eso).
+ */
+export const RUTAS_LEGALES: Record<Locale, { avisoLegal: string; condiciones: string; privacidad: string }> = {
+  es: { avisoLegal: '/aviso-legal', condiciones: '/condiciones', privacidad: '/privacidad' },
+  en: { avisoLegal: '/legal-notice', condiciones: '/terms', privacidad: '/privacy' },
+}
+
 /** La misma ruta, absoluta. Necesaria en Open Graph y en el canonical. */
 export function absoluteUrl(path: string, lang: Locale = DEFAULT_LOCALE): string {
   return new URL(url(path, lang), import.meta.env.SITE).href

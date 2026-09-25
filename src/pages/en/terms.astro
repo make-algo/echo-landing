@@ -1,0 +1,324 @@
+---
+import Base from '../../layouts/Base.astro'
+import Footer from '../../components/Footer.astro'
+import Header from '../../components/Header.astro'
+import { url } from '../../lib/site'
+
+/**
+ * Traducción de cortesía de `/condiciones` (v2, MAK-254: plan mensual y
+ * programa de invitaciones), sección a sección y sin resumir. El contrato
+ * vinculante es el español —esta página lo dice arriba del todo— y sigue siendo
+ * `/condiciones` la URL que Stripe pide en Settings › Public details y la que
+ * acepta el cliente en el checkout, así que CONDICIONES_VERSION no cambia por
+ * traducir. Si cambia el texto en español, cambia esta traducción en el mismo
+ * commit.
+ */
+const actualizado = '24 September 2026'
+---
+
+<Base
+  title="Terms of use and subscription — echo, dictation for Mac"
+  description="Terms of use and subscription of echo, the dictation app for Mac by Make Algo SL."
+  path="/terms"
+  lang="en"
+  translations={{ es: '/condiciones', en: '/terms' }}
+  ogImage="/og.png"
+  ogImageAlt="echo, dictation for Mac that writes it clean"
+>
+  <Header lang="en" />
+  <main id="contenido" class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h1 style="font-size: var(--text-h2)">Terms of use and subscription</h1>
+        <p class="microcopy">Last updated: {actualizado}.</p>
+        <p class="microcopy">
+          This is a courtesy translation. The <a href={url('/condiciones')}>Spanish version</a> is
+          the binding one; if the two differ, the Spanish text prevails.
+        </p>
+
+        <h2>1. Who we are</h2>
+        <p>
+          echo is developed and sold by <strong>Make Algo SL</strong>, Tax ID (NIF) B88875018, Calle
+          General Pardiñas, 114 — 28006 Madrid, Spain. You can write to us at
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> for anything: questions,
+          cancellations, complaints or exercising your rights.
+        </p>
+        <p>
+          These terms govern downloading and using echo and, if you subscribe, the subscription. By
+          installing echo you accept sections 8 to 13; by subscribing you also accept sections 4 to
+          7.
+        </p>
+
+        <h2>2. What echo is and what you need to use it</h2>
+        <p>
+          echo is a voice dictation app for macOS: you hold a key, speak, release it and the text
+          appears written in the app you were in.
+        </p>
+        <p>
+          You need <strong>macOS 14 or later on a Mac with Apple Silicon</strong>, microphone and
+          accessibility permissions, and about 600 MB of disk space for the recognition model,
+          which is downloaded the first time.
+        </p>
+        <p>
+          <strong>AI polishing is optional</strong> and requires your own paid subscription to
+          Claude (Anthropic) or ChatGPT (OpenAI), with its command-line application installed and
+          signed in. <strong>We do not sell, include or broker those subscriptions.</strong> Without
+          either of them, echo still works: it transcribes on your Mac and applies the voice
+          punctuation commands.
+        </p>
+
+        <h2>3. What leaves your Mac and what doesn't</h2>
+        <ul>
+          <li><strong>Your voice never leaves.</strong> Recognition runs entirely on your Mac.</li>
+          <li>
+            <strong>If you turn on polishing, the transcribed text does leave.</strong> echo runs on
+            your Mac the official Anthropic or OpenAI application, which sends that text
+            <strong>with your own account</strong>, just as if you had pasted it into their chat
+            yourself. We don't see it, receive it or store it. That transfer is governed by
+            Anthropic's or OpenAI's terms and privacy policy, not by these.
+          </li>
+          <li>
+            <strong>That use consumes your subscription quota</strong> with them. If you dictate a
+            lot, it shows. We can't guarantee their quota will be enough for you, because it isn't
+            ours.
+          </li>
+          <li>
+            <strong>Towards us, the only things that leave</strong> are an identifier of your Mac
+            and, if you subscribe, your email address. The details are in the
+            <a href={url('/privacy', 'en')}>privacy policy</a>.
+          </li>
+          <li>If you'd rather nothing leaves, turn polishing off in Settings.</li>
+        </ul>
+
+        <h2>4. The 14-day trial</h2>
+        <p>
+          echo works in full for 14 days, free and <strong>without a card</strong>, counted from the
+          first time you open it on each Mac. Once that period ends, a subscription is needed to
+          keep dictating. Reinstalling does not restart the trial.
+        </p>
+
+        <h2>5. Price, payment and renewal</h2>
+        <ul>
+          <li>
+            The subscription comes in <strong>two options, your choice: €3 a month or €12 a
+            year</strong>, VAT included in both. Either of them covers <strong>up to three
+            Macs</strong> of yours; the only difference is the period and the price.
+          </li>
+          <li>Payment is processed by <strong>Stripe</strong>. We never see or store your card details.</li>
+          <li>
+            <strong>The subscription renews automatically at the end of each period</strong> —every
+            month or every year, depending on the option— at the same price, unless you cancel
+            before. If we are going to raise the price, we will let you know by email <strong>at
+            least 30 days</strong> in advance; if it doesn't suit you, cancel before the renewal.
+          </li>
+          <li>
+            <strong>You can switch options at any time</strong> —monthly to yearly or the other way
+            round— from Settings › Licence, which takes you to the Stripe portal. The change is
+            applied pro rata: the part of the period you have already paid for and not used is
+            deducted from the new price.
+          </li>
+          <li>
+            <strong>You can cancel at any time</strong>, without giving a reason, from the same
+            portal. When you cancel, echo keeps working until the end of the period you have already
+            paid for; there is no penalty and no minimum term.
+          </li>
+          <li>
+            If a charge fails, we will let you know and try again. If it still can't be charged, the
+            subscription is suspended.
+          </li>
+        </ul>
+
+        <h2>6. Right of withdrawal</h2>
+        <p>
+          If you are a consumer, you have the right to withdraw from the contract within
+          <strong>14 calendar days</strong> without giving any reason.
+        </p>
+        <p>
+          However: so that you can use echo as soon as you pay, when you subscribe we ask you to
+          <strong>expressly consent to us starting to provide the service immediately</strong> and
+          to <strong>acknowledge that, as a result, you lose the right of withdrawal</strong> once
+          the service has been performed (Article 103(m) of the consolidated text of the Spanish
+          General Consumer and User Protection Act). If you don't accept this, we can't activate
+          your licence right away.
+        </p>
+        <p>
+          <strong>Regardless of the above, we give you our own money-back guarantee:</strong> if
+          echo doesn't win you over, write to
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a> within <strong>14 days of your
+          first charge with an amount</strong> —the first one in which you actually pay something;
+          if your first charge was €0 because of a discount, the first real one counts— and we
+          refund it in full, no questions asked. The guarantee covers <strong>only that first
+          charge</strong>: renewals are not refunded, but you can cancel at any time and echo keeps
+          working until the end of the period you have already paid for. We think that's fair,
+          because you had 14 days of trial to decide beforehand.
+        </p>
+
+        <h2>7. Referral programme</h2>
+        <p>
+          If you have an active echo subscription taken out through Stripe, you can invite other
+          people with your own code, created from Settings › Invite a friend.
+        </p>
+        <ul>
+          <li>
+            <strong>What your invitee gets:</strong> a <strong>€3 discount on their first
+            charge</strong>. If they choose the monthly option, their first month is free.
+          </li>
+          <li>
+            <strong>What you get:</strong> <strong>€3 of credit</strong> in your Stripe customer
+            account for each invitee who goes on to pay. The credit is automatically deducted from
+            your next invoices and accumulates.
+          </li>
+          <li>
+            <strong>When it is credited:</strong> 14 days after your invitee's first charge with an
+            amount, provided that charge has not been refunded. This matches their money-back
+            guarantee under §6: the reward is credited once the payment is final.
+          </li>
+          <li>
+            <strong>Cap:</strong> at most <strong>12 rewarded invitations per calendar year</strong>
+            per person.
+          </li>
+        </ul>
+        <p>Programme rules:</p>
+        <ul>
+          <li>
+            <strong>The credit has no cash value.</strong> It only works as a discount on echo
+            invoices: it can't be exchanged for cash, transferred or assigned to someone else. If
+            your subscription ends, any unused credit is lost.
+          </li>
+          <li>
+            <strong>The code is for inviting other people.</strong> Self-referral —using your own
+            code, or inviting yourself with another email address, another machine of yours or the
+            same card— <strong>voids the reward</strong>, and we may also void rewards obtained
+            through any other fraudulent or abusive use of the programme and exclude whoever does it
+            from it.
+          </li>
+          <li>
+            <strong>We may modify or end the programme</strong>, announcing it on the website and in
+            the app <strong>at least 15 days in advance</strong>. Ending it doesn't affect what you
+            have already earned: you keep the credit already credited and the rewards for invitees
+            who had already made their first charge with an amount before that date.
+          </li>
+        </ul>
+
+        <h2>8. Your licence</h2>
+        <p>
+          We don't sell you the software: we grant you a <strong>personal, non-exclusive,
+          non-transferable and revocable licence</strong> to install and use echo on up to three
+          Macs under your control, for personal or professional purposes, as long as you comply with
+          these terms.
+        </p>
+        <p>
+          <strong>You may not:</strong> resell, rent, lend, sublicense or distribute echo; remove or
+          alter authorship notices; circumvent the licence check; or use echo to provide a dictation
+          service to third parties who are not users of their own copies.
+        </p>
+        <p>
+          <strong>You may, because the law grants it to you:</strong> make a backup copy and carry
+          out the operations permitted by Article 100 of the consolidated text of the Spanish
+          Intellectual Property Act, including decompilation to achieve interoperability. Nothing in
+          this section limits those rights.
+        </p>
+
+        <h2>9. Third-party software and trademarks</h2>
+        <p>
+          echo incorporates <strong>FluidAudio</strong>, licensed under Apache 2.0, and uses
+          NVIDIA's <strong>Parakeet TDT 0.6b v3</strong> recognition model, licensed under
+          CC-BY-4.0. The text of both licences is in Settings › About › Licences.
+        </p>
+        <p>
+          The Claude Code and Codex command-line applications belong to Anthropic and OpenAI
+          respectively, <strong>are not distributed with echo</strong> and are governed by their own
+          terms. echo is not sponsored, endorsed by or affiliated with Anthropic, OpenAI, NVIDIA or
+          Apple; their trademarks are mentioned only to describe what echo works with.
+        </p>
+
+        <h2>10. Updates</h2>
+        <p>
+          echo periodically checks whether there is a new version and may install it. While your
+          subscription is active we will provide the updates needed to keep echo in conformity with
+          the contract, including security updates. You can turn off automatic installation in
+          Settings; if you do and don't install the updates we offer you, we are not liable for any
+          lack of conformity that is due solely to that.
+        </p>
+
+        <h2>11. If Anthropic or OpenAI change the rules</h2>
+        <p>
+          Polishing depends on third-party services we don't control. They may change their terms,
+          prices or availability, or stop allowing this use.
+        </p>
+        <p>
+          If that happens, <strong>we may replace the polishing provider with an equivalent
+          one</strong> without it being considered a breach, notifying you by email. If none remained
+          available, echo would keep working with local transcription and voice commands; if you
+          consider that this amounts to a lack of conformity with what you subscribed to, you may
+          terminate the subscription and we will refund the unused proportion.
+        </p>
+
+        <h2>12. Legal guarantee of conformity</h2>
+        <p>
+          We are liable to you for any lack of conformity of echo <strong>throughout the term of your
+          subscription</strong>, in accordance with Articles 115 et seq. of the consolidated text of
+          the Spanish General Consumer and User Protection Act. Nothing in these terms limits,
+          excludes or conditions that guarantee. If echo doesn't do what we say it does, write to
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>.
+        </p>
+
+        <h2>13. Liability</h2>
+        <p>We are liable for the foreseeable damages we cause you by breaching these terms.</p>
+        <p>
+          <strong>We do not exclude or limit</strong> in any case our liability for wilful
+          misconduct, gross negligence, death or personal injury, or any other liability that the law
+          does not allow to be limited.
+        </p>
+        <p>Two common-sense warnings, because they describe how echo works:</p>
+        <ul>
+          <li>
+            echo <strong>pastes text into the app you are writing in</strong>. Check what appears
+            before sending it. We are not responsible for the use you make of the text or for where
+            it ends up.
+          </li>
+          <li>
+            echo <strong>is not suitable for information covered by professional secrecy if you use
+            polishing</strong>, because the text goes out to Anthropic or OpenAI. For those cases,
+            turn polishing off.
+          </li>
+        </ul>
+
+        <h2>14. Suspension and termination</h2>
+        <p>
+          We may suspend or terminate your licence if the subscription is not paid or if you use echo
+          in a way that breaches these terms or the law. We will notify you beforehand and give you
+          a reasonable period to put it right, unless the breach is serious or urgent. You can
+          terminate whenever you like by cancelling the subscription and uninstalling echo.
+        </p>
+
+        <h2>15. Changes to these terms</h2>
+        <p>
+          We may modify them for legal, technical or service-operation reasons. We will notify you by
+          email <strong>at least 30 days</strong> in advance. If the changes don't suit you, you can
+          cancel before they take effect and we will refund the unused proportion.
+        </p>
+
+        <h2>16. Your data</h2>
+        <p>
+          What we process, why, and how to exercise your rights is in the
+          <a href={url('/privacy', 'en')}>privacy policy</a>.
+        </p>
+
+        <h2>17. Applicable law and complaints</h2>
+        <p>
+          These terms are governed by <strong>Spanish law</strong>. If you are a consumer, you keep
+          the right to bring claims before the courts of your own place of residence, and the
+          consumer protection laws of your country of residence in the European Union continue to
+          protect you.
+        </p>
+        <p>
+          Before going to court, write to us at
+          <a href="mailto:hola@make-algo.com">hola@make-algo.com</a>: we respond to any complaint
+          within one month at most.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer lang="en" otroIdiomaHref={url('/condiciones')} />
+</Base>

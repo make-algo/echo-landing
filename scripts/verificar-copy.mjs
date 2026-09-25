@@ -825,7 +825,16 @@ else console.log('ok  CA-NEG-9 · ninguna analítica de terceros')
 //     `/en/` es la excepción a propósito (MAK-274): publica copy provisional
 //     hasta la sub-issue 4, así que TIENE que llevar `noindex` — lo contrario,
 //     indexar una traducción a medias, sería peor que no tener `/en/`.
-const PAGINAS_CON_NOINDEX_ESPERADO = new Set(['dist/en/index.html'])
+//
+//     Las legales en inglés (traducciones de cortesía de las españolas, que son
+//     las vinculantes) heredan el mismo `noindex` de `Base.astro` mientras `/en/`
+//     lo lleve: se levanta todo a la vez cuando se levante el de la portada.
+const PAGINAS_CON_NOINDEX_ESPERADO = new Set([
+  'dist/en/index.html',
+  'dist/en/privacy/index.html',
+  'dist/en/terms/index.html',
+  'dist/en/legal-notice/index.html',
+])
 const tieneNoindex = (f) => /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
 const conNoindexInesperado = paginas.filter((f) => !PAGINAS_CON_NOINDEX_ESPERADO.has(f) && tieneNoindex(f))
 if (conNoindexInesperado.length)
@@ -849,7 +858,8 @@ else console.log('ok  robots.txt · el sitio es indexable')
 //     tarjeta de texto gris. `/og` es el molde que genera la imagen, no una
 //     ruta de la landing, así que queda fuera de esta comprobación.
 const RUTAS_OG = ['dist/index.html', 'dist/descarga/index.html', 'dist/privacidad/index.html',
-  'dist/aviso-legal/index.html', 'dist/condiciones/index.html', 'dist/404.html']
+  'dist/aviso-legal/index.html', 'dist/condiciones/index.html', 'dist/404.html',
+  'dist/en/privacy/index.html', 'dist/en/terms/index.html', 'dist/en/legal-notice/index.html']
 const sinOgImage = RUTAS_OG.filter((f) => !/<meta property="og:image" content="[^"]+"/.test(readFileSync(f, 'utf8')))
 if (sinOgImage.length) fallos.push(`falta og:image en: ${sinOgImage.join(', ')}`)
 else console.log(`ok  og:image · presente en las ${RUTAS_OG.length} rutas publicadas`)
@@ -975,6 +985,39 @@ else {
     fallos.push('MAK-257: /condiciones no menciona el programa de invitaciones (§7)')
   if (condicionesTexto.includes(PRECIOS_CONDICIONES[0]) && condicionesTexto.includes(PRECIOS_CONDICIONES[1]))
     console.log('ok  MAK-257 · /condiciones enseña los dos precios y la garantía del primer cobro con importe')
+}
+
+// --- Las legales en inglés existen y dicen lo mismo que las españolas en lo
+//     que la comprobación de arriba vigila: los dos precios, la garantía del
+//     primer cobro con importe y el programa de invitaciones. Cada una remite
+//     a su original español como texto vinculante y las tres se enlazan entre
+//     sí por hreflang, para que ni un directorio ni un buscador vean una web
+//     en inglés que remata en legales en español.
+{
+  const LEGALES_EN = {
+    'dist/en/terms/index.html': ['€3 a month', '€12 a year', '14 days of your first charge with an amount', 'Referral programme', 'Spanish version'],
+    'dist/en/privacy/index.html': ['If you use the referral programme.', 'Spanish version'],
+    'dist/en/legal-notice/index.html': ['B88875018', 'M-893705', 'Spanish version'],
+  }
+  const PAREJAS = [
+    ['dist/en/terms/index.html', 'dist/condiciones/index.html', '/en/terms', '/condiciones'],
+    ['dist/en/privacy/index.html', 'dist/privacidad/index.html', '/en/privacy', '/privacidad'],
+    ['dist/en/legal-notice/index.html', 'dist/aviso-legal/index.html', '/en/legal-notice', '/aviso-legal'],
+  ]
+  const antes = fallos.length
+  for (const [fichero, frases] of Object.entries(LEGALES_EN)) {
+    if (!existsSync(fichero)) { fallos.push(`no existe ${fichero}: la web en inglés remata en legales en español`); continue }
+    const texto = visible(readFileSync(fichero, 'utf8'))
+    for (const frase of frases) if (!texto.includes(frase)) fallos.push(`${fichero} no dice «${frase}»`)
+  }
+  for (const [en, es, rutaEn, rutaEs] of PAREJAS) {
+    if (!existsSync(en) || !existsSync(es)) continue
+    const htmlEn = readFileSync(en, 'utf8')
+    const htmlEs = readFileSync(es, 'utf8')
+    if (!htmlEn.includes(`hreflang="es" href="${PROPIO.replace(/\/$/, '')}${rutaEs}"`)) fallos.push(`${en} no enlaza por hreflang a ${rutaEs}`)
+    if (!htmlEs.includes(`hreflang="en" href="${PROPIO.replace(/\/$/, '')}${rutaEn}"`)) fallos.push(`${es} no enlaza por hreflang a ${rutaEn}`)
+  }
+  if (fallos.length === antes) console.log('ok  legales en inglés · /en/terms, /en/privacy y /en/legal-notice existen, dicen lo mismo y enlazan a su original')
 }
 
 // --- MAK-257 · /privacidad recoge el párrafo del programa de invitaciones:
