@@ -2,8 +2,9 @@
 /**
  * Comprobación automática del copy sobre el HTML generado (CA-INT-5, CA-NEG-*).
  *
- * Mira `dist/index.html`: desde MAK-85 la landing en corrección es la única
- * ruta, ganadora de las direcciones de MAK-82 por decisión de Álvaro en MAK-71.
+ * Mira `dist/index.html` (es) y, desde MAK-274, también `dist/en/index.html`:
+ * la landing en corrección es la única ruta por idioma, ganadora de las
+ * direcciones de MAK-82 por decisión de Álvaro en MAK-71.
  *
  * Falla si alguna de las redacciones innegociables no aparece literal, si
  * aparece alguna de las cadenas prohibidas, o si el esqueleto de encabezados se
@@ -16,7 +17,10 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
-const RUTAS = [['landing /', 'dist/index.html']]
+const RUTAS = [
+  ['landing / (es)', 'dist/index.html', 'es'],
+  ['landing /en/ (en, copy provisional)', 'dist/en/index.html', 'en'],
+]
 
 const faltan = RUTAS.filter(([, f]) => !existsSync(f))
 if (faltan.length) {
@@ -250,20 +254,29 @@ const COMPARATIVA = [
   ['Formato según la app', 'No lo cambia', 'Correo, chat o terminal, distinto'],
 ]
 
+// --- MAK-274: cada idioma tiene su propia lista de cadenas innegociables y
+//     prohibidas. `/en/` publica copy provisional EN ESPAÑOL hasta que la
+//     sub-issue 4 traiga la traducción aprobada, así que por ahora reutiliza
+//     literalmente las listas de `es`; el día que `en.ts` traduzca de verdad,
+//     estas dos líneas son las que hay que tocar para darle sus propias
+//     cadenas en inglés.
+const INNEGOCIABLES_POR_IDIOMA = { es: INNEGOCIABLES, en: INNEGOCIABLES }
+const PROHIBIDAS_POR_IDIOMA = { es: PROHIBIDAS, en: PROHIBIDAS }
+
 const fallos = []
 const mal = (ruta, mensaje) => fallos.push(`${ruta}: ${mensaje}`)
 
-for (const [ruta, fichero] of RUTAS) {
+for (const [ruta, fichero, idioma] of RUTAS) {
   const html = readFileSync(fichero, 'utf8')
   const texto = visible(html)
   const bajo = texto.toLowerCase()
   const errores = fallos.length
 
-  for (const [nombre, esperado] of INNEGOCIABLES) {
+  for (const [nombre, esperado] of INNEGOCIABLES_POR_IDIOMA[idioma]) {
     if (!texto.includes(norm(esperado))) mal(ruta, `${nombre}: NO aparece literal`)
   }
 
-  for (const [nombre, cadenas] of PROHIBIDAS) {
+  for (const [nombre, cadenas] of PROHIBIDAS_POR_IDIOMA[idioma]) {
     const encontradas = cadenas.filter((c) => bajo.includes(c.toLowerCase()))
     if (encontradas.length)
       mal(ruta, `${nombre}: aparece ${encontradas.map((c) => `«${c}»`).join(', ')}`)
@@ -665,13 +678,24 @@ if (conAnalitica.length)
 else console.log('ok  CA-NEG-9 · ninguna analítica de terceros')
 
 // --- Indexable desde el 15-09-2026 (decisión humana explícita en MAK-71): ninguna
-//     página lleva `noindex`. Si alguien lo reintroduce sin que el humano lo pida
-//     otra vez, el despliegue se cae aquí igual que antes se caía por lo contrario.
-const conNoindex = paginas.filter(
-  (f) => /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
-)
-if (conNoindex.length) fallos.push(`noindex no debería estar en: ${conNoindex.join(', ')}`)
-else console.log(`ok  sin noindex en las ${paginas.length} páginas construidas`)
+//     página en español lleva `noindex`. Si alguien lo reintroduce sin que el
+//     humano lo pida otra vez, el despliegue se cae aquí igual que antes se
+//     caía por lo contrario.
+//
+//     `/en/` es la excepción a propósito (MAK-274): publica copy provisional
+//     hasta la sub-issue 4, así que TIENE que llevar `noindex` — lo contrario,
+//     indexar una traducción a medias, sería peor que no tener `/en/`.
+const PAGINAS_CON_NOINDEX_ESPERADO = new Set(['dist/en/index.html'])
+const tieneNoindex = (f) => /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'))
+const conNoindexInesperado = paginas.filter((f) => !PAGINAS_CON_NOINDEX_ESPERADO.has(f) && tieneNoindex(f))
+if (conNoindexInesperado.length)
+  fallos.push(`noindex no debería estar en: ${conNoindexInesperado.join(', ')}`)
+else console.log(`ok  sin noindex fuera de lo esperado en las ${paginas.length} páginas construidas`)
+
+const sinNoindexEsperado = [...PAGINAS_CON_NOINDEX_ESPERADO].filter((f) => existsSync(f) && !tieneNoindex(f))
+if (sinNoindexEsperado.length)
+  fallos.push(`MAK-274: falta noindex en ${sinNoindexEsperado.join(', ')} (copy provisional, no debe indexarse)`)
+else console.log('ok  MAK-274 · /en/ lleva noindex (copy provisional hasta la sub-issue 4)')
 
 // --- Y el robots.txt ya no bloquea el sitio. Volver a bloquearlo es una decisión
 //     humana, así que si alguien lo toca sin pedirlo el despliegue se cae aquí.
@@ -784,6 +808,12 @@ const sitemap = readFileSync('dist/sitemap-0.xml', 'utf8')
 const enSitemap = (sitemap.match(/<loc>([^<]*)<\/loc>/g) ?? []).length
 if (enSitemap !== 1) fallos.push(`el sitemap tiene ${enSitemap} URL y debería tener una`)
 else console.log('ok  sitemap · una sola URL')
+
+// --- MAK-274: `/en/` no entra en el sitemap todavía — copy provisional, fuera
+//     hasta la sub-issue 4. `astro.config.mjs` ya lo filtra; esto comprueba el
+//     resultado publicado, no la configuración.
+if (/\/en\//.test(sitemap)) fallos.push('MAK-274: /en/ está en el sitemap y todavía no debería')
+else console.log('ok  MAK-274 · /en/ queda fuera del sitemap')
 
 // --- MAK-257 · /condiciones publica el plan mensual, el anual y la garantía del
 //     primer cobro con importe (docs/legal/condiciones.md v2, make-algo/echo#66).

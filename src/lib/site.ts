@@ -1,17 +1,26 @@
+import { DEFAULT_LOCALE, type Locale } from '../i18n/copy'
+
 // Dominio propio servido desde la raíz (sin `base` en astro.config.mjs), pero
 // ninguna ruta ni ningún asset se escribe como absoluto a mano: si el sitio
 // vuelve a moverse (a un subdirectorio, a otro dominio), esto es lo único que
 // hay que tocar. `BASE_URL` ya viene con la barra final que fija Astro.
 const BASE = import.meta.env.BASE_URL
 
-/** Ruta interna respetando el `base` del sitio: url('/privacidad') → '/privacidad' */
-export function url(path: string): string {
-  return `${BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+/**
+ * Ruta interna respetando el `base` del sitio y, si se pasa, el idioma:
+ * `url('/privacidad')` → `/privacidad` (español, en la raíz), `url('/', 'en')`
+ * → `/en/`. Sin segundo argumento se comporta exactamente como antes de
+ * MAK-274 — así ningún enlace a una página que todavía no existe en inglés
+ * (descarga, privacidad, condiciones…) cambia de sitio por accidente.
+ */
+export function url(path: string, lang: Locale = DEFAULT_LOCALE): string {
+  const prefijo = lang === DEFAULT_LOCALE ? '' : `${lang}/`
+  return `${BASE.replace(/\/$/, '')}/${prefijo}${path.replace(/^\//, '')}`
 }
 
 /** La misma ruta, absoluta. Necesaria en Open Graph y en el canonical. */
-export function absoluteUrl(path: string): string {
-  return new URL(url(path), import.meta.env.SITE).href
+export function absoluteUrl(path: string, lang: Locale = DEFAULT_LOCALE): string {
+  return new URL(url(path, lang), import.meta.env.SITE).href
 }
 
 export const site = {
