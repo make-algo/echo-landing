@@ -66,13 +66,18 @@ const tituloEn = 'Download echo, dictation for Mac'
           raiz.lang = idioma
           document.title = idioma === 'en' ? tituloEn : 'Descargar echo, dictado para Mac'
           // El enlace «saltar al contenido» de <Base> apunta a #contenido: que
-          // sea el <main> del idioma que se ve.
-          var mains = document.querySelectorAll('[data-lang] main')
-          for (var i = 0; i < mains.length; i++) {
-            var propio = mains[i].closest('[data-lang]').getAttribute('data-lang') === idioma
-            if (propio) mains[i].id = 'contenido'
-            else mains[i].removeAttribute('id')
+          // sea el <main> del idioma que se ve. Este guion corre antes de que
+          // los bloques existan, así que la primera vez espera al DOM.
+          function moverContenido() {
+            var mains = document.querySelectorAll('[data-lang] main')
+            for (var i = 0; i < mains.length; i++) {
+              var propio = mains[i].closest('[data-lang]').getAttribute('data-lang') === idioma
+              if (propio) mains[i].id = 'contenido'
+              else mains[i].removeAttribute('id')
+            }
           }
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', moverContenido)
+          else moverContenido()
         }
         var origen = ''
         try {
