@@ -96,6 +96,12 @@ export interface Copy {
     nombre: string
     ogImageAlt: string
   }
+  /** El vídeo demo bajo la apertura (repo privado `echo`, `video/`). */
+  video: {
+    titulo: string
+    reproducir: string
+    descripcion: string
+  }
   /** Texto alternativo de las capturas de la píldora. */
   imagenes: {
     pildoraEscuchando: string

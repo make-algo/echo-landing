@@ -192,6 +192,13 @@ export const en: Copy = {
     ogImageAlt: 'echo, dictation for Mac that writes it clean',
   },
 
+  video: {
+    titulo: 'See it in 30 seconds',
+    reproducir: 'Play the video, with sound',
+    descripcion:
+      'echo video: an email is dictated in Mail with filler words and a correction, and it appears written clean; then a Slack message, a list in Notion and an email that echo writes from an instruction.',
+  },
+
   imagenes: {
     pildoraEscuchando: 'The echo pill listening, with the voice waveform and the counter at 0:07.',
     pildoraPuliendo:

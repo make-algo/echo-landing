@@ -191,6 +191,13 @@ export const es: Copy = {
     ogImageAlt: 'echo, dictado para Mac que escribe limpio',
   },
 
+  video: {
+    titulo: 'Míralo en 30 segundos',
+    reproducir: 'Reproducir el vídeo, con sonido',
+    descripcion:
+      'Vídeo de echo: se dicta un correo en Mail con muletillas y una corrección, y aparece escrito limpio; después, un mensaje en Slack, una lista en Notion y un correo que echo redacta a partir de una instrucción.',
+  },
+
   imagenes: {
     pildoraEscuchando: 'La píldora de echo escuchando, con la onda de voz y el contador en 0:07.',
     pildoraPuliendo:

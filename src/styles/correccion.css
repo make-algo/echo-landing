@@ -618,3 +618,45 @@
     font-size: clamp(1.625rem, 1rem + 3vw, 2.25rem);
   }
 }
+
+/* --- El vídeo demo bajo la apertura. Un filete de tinta y nada más: sin
+       sombra ni radio, como el resto de la página. El botón es rojo porque es
+       una acción, la misma gramática que el CTA. */
+.ruta-correccion .video-demo__marco {
+  position: relative;
+  margin-top: 1.5rem;
+  max-width: 1120px;
+  border: 1px solid var(--c-ink);
+  background: var(--c-ink);
+}
+.ruta-correccion .video-demo__marco video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+.ruta-correccion .video-demo__play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: clamp(64px, 8vw, 104px);
+  height: clamp(64px, 8vw, 104px);
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: var(--c-rojo);
+  color: #fff;
+  cursor: pointer;
+}
+.ruta-correccion .video-demo__play[hidden] {
+  display: none;
+}
+.ruta-correccion .video-demo__play:hover {
+  background: var(--c-rojo-fuerte);
+}
+.ruta-correccion .video-demo__play svg {
+  width: 44%;
+  height: 44%;
+  margin-left: 6%;
+}
