@@ -520,8 +520,9 @@ for (const [ruta, fichero, idioma] of RUTAS) {
     else desde = donde
   }
 
-  // --- MAK-85 · el esqueleto de encabezados no puede perderse. Los seis (cinco + el del vídeo demo)
-  //     rótulos de sección tienen que seguir siendo <h2> para quien navega
+  // --- MAK-85 · el esqueleto de encabezados no puede perderse. Los seis
+  //     rótulos de sección (los cinco de MAK-85 y el del vídeo demo, que va
+  //     justo después de la apertura) tienen que seguir siendo <h2> para quien navega
   //     saltando por encabezados, sea cual sea su vestido visual.
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
