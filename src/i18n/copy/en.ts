@@ -32,6 +32,13 @@ export const en: Copy = {
   cabecera: {
     marca: 'echo',
     cta: 'Download echo',
+    idioma: 'Language',
+  },
+
+  sugerenciaIdioma: {
+    texto: 'This page is also available in English.',
+    cambiar: 'Switch to English',
+    quedarse: 'Keep Spanish',
   },
 
   apertura: {

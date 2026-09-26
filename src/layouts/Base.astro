@@ -45,6 +45,7 @@ const canonical = absoluteUrl(path, lang)
  * pidió que Google pudiera indexarla. Solo `/og` (el molde de la tarjeta)
  * sigue sin indexarse, y lo hace por su cuenta en `og.astro`.
  */
+const sugerencias = { es: getCopy('es').sugerenciaIdioma, en: getCopy('en').sugerenciaIdioma }
 const OG_LOCALES: Record<Locale, string> = { es: 'es_ES', en: 'en_US' }
 ---
 
@@ -74,6 +75,103 @@ const OG_LOCALES: Record<Locale, string> = { es: 'es_ES', en: 'en_US' }
         <link rel="alternate" hreflang="x-default" href={absoluteUrl(translations[DEFAULT_LOCALE]!, DEFAULT_LOCALE)} />
       )
     }
+
+    {/*
+      Idioma: la URL lo fija (`/` o `/en/`) para que buscadores y vistas previas
+      de enlaces vean cada idioma en su dirección, y esto lo adapta a quien
+      entra, sin redirigir nunca a nadie que no haya elegido:
+      - Si eligió idioma (selector de la cabecera, enlace del pie o el aviso),
+        se guarda en `localStorage` y al volver se le lleva a su versión antes
+        de pintar nada. Un rastreador no guarda nada, así que nunca se le
+        redirige y cada idioma sigue indexándose en su URL.
+      - Si no eligió y su sistema está en el otro idioma, un aviso le ofrece
+        la otra versión con un clic. No redirige: una redirección por idioma
+        del navegador también se la llevaría el rastreador de Google.
+      Se guarda solo tras un clic de la persona y solo el código del idioma.
+      Va aquí, detrás de los `<link rel="alternate">`, porque los lee.
+    */}
+    <script is:inline define:vars={{ sugerencias }}>
+      ;(function () {
+        try {
+          var CLAVE = 'echo-idioma'
+          var raiz = document.documentElement
+          var leer = function () {
+            try { return localStorage.getItem(CLAVE) } catch (e) { return null }
+          }
+          var guardar = function (l) {
+            try { localStorage.setItem(CLAVE, l) } catch (e) {}
+          }
+          var alterno = function (l) {
+            var e = document.querySelector('link[rel="alternate"][hreflang="' + l + '"]')
+            // Misma ruta, en el dominio desde el que se navega (el canónico
+            // es absoluto a producción y en local llevaría fuera).
+            return e ? location.origin + new URL(e.href).pathname : null
+          }
+          var aqui = location.origin + location.pathname
+          var llevarA = function (l) {
+            var destino = alterno(l)
+            if (!destino || destino === aqui) return false
+            location.replace(destino + location.search + location.hash)
+            return true
+          }
+
+          var elegido = leer()
+          if (elegido && elegido !== raiz.lang && llevarA(elegido)) return
+
+          document.addEventListener('click', function (e) {
+            var a = e.target && e.target.closest ? e.target.closest('a[hreflang]') : null
+            if (a) guardar(a.getAttribute('hreflang'))
+          })
+
+          document.addEventListener('DOMContentLoaded', function () {
+            var bilingue = !!document.querySelector('[data-lang]')
+            var otro = raiz.lang === 'es' ? 'en' : 'es'
+            var hayOtro = bilingue || !!alterno(otro)
+
+            var selectores = document.querySelectorAll('[data-selector-idioma]')
+            for (var i = 0; i < selectores.length; i++) {
+              if (!hayOtro) continue
+              selectores[i].hidden = false
+              selectores[i].addEventListener('change', function (e) {
+                var l = e.target.value
+                guardar(l)
+                if (!llevarA(l)) document.dispatchEvent(new CustomEvent('echo:idioma', { detail: l }))
+              })
+            }
+
+            // /descarga elige idioma por su cuenta (mismo URL, dos bloques).
+            if (elegido || bilingue) return
+            var sistema = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase()
+            var preferido = /^es\b/.test(sistema) ? 'es' : 'en'
+            var destino = alterno(preferido)
+            if (preferido === raiz.lang || !destino || destino === aqui) return
+
+            var t = sugerencias[preferido]
+            var aviso = document.createElement('aside')
+            aviso.className = 'aviso-idioma'
+            aviso.lang = preferido
+            aviso.setAttribute('aria-label', t.texto)
+            var p = document.createElement('p')
+            p.textContent = t.texto + ' '
+            var ir = document.createElement('a')
+            ir.href = destino + location.search + location.hash
+            ir.hreflang = preferido
+            ir.textContent = t.cambiar
+            var quedarse = document.createElement('button')
+            quedarse.type = 'button'
+            quedarse.textContent = t.quedarse
+            quedarse.addEventListener('click', function () {
+              guardar(raiz.lang)
+              aviso.remove()
+            })
+            p.appendChild(ir)
+            aviso.appendChild(p)
+            aviso.appendChild(quedarse)
+            document.body.appendChild(aviso)
+          })
+        } catch (e) {}
+      })()
+    </script>
 
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
 
