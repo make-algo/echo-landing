@@ -26,6 +26,7 @@ const {
   preguntas,
   privacidad,
   velocidad,
+  video,
 } = getCopy(lang)
 
 /**
@@ -214,6 +215,32 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
       </div>
     </section>
 
+    {/* El vídeo demo, justo después de la apertura: el producto de verdad, con voz.
+         Lo genera el repo privado (`video/`, `npm run web -- <idioma>`): la píldora
+         es la de la app y los textos, lo que echo transcribió y pulió. La portada es
+         el fotograma de los tachones —la misma corrección que organiza la página—.
+         `preload="none"`: no se descarga nada hasta que alguien le da a reproducir.
+         Sin JavaScript quedan los controles nativos; con él, el botón rojo. */}
+    <section class="acto video-demo" id="demo" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+      <h2>{video.titulo}</h2>
+      <div class="video-demo__marco">
+        <video
+          controls
+          preload="none"
+          playsinline
+          width="1920"
+          height="1080"
+          poster={url(`/video/echo-demo-${lang}.webp`)}
+          aria-label={video.descripcion}
+        >
+          <source src={url(`/video/echo-demo-${lang}.mp4`)} type="video/mp4" />
+        </video>
+        <button type="button" class="video-demo__play" aria-label={video.reproducir} hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+        </button>
+      </div>
+    </section>
+
     {/* ACTO 2 · «Se pega donde ya escribes» (MAK-194/195). La spec la pide
          entre el Hero y la Demo animada, pero en esta dirección (galerada,
          MAK-85) las dos ya son UNA sola sección: el ciclo de dictado vive
@@ -361,6 +388,7 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
   import { iniciarTachado } from '../components/correccion/tachado'
   import { iniciarFaq } from '../components/correccion/faq'
   import { iniciarCiclo } from '../components/correccion/ciclo'
+  import { iniciarVideo } from '../components/correccion/video'
 
   const contenido = document.getElementById('contenido')
   if (contenido) {
@@ -369,4 +397,6 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
   }
   const ciclo = document.querySelector<HTMLElement>('.ciclo')
   if (ciclo) iniciarCiclo(ciclo)
+  const video = document.querySelector<HTMLElement>('.video-demo__marco')
+  if (video) iniciarVideo(video)
 </script>

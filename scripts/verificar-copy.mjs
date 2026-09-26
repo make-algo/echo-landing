@@ -374,12 +374,14 @@ const COMPARATIVA_EN = [
 
 // --- MAK-85 · rótulos de sección, uno por idioma.
 const ROTULOS_H2_ES = [
+  'míralo en 30 segundos',
   'se pega donde ya escribes',
   'qué pasa cuando sueltas la tecla',
   'qué sale de tu mac y qué no',
   'preguntas',
 ]
 const ROTULOS_H2_EN = [
+  'see it in 30 seconds',
   'pastes wherever you already write',
   'what happens when you let go of the key',
   'what leaves your mac, and what doesn’t',
@@ -518,13 +520,13 @@ for (const [ruta, fichero, idioma] of RUTAS) {
     else desde = donde
   }
 
-  // --- MAK-85 · el esqueleto de encabezados no puede perderse. Los cinco
+  // --- MAK-85 · el esqueleto de encabezados no puede perderse. Los seis (cinco + el del vídeo demo)
   //     rótulos de sección tienen que seguir siendo <h2> para quien navega
   //     saltando por encabezados, sea cual sea su vestido visual.
   const h2s = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, inner]) =>
     visible(inner).toLowerCase()
   )
-  if (h2s.length !== 5) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta cinco`)
+  if (h2s.length !== 6) mal(ruta, `tiene ${h2s.length} <h2> y hacen falta seis`)
   for (const rotulo of ROTULOS_H2_POR_IDIOMA[idioma]) {
     if (!h2s.some((h) => h.includes(rotulo))) mal(ruta, `el rótulo «${rotulo}» no es un <h2>`)
   }
