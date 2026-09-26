@@ -25,6 +25,18 @@ export interface Copy {
   cabecera: {
     marca: string
     cta: string
+    /** Nombre accesible del selector de idioma. */
+    idioma: string
+  }
+  /**
+   * Aviso que ofrece ESTE idioma a quien llega a la página en el otro y tiene
+   * el sistema en este: va escrito en el idioma que se ofrece, no en el de la
+   * página. `quedarse` deja la página como está y lo recuerda.
+   */
+  sugerenciaIdioma: {
+    texto: string
+    cambiar: string
+    quedarse: string
   }
   apertura: {
     titular: string[]

@@ -34,6 +34,13 @@ export const es: Copy = {
   cabecera: {
     marca: 'echo',
     cta: 'Descargar echo',
+    idioma: 'Idioma',
+  },
+
+  sugerenciaIdioma: {
+    texto: 'Esta página también está en español.',
+    cambiar: 'Ver en español',
+    quedarse: 'Seguir en inglés',
   },
 
   apertura: {

@@ -25,6 +25,17 @@ const { cabecera } = getCopy(lang)
 <header class="top">
   <div class="wrap">
     <a class="wordmark" href={url('/', lang)}>{cabecera.marca}</a>
-    <a class="top__cta" href={url('/descarga')}>{cabecera.cta}</a>
+    <div class="top__acciones">
+      {/*
+        Selector de idioma. Oculto en el HTML: lo enseña el guion de <Base>
+        solo si esta página existe en el otro idioma (un `hreflang` alterno o
+        los dos bloques de /descarga). Sin JavaScript queda el enlace del pie.
+      */}
+      <select class="top__idioma" aria-label={cabecera.idioma} data-selector-idioma hidden>
+        <option value="es" lang="es" selected={lang === 'es'}>Español</option>
+        <option value="en" lang="en" selected={lang === 'en'}>English</option>
+      </select>
+      <a class="top__cta" href={url('/descarga')}>{cabecera.cta}</a>
+    </div>
   </div>
 </header>

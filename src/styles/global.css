@@ -140,6 +140,34 @@
     text-decoration-color: var(--color-line);
   }
   .top__cta:hover { color: var(--color-accent); }
+  .top__acciones { display: flex; align-items: center; gap: 20px; }
+  .top__idioma {
+    font: inherit; font-size: var(--text-small); line-height: 1.2;
+    color: var(--color-ink-3); background: transparent;
+    border: 0; padding: 4px 0; cursor: pointer;
+  }
+  .top__idioma:hover { color: var(--color-ink); }
+  .top__idioma:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  /* Aviso de idioma: fijo abajo para no empujar nada (CLS 0) y fuera del
+     flujo de lectura. Mismo lenguaje que el pie: papel, filete, sin sombra. */
+  .aviso-idioma {
+    position: fixed; z-index: 50;
+    inset-inline: 16px; bottom: 16px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;
+    padding: 14px 18px;
+    background: var(--color-paper); border: 1px solid var(--color-line);
+    border-radius: var(--radius-xs);
+    font-size: var(--text-small); color: var(--color-ink-2);
+  }
+  @media (min-width: 640px) { .aviso-idioma { inset-inline: auto 24px; bottom: 24px; max-width: 30rem; } }
+  .aviso-idioma p { margin: 0; }
+  .aviso-idioma a { color: var(--color-accent); }
+  .aviso-idioma button {
+    font: inherit; color: var(--color-ink-3); background: none; border: 0;
+    padding: 0; text-decoration: underline; text-decoration-color: var(--color-line); cursor: pointer;
+  }
+  .aviso-idioma button:hover { color: var(--color-ink); }
   .wordmark {
     font: 500 1.25rem / 1 var(--font-mono);
     letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none;
