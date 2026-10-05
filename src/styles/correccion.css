@@ -254,8 +254,32 @@
 /* --- LA DEMO, debajo del botón: la ventana de correo donde se dicta, se
        corrige y se pega en bucle, sin sonido y sin pedir nada. Ocupa la
        columna sola —nada al lado— y el texto sube de cuerpo para llenarla. */
+/* El marco va en `.demo`, no en cada `.win`: las dos capas del ciclo
+   comparten la misma celda, así que una sola hoja con borde las contiene a
+   las dos y nunca cambia de tamaño entre fases. Borde fino de tinta por los
+   cuatro lados y papel un punto más claro que la página: sin eso la ventana
+   era una franja suelta, abierta por abajo y de lado a lado. Ancho acotado
+   para que el texto ocupe la hoja en vez de quedarse en una línea. */
 .ruta-correccion .demo {
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  max-width: 44rem;
+  border: 1px solid var(--c-ink);
+  background: var(--color-paper-raised);
+}
+.ruta-correccion .demo .win {
+  background: transparent;
+  border-top: 0;
+  padding: 0;
+}
+.ruta-correccion .demo .win__bar {
+  padding-block: 0.6rem;
+}
+.ruta-correccion .demo .win__body {
+  padding: 1rem 0.85rem 1.5rem;
+}
+/* Dentro de la hoja, un solo tipo de línea: la tinta ya la pone el marco. */
+.ruta-correccion .demo .win__rule {
+  background: var(--color-line);
 }
 .ruta-correccion .demo .win__body,
 .ruta-correccion .demo .ciclo__texto {
