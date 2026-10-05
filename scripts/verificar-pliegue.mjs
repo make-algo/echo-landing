@@ -52,15 +52,15 @@ try {
   }
 
   // Desde el 05-10-2026 la apertura es una sola columna y el producto de la
-  // primera pantalla es el vídeo: a 1440×900 el marco del vídeo tiene que
-  // empezar dentro del pliegue, para que se vea que debajo hay producto.
+  // primera pantalla es la demo (la ventana de correo en bucle): a 1440×900
+  // tiene que empezar dentro del pliegue, para que se vea que hay producto.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
     await page.goto(`${base}/`, { waitUntil: 'networkidle' })
-    const box = await page.locator('.video-demo__marco').boundingBox()
+    const box = await page.locator('.demo').boundingBox()
     if (box.y > 900 - 120)
-      fallos.push(`vídeo a 1440×900: empieza en y=${box.y.toFixed(1)}px y no asoma en la primera pantalla`)
-    else console.log(`ok  vídeo a 1440×900 · empieza en y=${box.y.toFixed(1)}px, asoma en la primera pantalla`)
+      fallos.push(`demo a 1440×900: empieza en y=${box.y.toFixed(1)}px y no asoma en la primera pantalla`)
+    else console.log(`ok  demo a 1440×900 · empieza en y=${box.y.toFixed(1)}px, asoma en la primera pantalla`)
     await page.close()
   }
 

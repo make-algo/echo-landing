@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
+import Escrito from './demo/Escrito.astro'
 import Footer from './Footer.astro'
 import Header from './Header.astro'
 import Icono from './Icono.astro'
@@ -16,6 +17,7 @@ const {
   comparativa,
   contacto,
   correccion,
+  demo,
   dondeSePega,
   heroSucio,
   imagenes,
@@ -38,7 +40,8 @@ const {
  * que la página hace mientras la lees lo que el producto hace con tu texto.
  *
  * Una sola columna, alineada con la cabecera, y cinco bloques: apertura con
- * el vídeo, cómo funciona, comparativa, cierre con el botón y dudas. Antes la
+ * la demo, cómo funciona (con el vídeo al final), comparativa, cierre con el
+ * botón y dudas. Antes la
  * apertura tenía una segunda columna (correo de ejemplo, píldora, velocidad)
  * que competía con el titular; se quitó por el feedback de primera impresión
  * en escritorio (05-10-2026).
@@ -52,6 +55,40 @@ const {
  */
 const titular = apertura.titular.join(' ')
 const [tecleando, hablando] = velocidad.filas
+
+/**
+ * Fase de tecleo del ciclo (MAK-129): el texto en bruto se revela carácter a
+ * carácter en vez de pegarse de golpe. Cada carácter va en su propio span para
+ * poder revelarlo con opacidad sin reflow (CLS 0): el bloque ya ocupa su
+ * tamaño final desde el primer fotograma. El texto es el mismo que ya aprobó
+ * Álvaro, solo se envuelve carácter a carácter.
+ */
+function letras(texto: string) {
+  return Array.from(texto)
+    .map((c) => {
+      const seguro = c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c
+      return `<span class="cc">${seguro}</span>`
+    })
+    .join('')
+}
+/**
+ * MAK-274 (revisión): `heroSucio.segmentos` es el copy —por idioma—, pero los
+ * tiempos de la animación (`delay`) son maquetación, no texto, así que se
+ * quedan aquí. Se asignan en orden a los segmentos «marcados» (tachados o la
+ * inserción): `es` y `en` tienen los mismos cinco, en la misma posición.
+ */
+const DELAYS_MARCADOS = ['0s', '.5s', '1s', '1.2s', '1.6s']
+let indiceMarcado = 0
+const segmentosCiclo = heroSucio.segmentos.map((s) => {
+  if ('insercion' in s && s.insercion) return { texto: correccion.insercion, clase: 'ciclo__ins', delay: DELAYS_MARCADOS[indiceMarcado++] }
+  if (s.tachado) return { texto: s.texto, clase: 'ciclo__tach', delay: DELAYS_MARCADOS[indiceMarcado++] }
+  return { texto: s.texto, clase: null as null, delay: null as string | null }
+})
+const cicloTextoHTML = segmentosCiclo
+  .map((s) =>
+    s.clase ? `<span class="${s.clase}" style="--d: ${s.delay}">${letras(s.texto)}</span>` : letras(s.texto)
+  )
+  .join('')
 
 /** MAK-243: mailto pelado, sin cuerpo prerrellenado — solo destinatario y asunto. */
 const mailtoContacto = `mailto:${contacto.destino}?subject=${encodeURIComponent(contacto.asunto)}`
@@ -97,36 +134,32 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
       <p class="c-dim apertura__requisito">
         {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
       </p>
-    </section>
 
-    {/* El vídeo demo, pegado a la apertura: el producto de verdad, con voz.
-         Lo genera el repo privado (`video/`, `npm run web -- <idioma>`): la píldora
-         es la de la app y los textos, lo que echo transcribió y pulió. La portada es
-         el fotograma de los tachones —la misma corrección que organiza la página—.
-         `preload="none"`: no se descarga nada hasta que alguien le da a reproducir.
-         Sin JavaScript quedan los controles nativos; con él, el botón rojo.
-
-         Debajo, como pie del vídeo, la comparación de velocidad (MAK-230): ya no
-         compite con el titular en una segunda columna, y sigue antes de
-         #donde-se-pega con la cifra y su fuente juntas. */}
-    <section class="acto video-demo" id="demo">
-      <h2 class="rubric">{video.titulo}</h2>
-      <div class="video-demo__marco">
-        <video
-          controls
-          preload="none"
-          playsinline
-          width="1920"
-          height="1080"
-          poster={url(`/video/echo-demo-${lang}.webp`)}
-          aria-label={video.descripcion}
-        >
-          <source src={url(`/video/echo-demo-${lang}.mp4`)} type="video/mp4" />
-        </video>
-        <button type="button" class="video-demo__play" aria-label={video.reproducir} hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
-        </button>
+      {/* La demo, debajo del botón y sola en la columna: se dicta tecleando, se
+           corrige y se pega, en bucle y sin sonido (MAK-113, MAK-129). Es lo
+           primero del producto que se ve, sin pedir nada; el vídeo con voz
+           queda más abajo para quien quiera verlo entero. `<Escrito />` es el
+           fotograma final del ciclo: sin JS o con movimiento reducido se ve
+           eso. Decorativa (`aria-hidden`): no dice nada que no diga el copy. */}
+      <div class="demo ciclo" aria-hidden="true">
+        <div class="ciclo__bruto win">
+          <div class="win__bar">{demo.ventana.barra}</div>
+          <div class="win__field win__field--to">
+            <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor}
+          </div>
+          <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
+          <div class="win__rule"></div>
+          <div class="win__body">
+            <span class="ciclo__caret"></span><span class="ciclo__texto" set:html={cicloTextoHTML} />
+          </div>
+        </div>
+        <div class="ciclo__final">
+          <Escrito lang={lang} />
+        </div>
       </div>
+
+      {/* Como pie de la demo, la comparación de velocidad (MAK-230): antes de
+           #donde-se-pega, con la cifra y su fuente juntas (MAK-244). */}
       <div class="veloc">
         <p class="veloc__fila">
           <span class="veloc__modo">{tecleando.modo}</span>
@@ -195,6 +228,33 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
           ))
         }
       </ol>
+    </section>
+
+    {/* El vídeo demo, cerrando «cómo funciona»: el producto de verdad, con voz,
+         para quien ya ha visto la demo y quiere verlo entero. Lo genera el
+         repo privado (`video/`, `npm run web -- <idioma>`): la píldora es la
+         de la app y los textos, lo que echo transcribió y pulió.
+         `preload="none"`: no se descarga nada hasta que alguien le da a
+         reproducir. Sin JavaScript quedan los controles nativos; con él, el
+         botón rojo. */}
+    <section class="acto acto--sigue video-demo" id="demo">
+      <h2 class="rubric">{video.titulo}</h2>
+      <div class="video-demo__marco">
+        <video
+          controls
+          preload="none"
+          playsinline
+          width="1920"
+          height="1080"
+          poster={url(`/video/echo-demo-${lang}.webp`)}
+          aria-label={video.descripcion}
+        >
+          <source src={url(`/video/echo-demo-${lang}.mp4`)} type="video/mp4" />
+        </video>
+        <button type="button" class="video-demo__play" aria-label={video.reproducir} hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+        </button>
+      </div>
     </section>
 
     {/* LA COMPARATIVA · cuatro correcciones, ni una más. Es el único titular
@@ -270,6 +330,7 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
 <script>
   import { iniciarTachado } from '../components/correccion/tachado'
   import { iniciarFaq } from '../components/correccion/faq'
+  import { iniciarCiclo } from '../components/correccion/ciclo'
   import { iniciarVideo } from '../components/correccion/video'
 
   const contenido = document.getElementById('contenido')
@@ -277,6 +338,8 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
     iniciarTachado(contenido)
     iniciarFaq(contenido)
   }
+  const ciclo = document.querySelector<HTMLElement>('.ciclo')
+  if (ciclo) iniciarCiclo(ciclo)
   const video = document.querySelector<HTMLElement>('.video-demo__marco')
   if (video) iniciarVideo(video)
 </script>
