@@ -7,13 +7,16 @@
    Regla que rompe, con nombre y apellido: «el texto de una página no se tacha
    ni se tapa: la legibilidad es sagrada».
 
-   La densidad de marcas BAJA con el scroll: la apertura es un destrozo, la
-   comparativa lleva cuatro correcciones, el cierre no tiene ninguna y el alta
-   está limpia. La página se limpia sola mientras la lees, que es literalmente
-   lo que vende el producto.
+   La densidad de marcas BAJA con el scroll: la apertura va tachada, la
+   comparativa lleva cuatro correcciones, el cierre no tiene ninguna y las
+   dudas están limpias. La página se limpia sola mientras la lees, que es
+   literalmente lo que vende el producto.
 
-   Ni una sola caja, radio cero en todas partes, y el rojo tiene una única
-   gramática: rojo es corrección. Por eso el CTA es rojo.
+   Una sola columna, alineada con la cabecera, y cinco bloques separados por
+   aire, no por filetes. Tres voces y no más: display pesado, texto normal y
+   mono pequeño para los rótulos. Ni una sola caja, radio cero en todas
+   partes, y el rojo tiene una única gramática: rojo es corrección. Por eso el
+   CTA es rojo.
    ========================================================================= */
 
 .ruta-correccion {
@@ -22,10 +25,10 @@
   --c-ink-2: #4c463d; /*  8,0:1 */
   --c-rojo: #b52216; /*  6,9:1 sobre papel; blanco sobre él 6,3:1 */
   --c-rojo-fuerte: #8e1a10;
-  --c-m: clamp(1.25rem, 5vw, 5.5rem);
-  /* La banda del margen: donde vive la mano que corrige. Las marcas no flotan
-     sueltas por la página, tienen su sitio. */
-  --c-banda: clamp(1.5rem, 3.5vw, 3.25rem);
+  /* El aire entre bloques, y el de dentro de un bloque. Con dos medidas
+     basta: lo que va junto se lee junto y lo que no, separado. */
+  --c-entre: clamp(5rem, 10vw, 9rem);
+  --c-dentro: clamp(2.5rem, 5vw, 4rem);
 
   background: var(--c-paper);
   color: var(--c-ink);
@@ -52,25 +55,19 @@
   border-radius: 0;
 }
 
-/* Sin contenedor y sin cajas: el texto va de borde a borde con la banda de
-   corrección a la izquierda. Esto es una galerada, no una web. */
+/* La misma columna que la cabecera (`.wrap` de `global.css`): el texto y el
+   logo empiezan en el mismo borde. Antes la página iba de borde a borde con
+   una banda roja a la izquierda y no casaba con la cabecera de encima. */
 .ruta-correccion .acto {
-  padding-left: calc(var(--c-m) + var(--c-banda));
-  padding-right: var(--c-m);
-  position: relative;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
-.ruta-correccion .wrap {
-  max-width: none;
-  margin-inline: 0;
-  padding-inline: 0;
+.ruta-correccion .acto--bloque {
+  margin-top: var(--c-entre);
 }
-
-/* Las reglas negras gruesas se quedan SOLO donde marcan un cambio de acto.
-   Si hicieran falta para separar, sería que el espaciado no está resuelto. */
-.ruta-correccion .regla {
-  height: 6px;
-  background: var(--c-ink);
-  margin-block: clamp(2rem, 4vw, 3.25rem);
+.ruta-correccion .acto--sigue {
+  margin-top: var(--c-dentro);
 }
 
 /* --- LA GRAMÁTICA DE MARCAS. Tres, y las tres con la MISMA regla geométrica.
@@ -129,73 +126,51 @@
   font-weight: 700;
 }
 
-/* La barra de margen: señala el párrafo intervenido. Vive en la banda. */
-.ruta-correccion .banda {
-  position: absolute;
-  left: var(--c-m);
-  width: 4px;
-  background: var(--c-rojo);
-  top: 0;
-  bottom: 0;
+/* --- LAS TRES VOCES. Display pesado para lo que se dijo y para lo que
+       decide (la apertura, la comparativa); texto normal para lo que se
+       explica; mono pequeño solo para los rótulos. Ninguna más. ----------- */
+
+/* --- LA APERTURA. Una columna: lo dicho tachado, una línea que dice qué es,
+       el botón y sus condiciones. Nada al lado que compita. El vídeo va justo
+       debajo y asoma ya en la primera pantalla. */
+.ruta-correccion .apertura {
+  padding-top: clamp(1.5rem, 4vw, 3.5rem);
 }
-/* --- LAS DOS VOCES. Display pesado para lo que se dijo, ligero para lo que se
-       escribe, y monoespaciada solo para la voz de la máquina. Dos familias, no
-       tres. Y las escalas bien separadas, para que se lean como antes/después y
-       no como una repetición. ---------------------------------------------- */
 .ruta-correccion .sucio {
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 0.98;
-  font-size: clamp(2rem, 1rem + 3.6vw, 4.5rem);
-  max-width: 22ch;
+  line-height: 1;
+  font-size: clamp(2rem, 0.9rem + 3.4vw, 4rem);
   overflow-wrap: break-word;
+  text-wrap: pretty;
 }
-.ruta-correccion h1,
-.ruta-correccion .limpio {
-  font-weight: 400;
-  letter-spacing: -0.024em;
-  line-height: 1.06;
-  font-size: clamp(1.375rem, 0.85rem + 2.2vw, 2.625rem);
-  max-width: 21ch;
-  text-wrap: balance;
-}
-/* MAK-230: la línea que dice qué es esto, en <p> —no es un nuevo apartado de
-   la página, es la frase que sigue al titular, así que no suma un <h2> al
-   esqueleto de encabezados— pero a cuerpo de h2, como pedía la issue: misma
-   regla que `.ruta-correccion h2` en tamaño y peso. Para que quepa a 1440 px
-   sin empujar nada fuera de vista, el subtítulo de debajo perdió su
-   «Dictado para Mac.» redundante (revisión de la issue): así el peso total
-   de la primera pantalla no crece. */
+/* La línea que dice qué es esto (MAK-230), en <p>: sigue al titular, no es un
+   apartado nuevo. En peso normal: el negro pesado ya lo lleva el titular y
+   dos bloques de display seguidos eran lo que hacía ruido. */
 .ruta-correccion .tagline {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.625rem);
-  max-width: 20ch;
-  margin-top: 0.4rem;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.625rem);
+  color: var(--c-ink-2);
+  max-width: 34ch;
+  margin-top: clamp(1.25rem, 2.5vw, 2rem);
 }
-/* El hero es la sección con más peso propio de la página (galerada intacta
-   arriba + titular + tagline): el aire entre sus piezas se recorta un poco
-   —el filete y los rótulos, no el tipo— para que quepa en la primera
-   pantalla a 1440 px sin tocar `.sucio` ni el `<h1>`. Solo aquí: el resto
-   de la página conserva su ritmo. */
-.ruta-correccion .apertura .regla {
-  margin-block: clamp(1rem, 2vw, 1.5rem);
-}
-.ruta-correccion .apertura .rubric {
-  margin-bottom: 8px;
+.ruta-correccion .apertura__requisito {
+  margin-top: 1rem;
 }
 .ruta-correccion h2 {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.625rem);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
   max-width: 20ch;
 }
 .ruta-correccion h3 {
   font-weight: 700;
   letter-spacing: -0.018em;
-  font-size: clamp(1.125rem, 1.05rem + 0.5vw, 1.375rem);
+  font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3125rem);
+  margin-top: 0.35rem;
 }
 .ruta-correccion .c-lead {
   font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
@@ -205,9 +180,7 @@
   margin-top: 1.5rem;
 }
 /* La cifra dentro de una línea gris: negrita sola no basta en cuerpo pequeño y
-   a un paso de contraste del fondo, así que sube a tinta plena. Es lo mismo que
-   hacen los `dato` de «Qué pasa cuando sueltas la tecla», donde el texto que
-   los rodea ya es tinta y la negrita se ve sin ayuda. */
+   a un paso de contraste del fondo, así que sube a tinta plena. */
 .ruta-correccion .c-dim strong {
   color: var(--c-ink);
 }
@@ -218,8 +191,13 @@
   color: var(--c-ink-2);
   letter-spacing: 0.02em;
 }
+/* Los rótulos de sección son <h2> para quien navega por encabezados, pero a
+   la vista son una etiqueta: el titular grande se reserva para la comparativa.
+   `max-width: none` para que no herede el ancho de los h2 grandes. */
 .ruta-correccion .rubric {
   color: var(--c-rojo);
+  max-width: none;
+  margin-bottom: 1.25rem;
 }
 .ruta-correccion p {
   max-width: 58ch;
@@ -239,314 +217,87 @@
   background: var(--c-rojo-fuerte);
 }
 
-/* MAK-230 (revisión): el «4 veces más rápido» tiene que leerse de pie a dos
-   metros, no como el pie de foto de la demo — así que las cifras suben a
-   cuerpo de titular (misma regla que `.ruta-correccion h1`/`h2`) y las filas
-   se separan con aire de verdad. Sigue sin ser una tarjeta ni un panel
-   (`tics-de-ia`): ni caja, ni fondo, ni borde — solo tamaño y espacio, en el
-   mismo lenguaje de corrección que el resto de la página (`.tach`, medido
-   por `correccion/tachado.ts`, para «Tecleando»; tinta plena para
-   «Hablando»). El rótulo de cada fila va encima, en mono pequeño, como
-   `.rubric` — no al lado, para que la cifra tenga toda la línea. */
+/* --- LA VELOCIDAD, como pie del vídeo (MAK-230). Dos cifras en línea, sin
+       tachado —la marca roja ya la usan el titular y la comparativa— y con
+       su fuente pegada (MAK-244). */
 .ruta-correccion .veloc {
-  margin-top: 2.5rem;
-  display: grid;
-  gap: 1.5rem;
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 2.5rem;
 }
 .ruta-correccion .veloc__fila {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
 }
 .ruta-correccion .veloc__modo {
-  display: block;
   font: 400 var(--text-small) / 1.4 var(--font-mono);
   color: var(--c-ink-2);
   letter-spacing: 0.02em;
-  margin-bottom: 0.2rem;
 }
 .ruta-correccion .veloc__valor {
-  display: block;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  font-size: clamp(1.875rem, 1.1rem + 3vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  color: var(--c-ink-2);
 }
 .ruta-correccion .veloc__valor--bien {
   color: var(--c-ink);
 }
-
-/* MAK-229 · la píldora real, junto al bloque de dictado en bruto. Ancho tope
-   320 px: a 390 px de viewport cabe entera con margen de sobra dentro de la
-   columna (`.acto` deja ~326 px libres ahí), y en escritorio no compite en
-   tamaño con el titular — es una prueba, no la protagonista. Sin sombra ni
-   borde propios: la sombra ya viene pintada en el PNG (es la de verdad, la
-   que pinta macOS), añadir una encima la duplicaría. */
-.ruta-correccion .apertura__pildora {
-  margin-top: 1.25rem;
+.ruta-correccion .veloc__fuente {
+  flex-basis: 100%;
+  margin-top: 0;
 }
-.ruta-correccion .apertura__pildora img {
-  display: block;
-  width: min(100%, 320px);
-  height: auto;
+
+/* --- CÓMO FUNCIONA. Los tres pasos en fila en escritorio: se leen de un
+       vistazo y no dejan el hueco de una columna estrecha. */
+.ruta-correccion .carrusel {
+  margin-top: 0.5rem;
+}
+.ruta-correccion .pasos {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 820px) {
+  .ruta-correccion .pasos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+}
+.ruta-correccion .pasos__texto {
+  margin-top: 0.35rem;
+  color: var(--c-ink-2);
 }
 
 /* MAK-229 · «Puliendo con Claude…» en el paso «Se pule con tu suscripción.».
-   Mismo criterio de ancho tope que la del hero, más pequeña porque aquí
-   ilustra una frase, no abre la página. */
+   Sin sombra ni borde propios: la sombra ya viene pintada en el PNG. */
 .ruta-correccion .paso__pildora {
   display: block;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 .ruta-correccion .paso__pildora img {
   display: block;
-  width: min(100%, 280px);
+  width: min(100%, 240px);
   height: auto;
 }
 
-/* MAK-244 (revisión) · a 1024–1439 px el héroe no cabía en el pliegue de un
-   MacBook Air 13" (1280×800): el CTA quedaba ~162 px por debajo de y=800.
-   Decisión de Álvaro: se aprieta el ritmo vertical del héroe y el cuerpo de
-   `.sucio`/`<h1>` SOLO en este tramo — a 1440 px o más, y por debajo de
-   1024 px, el héroe queda exactamente igual que antes. No se toca copy ni
-   se quita ninguna pieza, solo se reduce. El tachado sigue midiéndose en
-   tiempo real sobre el tamaño ya reducido (`correccion/tachado.ts` observa
-   resize con `ResizeObserver`), así que el trazo sigue cayendo sobre el
-   texto (MAK-242). */
-@media (min-width: 1024px) and (max-width: 1439.98px) {
-  .ruta-correccion .apertura-acto {
-    padding-top: 0.75rem;
-  }
-  .ruta-correccion .apertura .sucio {
-    font-size: 2.75rem;
-  }
-  .ruta-correccion .apertura h1 {
-    font-size: 2rem;
-  }
-  .ruta-correccion .apertura .rubric {
-    margin-bottom: 6px;
-  }
-  .ruta-correccion .apertura .regla {
-    margin-block: 1rem;
-  }
-  .ruta-correccion .apertura .tagline {
-    margin-top: 0.3rem;
-  }
-  .ruta-correccion .apertura .btn {
-    margin-top: 1.25rem;
-  }
-}
-
-/* --- LA APERTURA. A la izquierda lo dictado corrigiéndose; a la derecha el
-       producto, porque una página que promete «hablas y aparece escrito» no
-       puede enseñar cero. ---------------------------------------------------- */
-@media (min-width: 1024px) {
-  .ruta-correccion .apertura {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(2rem, 4vw, 4rem);
-    align-items: start;
-  }
-  .ruta-correccion .apertura__col-prod {
-    position: sticky;
-    top: 2rem;
-  }
-}
-/* La ventana de correo entra en el sistema de papel: era una caja blanca con
-   borde propio, «sacada de un wireframe de Figma» según la tanda a ciegas —
-   ni una sola caja y un único acento rojo es la regla de esta dirección, y
-   una tarjeta UI importada rompía las dos. Ahora es una hoja más del mismo
-   documento, separada por el mismo filete de 6 px que ya marca cambios de
-   acto (MAK-85, punto 2.2). */
-.ruta-correccion .win {
-  background: var(--c-paper);
-  border: 0;
-  border-top: 6px solid var(--c-ink);
-  padding: 1.25rem 0 0;
-  gap: 0;
-}
-
-/* --- EL CICLO: se dicta tecleando, se corrige, se pega — en bucle, sin
-       esperar al scroll (MAK-113, retimed en MAK-129 para que el dictado se
-       teclee carácter a carácter en vez de pegarse de golpe — instrucción
-       explícita de Álvaro, ver docs/product/mak-128-tecleo-antes-de-corregir.md).
-       Las dos capas ocupan la MISMA celda de grid: el alto de la caja lo fija
-       la más alta de las dos, así el cambio de una a otra es un cruce de
-       opacidad sin robarle ni un píxel al layout (CLS 0, ninguna capa se saca
-       del árbol). Solo `transform`/`opacity` se animan — salvo revelar cada
-       carácter, que es alternar opacidad de un span que ya estaba en el DOM,
-       no reflow.
-
-       `correccion/ciclo.ts` orquesta las fases con un atributo `data-fase` en
-       `.ciclo` (tecleo → correccion → pegado → sostenido → reposo); estas
-       reglas solo pintan lo que ese atributo dice. El bruto usa el MISMO
-       chrome de ventana (`.win`) que `<Escrito />` y el MISMO tachado/inserción
-       ya aprobados de la apertura (`.tach`/`.ins` de la columna izquierda) —
-       ninguna palabra nueva. Sus marcas llevan clase propia (`.ciclo__tach`/
-       `.ciclo__ins`, no `.tach`/`.ins`) para que `correccion/tachado.ts` nunca
-       las mida: medir en cada fotograma habría metido JS de más durante el
-       movimiento (spec MAK-113 §5), así que aquí el trazo es `text-decoration`
-       plano siempre, no solo mientras anima.
-
-       Sin JS, `ciclo.ts` nunca arranca y `.ciclo` nunca tiene `data-fase`: el
-       valor base de cada capa YA es el fotograma de reposo — el bruto en
-       `opacity: 0` y el final en `opacity: 1`. Con `prefers-reduced-motion`,
-       `ciclo.ts` comprueba la media query y no arranca tampoco, por lo que se
-       cae al mismo fotograma final directo — nunca a medio teclear. */
-.ciclo {
-  display: grid;
-}
-.ciclo > * {
-  grid-area: 1 / 1;
-}
-.ciclo__bruto {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.ciclo[data-fase='tecleo'] .ciclo__bruto,
-.ciclo[data-fase='correccion'] .ciclo__bruto,
-.ciclo[data-fase='pegado'] .ciclo__bruto {
-  opacity: 1;
-  transform: translateY(0);
-}
-.ciclo__final {
-  transform-origin: 50% 40%;
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.ciclo[data-fase='tecleo'] .ciclo__final,
-.ciclo[data-fase='correccion'] .ciclo__final {
-  opacity: 0;
-  transform: scale(0.98);
-}
-/* El destello: un breve rebote por encima de 1 marca el instante del pegado,
-   no un fundido cualquiera — es el golpe, no la aparición. */
-.ciclo[data-fase='pegado'] .ciclo__final {
-  opacity: 1;
-  transform: scale(1.015);
-  transition: opacity 0.12s ease, transform 0.12s ease;
-}
-.ciclo__caret {
-  display: inline-block;
-  width: 3px;
-  height: 1em;
-  vertical-align: -0.15em;
-  /* Tinta, no rojo: el rojo en esta página tiene una única gramática —
-     corrección— y un cursor de dictado no corrige nada. */
-  background: var(--c-ink);
-  margin-right: 0.15em;
-  opacity: 0;
-}
-.ciclo[data-fase='tecleo'] .ciclo__caret {
-  opacity: 1;
-  animation: ciclo-caret 0.9s steps(1, end) infinite;
-}
-.ciclo__texto {
-  font-size: 1.0625rem;
-}
-/* Cada carácter ya ocupa su hueco final desde el primer fotograma (CLS 0):
-   «teclear» es solo alternar opacidad, nunca insertar ni quitar texto. */
-.ciclo__texto .cc {
-  opacity: 0;
-}
-.ciclo__texto .cc.cc--on {
-  opacity: 1;
-}
-.ciclo__tach,
-.ciclo__ins {
-  transition: opacity 0.3s ease;
-}
-/* Mismo dibujo que `.tach`/`.ins`, deliberadamente sin compartir selector con
-   ellos (ver nota de arriba: esto es lo que las excluye de tachado.ts). */
-.ciclo__tach {
-  color: var(--c-ink-2);
-  text-decoration: line-through;
-  text-decoration-color: var(--c-rojo);
-  text-decoration-thickness: 0.07em;
-  text-underline-offset: 0;
-}
-.ciclo__ins {
-  color: var(--c-rojo);
-  font: 500 0.72em / 1.2 var(--font-mono);
-  letter-spacing: 0;
-  vertical-align: 0.05em;
-  margin-inline: 0.3em;
-}
-.ciclo__ins::before {
-  content: '^';
-  margin-right: 0.25em;
-  font-weight: 700;
-}
-/* Mientras se teclea, el texto en bruto se lee limpio: ni tachado ni
-   inserción destacada todavía — son el mismo texto ya tecleado, solo que la
-   corrección aún no ha llegado (spec MAK-129 §1). */
-.ciclo[data-fase='tecleo'] .ciclo__tach {
-  color: inherit;
-  text-decoration: none;
-}
-.ciclo[data-fase='tecleo'] .ciclo__ins {
-  color: inherit;
-  font: inherit;
-  letter-spacing: normal;
-  vertical-align: baseline;
-  margin-inline: 0;
-}
-.ciclo[data-fase='tecleo'] .ciclo__ins::before {
-  content: none;
-}
-/* El vaivén de opacidad con el que aparece cada marca, disparado una vez por
-   vuelta cuando el tecleo termina — no un bucle infinito como antes. */
-.ciclo__tach.marca-on,
-.ciclo__ins.marca-on {
-  animation: ciclo-marca 0.9s ease-in-out both;
-  animation-delay: var(--d, 0s);
-}
-@keyframes ciclo-caret {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-@keyframes ciclo-marca {
-  0% {
-    opacity: 0.3;
-  }
-  60%,
-  100% {
-    opacity: 1;
-  }
-}
-.ruta-correccion .win__bar,
-.ruta-correccion .win__field {
-  padding: 0.4rem 0.85rem;
-  font-size: var(--text-micro);
-}
-.ruta-correccion .win__bar {
-  font-family: var(--font-mono);
-  border-bottom: 1px solid var(--color-line);
-}
-.ruta-correccion .win__rule {
-  display: block;
-  background: var(--c-ink);
-}
-.ruta-correccion .win__body {
-  padding: 0.9rem 0.85rem 2rem;
-  border-top: 1px solid var(--color-line);
-  font-size: 1.0625rem;
-}
-.ruta-correccion .caret {
-  background: var(--c-rojo);
-  width: 3px;
-}
-
 /* --- LA COMPARATIVA SON CUATRO CORRECCIONES, ni una más ------------------- */
+.ruta-correccion .comparativa {
+  margin-top: 2.5rem;
+}
+.ruta-correccion .corr__nota {
+  margin-top: 0.5rem;
+}
 .ruta-correccion .corr {
-  border-top: 2px solid var(--c-ink);
+  border-top: 1px solid var(--c-ink);
   padding: 1.25rem 0 1.5rem;
 }
 .ruta-correccion .corr:last-of-type {
-  border-bottom: 2px solid var(--c-ink);
+  border-bottom: 1px solid var(--c-ink);
 }
 .ruta-correccion .corr .crit {
   font: 400 var(--text-small) / 1.5 var(--font-mono);
@@ -583,11 +334,10 @@
 
 /* --- PREGUNTAS Y CONTACTO: mismo sistema. Líneas de escritura, ni una caja. */
 .ruta-correccion .faq {
-  border-bottom: 2px solid var(--c-ink);
-  max-width: 52rem;
+  border-bottom: 1px solid var(--c-ink);
 }
 .ruta-correccion .qa {
-  border-top: 2px solid var(--c-ink);
+  border-top: 1px solid var(--c-ink);
 }
 .ruta-correccion .qa > summary {
   font-weight: 700;
@@ -605,27 +355,28 @@
 .ruta-correccion .qa[open] > summary::after {
   transform: rotate(0deg);
 }
-.ruta-correccion .footer {
-  border-top: 6px solid var(--c-ink);
-  padding-left: calc(var(--c-m) + var(--c-banda));
-  padding-right: var(--c-m);
-  color: var(--c-ink-2);
+.ruta-correccion .privacidad {
+  color: var(--c-ink);
+  margin-top: 0;
+}
+.ruta-correccion .contacto {
+  padding-bottom: clamp(3rem, 7vw, 6rem);
 }
 
 @media (max-width: 819px) {
   .ruta-correccion .sucio {
-    max-width: none;
     font-size: clamp(1.625rem, 1rem + 3vw, 2.25rem);
   }
 }
 
-/* --- El vídeo demo bajo la apertura. Un filete de tinta y nada más: sin
+/* --- El vídeo demo pegado a la apertura. Un filete de tinta y nada más: sin
        sombra ni radio, como el resto de la página. El botón es rojo porque es
        una acción, la misma gramática que el CTA. */
+.ruta-correccion .video-demo {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
 .ruta-correccion .video-demo__marco {
   position: relative;
-  margin-top: 1.5rem;
-  max-width: 1120px;
   border: 1px solid var(--c-ink);
   background: var(--c-ink);
 }

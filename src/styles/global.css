@@ -140,6 +140,17 @@
     text-decoration-color: var(--color-line);
   }
   .top__cta:hover { color: var(--color-accent); }
+  /* El acceso a la descarga en la cabecera: el mismo rojo que el CTA del
+     héroe, más pequeño. Radio cero, como todo el sistema de la landing. */
+  .top__btn {
+    display: inline-flex; align-items: center; min-height: 36px;
+    padding: 0 14px;
+    font-size: var(--text-small); font-weight: 600; line-height: 1.2;
+    background: var(--color-accent); color: var(--color-paper);
+    text-decoration: none; border-radius: 0;
+  }
+  .top__btn:hover { background: var(--color-accent-strong); }
+  .top__btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
   .top__acciones { display: flex; align-items: center; gap: 20px; }
   .top__idioma {
     font: inherit; font-size: var(--text-small); line-height: 1.2;

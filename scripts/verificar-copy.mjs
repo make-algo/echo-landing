@@ -445,7 +445,7 @@ for (const [ruta, fichero, idioma] of RUTAS) {
   // --- CA-LOGO-1..5 (MAK-212, deroga CA-CAR-3/CA-CAR-4 de MAK-194): la franja
   //     «Se pega donde ya escribes» son seis piezas icono+etiqueta, y desde
   //     MAK-212 el icono es el logo real de la marca, no un dibujo genérico.
-  const franja = html.match(/<section class="acto" id="donde-se-pega"[\s\S]*?<\/section>/)?.[0]
+  const franja = html.match(/<section class="acto[^"]*" id="donde-se-pega"[\s\S]*?<\/section>/)?.[0]
   if (!franja) mal(ruta, 'CA-CAR-1: no existe la sección #donde-se-pega')
   else {
     const piezas = (franja.match(/class="carrusel__pieza"/g) ?? []).length
@@ -899,20 +899,15 @@ else {
   else console.log(`ok  ${ogFichero} · ${(ogSize / 1024).toFixed(1)} KB, por debajo de 300 KB`)
 }
 
-// --- MAK-229 · la píldora real, en sus dos sitios, y sin que un refactor se
-//     la lleve por delante en silencio: cada una en <picture> con AVIF/WebP
-//     además del PNG, con width/height explícitos (CLS 0), y la del héroe con
-//     fetchpriority="high" (no bloquea el render) mientras la del paso de
-//     pulido va loading="lazy". El fichero tiene que existir de verdad en
-//     dist/ (public/producto/ copiado tal cual al build) en los tres formatos.
+// --- MAK-229 · la píldora real en el paso de pulido, sin que un refactor se
+//     la lleve por delante en silencio: en <picture> con AVIF/WebP además del
+//     PNG, con width/height explícitos (CLS 0) y loading="lazy". El fichero
+//     tiene que existir de verdad en dist/ (public/producto/ copiado tal cual
+//     al build) en los tres formatos. La del héroe («listening») salió con la
+//     segunda columna de la apertura (05-10-2026): ahora el producto de la
+//     primera pantalla es el vídeo.
 {
   const PILDORAS = [
-    {
-      nombre: 'héroe · listening',
-      slug: 'hud_listening',
-      alt: 'La píldora de echo escuchando, con la onda de voz y el contador en 0:07.',
-      carga: /fetchpriority="high"/,
-    },
     {
       nombre: 'paso «Se pule con tu suscripción» · polishing',
       slug: 'hud_polishing',
@@ -938,7 +933,7 @@ else {
     }
   }
   if (!fallos.some((f) => f.startsWith('MAK-229')))
-    console.log('ok  MAK-229 · la píldora real está en el héroe y en el paso de pulido, con AVIF/WebP/PNG')
+    console.log('ok  MAK-229 · la píldora real está en el paso de pulido, con AVIF/WebP/PNG')
 }
 
 // --- MAK-247 · los tres pasos de «Qué pasa cuando sueltas la tecla», cada uno

@@ -51,15 +51,16 @@ try {
     await page.close()
   }
 
-  // Los bordes del tramo tocado (1024 y 1439 px) tienen que seguir dentro,
-  // y 1440 px queda fuera del recorte: el héroe no puede haber cambiado ahí.
+  // Desde el 05-10-2026 la apertura es una sola columna y el producto de la
+  // primera pantalla es el vídeo: a 1440×900 el marco del vídeo tiene que
+  // empezar dentro del pliegue, para que se vea que debajo hay producto.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
     await page.goto(`${base}/`, { waitUntil: 'networkidle' })
-    const fontSize = await page.evaluate(() => getComputedStyle(document.querySelector('.sucio')).fontSize)
-    if (fontSize !== '67.84px')
-      fallos.push(`MAK-244: a 1440px el tamaño de .sucio cambió (${fontSize}) — el recorte se salió del tramo 1024–1439px`)
-    else console.log('ok  1440px · .sucio sigue en su tamaño original, fuera del tramo recortado')
+    const box = await page.locator('.video-demo__marco').boundingBox()
+    if (box.y > 900 - 120)
+      fallos.push(`vídeo a 1440×900: empieza en y=${box.y.toFixed(1)}px y no asoma en la primera pantalla`)
+    else console.log(`ok  vídeo a 1440×900 · empieza en y=${box.y.toFixed(1)}px, asoma en la primera pantalla`)
     await page.close()
   }
 

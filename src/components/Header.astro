@@ -7,6 +7,8 @@ interface Props {
 }
 const { lang = DEFAULT_LOCALE } = Astro.props
 const { cabecera } = getCopy(lang)
+/** En /descarga el botón llevaría a la misma página y repetiría el suyo. */
+const enDescarga = Astro.url.pathname.replace(/\/$/, '').endsWith('/descarga')
 
 /**
  * Cabecera mínima: la marca en pantalla y un acceso permanente al alta.
@@ -15,7 +17,9 @@ const { cabecera } = getCopy(lang)
  * segundos sepa cómo se llama el producto.
  *
  * Pegajosa en las cinco rutas (MAK-231): el botón de descarga sigue visible
- * pasada la primera pantalla, sin volver arriba. El CSS vive en `global.css`.
+ * pasada la primera pantalla, sin volver arriba. Es un botón rojo y no un
+ * enlace gris: es a lo que viene casi todo el que entra. El CSS vive en
+ * `global.css`.
  *
  * El logo lleva a la portada EN ESTE idioma (MAK-274); la descarga sigue
  * yendo a `/descarga`, que todavía no existe en inglés.
@@ -35,7 +39,7 @@ const { cabecera } = getCopy(lang)
         <option value="es" lang="es" selected={lang === 'es'}>Español</option>
         <option value="en" lang="en" selected={lang === 'en'}>English</option>
       </select>
-      <a class="top__cta" href={url('/descarga')}>{cabecera.cta}</a>
+      {!enDescarga && <a class="top__btn" href={url('/descarga')}>{cabecera.cta}</a>}
     </div>
   </div>
 </header>

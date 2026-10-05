@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro'
-import Escrito from './demo/Escrito.astro'
 import Footer from './Footer.astro'
 import Header from './Header.astro'
 import Icono from './Icono.astro'
@@ -17,7 +16,6 @@ const {
   comparativa,
   contacto,
   correccion,
-  demo,
   dondeSePega,
   heroSucio,
   imagenes,
@@ -35,57 +33,25 @@ const {
  * MAK-71, con el pulido de `docs/design/pulido-correccion-mak85.md`).
  *
  * Lo que dijiste, en negro pesadísimo y a cuerpo de cartel, tachado y corregido
- * en rojo delante de ti; y debajo, lo que queda escrito. La densidad de marcas
- * baja con el scroll —apertura destrozada, cuatro correcciones en la
- * comparativa, cierre y alta limpios— así que la página hace mientras la lees lo
- * que el producto hace con tu texto.
+ * en rojo delante de ti. La densidad de marcas baja con el scroll —apertura
+ * tachada, cuatro correcciones en la comparativa, cierre y dudas limpios— así
+ * que la página hace mientras la lees lo que el producto hace con tu texto.
  *
- * Las dos capas sucias van `aria-hidden` y llevan su rótulo: en voz alta se lee
- * el copy aprobado entero, seguido y en orden, sin una sola tachadura de por
- * medio. El tachado en sí se mide, no se estima: ver `correccion/tachado.ts`.
+ * Una sola columna, alineada con la cabecera, y cinco bloques: apertura con
+ * el vídeo, cómo funciona, comparativa, cierre con el botón y dudas. Antes la
+ * apertura tenía una segunda columna (correo de ejemplo, píldora, velocidad)
+ * que competía con el titular; se quitó por el feedback de primera impresión
+ * en escritorio (05-10-2026).
+ *
+ * La capa sucia va `aria-hidden`: en voz alta se lee el copy aprobado entero,
+ * seguido y en orden, sin una sola tachadura de por medio. El tachado en sí
+ * se mide, no se estima: ver `correccion/tachado.ts`.
  *
  * MAK-274: componente compartido por `/` (es) y `/en/` (en)
  * — la maqueta es una sola, el idioma la parametriza.
  */
-const v = correccion
 const titular = apertura.titular.join(' ')
 const [tecleando, hablando] = velocidad.filas
-
-/**
- * Fase de tecleo del ciclo (MAK-129): el texto en bruto se revela carácter a
- * carácter en vez de pegarse de golpe (mak-113 §2 revertido para esta fase
- * por instrucción explícita de Álvaro, ver mak-128). Cada carácter va en su
- * propio span para poder revelarlo con opacidad sin reflow (CLS 0): el bloque
- * ya ocupa su tamaño final desde el primer fotograma. El orden y el texto son
- * los mismos que ya aprobó Álvaro, solo se envuelve carácter a carácter.
- */
-function letras(texto: string) {
-  return Array.from(texto)
-    .map((c) => {
-      const seguro = c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c
-      return `<span class="cc">${seguro}</span>`
-    })
-    .join('')
-}
-/**
- * MAK-274 (revisión): `heroSucio.segmentos` es el copy —por idioma—, pero los
- * tiempos de la animación (`delay`) son maquetación, no texto, así que se
- * quedan aquí. Se asignan en orden a los segmentos «marcados» (tachados o la
- * inserción): tanto `es` como `en` tienen los mismos cinco, en la misma
- * posición narrativa, así que la secuencia de retardos vale para los dos.
- */
-const DELAYS_MARCADOS = ['0s', '.5s', '1s', '1.2s', '1.6s']
-let indiceMarcado = 0
-const segmentosCiclo = heroSucio.segmentos.map((s) => {
-  if ('insercion' in s && s.insercion) return { texto: correccion.insercion, clase: 'ciclo__ins', delay: DELAYS_MARCADOS[indiceMarcado++] }
-  if (s.tachado) return { texto: s.texto, clase: 'ciclo__tach', delay: DELAYS_MARCADOS[indiceMarcado++] }
-  return { texto: s.texto, clase: null as null, delay: null as string | null }
-})
-const cicloTextoHTML = segmentosCiclo
-  .map((s) =>
-    s.clase ? `<span class="${s.clase}" style="--d: ${s.delay}">${letras(s.texto)}</span>` : letras(s.texto)
-  )
-  .join('')
 
 /** MAK-243: mailto pelado, sin cuerpo prerrellenado — solo destinatario y asunto. */
 const mailtoContacto = `mailto:${contacto.destino}?subject=${encodeURIComponent(contacto.asunto)}`
@@ -104,125 +70,47 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
 >
   <Header lang={lang} />
   <main id="contenido" class="ruta-correccion">
-    {/* ACTO 1 · máxima densidad de marcas */}
-    <section class="acto apertura-acto" style="padding-top: clamp(1rem, 2vw, 2rem)">
-      <span class="banda" aria-hidden="true"></span>
-      <div class="apertura">
-        <div>
-          <p class="rubric">{v.capaSucia}</p>
-          <p class="sucio" aria-hidden="true">
-            {
-              heroSucio.segmentos.map((s) =>
-                'insercion' in s && s.insercion ? (
-                  <span class="ins">{correccion.insercion}</span>
-                ) : s.tachado ? (
-                  <span class="tach">{s.texto}</span>
-                ) : (
-                  s.texto
-                )
-              )
-            }
-          </p>
-
-          <div class="regla" aria-hidden="true"></div>
-
-          <p class="rubric">{v.capaLimpia}</p>
-          <h1>{titular}</h1>
-          {/* MAK-230: qué es esto, en grande, inmediatamente debajo del
-               bloque limpio. MAK-244: el subtítulo se quita — este tagline
-               es lo único que queda de esa línea en el hero. */}
-          <p class="tagline">{apertura.tagline}</p>
-          <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
-          <p class="c-dim" style="margin-top: 1.25rem">
-            {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
-          </p>
-        </div>
-
-        {/* La columna del producto: la demo (decorativa, aria-hidden) y,
-             debajo, la comparación de velocidad — que SÍ se lee. Las dos
-             comparten columna porque ahí sobra alto que el texto de la
-             izquierda ya no tiene (MAK-230): así la comparación entra por
-             encima del pliegue en escritorio sin alargar la columna de
-             texto ni empujar el bloque de corrección fuera de vista. */}
-        <div class="apertura__col-prod">
-          {/* El producto, en el primer pantallazo. Una página que promete
-               «hablas y aparece escrito» no puede enseñar cero: se ve dictarse,
-               corregirse y pegarse solo, en bucle, sin esperar al scroll
-               (MAK-113). `<Escrito />` es el fotograma final del ciclo — su
-               marcado no cambia, solo se le superpone el bruto mientras dicta. */}
-          <div class="apertura__prod ciclo" aria-hidden="true">
-            <div class="ciclo__bruto win">
-              <div class="win__bar">{demo.ventana.barra}</div>
-              <div class="win__field win__field--to">
-                <b>{demo.ventana.para.etiqueta}</b> {demo.ventana.para.valor}
-              </div>
-              <div class="win__field"><b>{demo.ventana.asunto.etiqueta}</b> {demo.ventana.asunto.valor}</div>
-              <div class="win__rule"></div>
-              <div class="win__body">
-                <span class="ciclo__caret"></span><span class="ciclo__texto" set:html={cicloTextoHTML} />
-              </div>
-            </div>
-            <div class="ciclo__final">
-              <Escrito lang={lang} />
-            </div>
-          </div>
-
-          {/* MAK-229: la píldora real, junto al bloque de dictado en bruto de
-               arriba — lo que el visitante ve de verdad en su pantalla
-               mientras habla. A diferencia del `.ciclo` de encima, esta capa
-               NO va `aria-hidden`: es la prueba del producto, no una
-               recreación, así que lleva su propio `alt`. Pixels reales de la
-               app (MAK-228), redimensionados y comprimidos por
-               `scripts/generar-producto.mjs`; nunca se recorta a mano. */}
-          <div class="apertura__pildora">
-            <picture>
-              <source srcset={url('/producto/hud_listening.avif')} type="image/avif" />
-              <source srcset={url('/producto/hud_listening.webp')} type="image/webp" />
-              <img
-                src={url('/producto/hud_listening.png')}
-                width="320"
-                height="137"
-                alt={imagenes.pildoraEscuchando}
-                fetchpriority="high"
-                decoding="async"
-              />
-            </picture>
-          </div>
-
-          {/* MAK-230: el «4 veces más rápido» como pieza visual, no como
-               frase enterrada — dos filas en el mismo lenguaje de corrección
-               que ya usa la página. «Tecleando» lleva el tachado medido de
-               `correccion/tachado.ts` (clase `.tach`, la misma que arriba);
-               ninguna de las dos filas va `aria-hidden`: son la comparación
-               en sí, no una capa sucia que repita lo que ya dijo el titular.
-               `.tach` va en el `<span>` interno, inline, no en `.veloc__valor`
-               (que es `display: block` para la maquetación): `tachado.ts` mide
-               con `getClientRects()`, que da un rect por línea SOLO en línea
-               —sobre un bloque da un único rect, el de toda la caja, y el
-               trazo sale mal (ver revisión de la issue). */}
-          <div class="veloc">
-            <p class="veloc__fila">
-              <span class="veloc__modo">{tecleando.modo}</span>
-              <span class="veloc__valor"><span class="tach">{tecleando.ppm}</span></span>
-            </p>
-            <p class="veloc__fila">
-              <span class="veloc__modo">{hablando.modo}</span>
-              <span class="veloc__valor veloc__valor--bien">{hablando.ppm}</span>
-            </p>
-            <p class="microcopy" style="margin-top: 0.6rem">{velocidad.fuente}</p>
-          </div>
-        </div>
-      </div>
+    {/* LA APERTURA · una sola columna y una sola idea: lo dicho, tachado y
+         corregido a cuerpo de cartel; una línea que dice qué es; el botón.
+         Debajo, el producto de verdad (el vídeo), que asoma ya en la primera
+         pantalla. El `<h1>` es el titular limpio para quien no ve la página:
+         a la vista, la capa sucia con sus tachones YA se lee como ese mismo
+         titular, y pintarlo otra vez debajo era repetir la frase (feedback de
+         la primera impresión en escritorio, 05-10-2026). */}
+    <section class="acto apertura">
+      <p class="sucio" aria-hidden="true">
+        {
+          heroSucio.segmentos.map((s) =>
+            'insercion' in s && s.insercion ? (
+              <span class="ins">{correccion.insercion}</span>
+            ) : s.tachado ? (
+              <span class="tach">{s.texto}</span>
+            ) : (
+              s.texto
+            )
+          )
+        }
+      </p>
+      <h1 class="sr-only">{titular}</h1>
+      <p class="tagline">{apertura.tagline}</p>
+      <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
+      <p class="c-dim apertura__requisito">
+        {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
+      </p>
     </section>
 
-    {/* El vídeo demo, justo después de la apertura: el producto de verdad, con voz.
+    {/* El vídeo demo, pegado a la apertura: el producto de verdad, con voz.
          Lo genera el repo privado (`video/`, `npm run web -- <idioma>`): la píldora
          es la de la app y los textos, lo que echo transcribió y pulió. La portada es
          el fotograma de los tachones —la misma corrección que organiza la página—.
          `preload="none"`: no se descarga nada hasta que alguien le da a reproducir.
-         Sin JavaScript quedan los controles nativos; con él, el botón rojo. */}
-    <section class="acto video-demo" id="demo" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
-      <h2>{video.titulo}</h2>
+         Sin JavaScript quedan los controles nativos; con él, el botón rojo.
+
+         Debajo, como pie del vídeo, la comparación de velocidad (MAK-230): ya no
+         compite con el titular en una segunda columna, y sigue antes de
+         #donde-se-pega con la cifra y su fuente juntas. */}
+    <section class="acto video-demo" id="demo">
+      <h2 class="rubric">{video.titulo}</h2>
       <div class="video-demo__marco">
         <video
           controls
@@ -239,20 +127,25 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
         </button>
       </div>
+      <div class="veloc">
+        <p class="veloc__fila">
+          <span class="veloc__modo">{tecleando.modo}</span>
+          <span class="veloc__valor">{tecleando.ppm}</span>
+        </p>
+        <p class="veloc__fila">
+          <span class="veloc__modo">{hablando.modo}</span>
+          <span class="veloc__valor veloc__valor--bien">{hablando.ppm}</span>
+        </p>
+        <p class="microcopy veloc__fuente">{velocidad.fuente}</p>
+      </div>
     </section>
 
-    {/* ACTO 2 · «Se pega donde ya escribes» (MAK-194/195). La spec la pide
-         entre el Hero y la Demo animada, pero en esta dirección (galerada,
-         MAK-85) las dos ya son UNA sola sección: el ciclo de dictado vive
-         dentro del hero para que compartan el primer viewport en escritorio
-         (D3 de `03-alcance-landing.md`, no se reabre aquí). Partirlas para
-         cumplir la letra de la spec rompería esa regla ya fijada, así que la
-         franja va inmediatamente después del hero+demo — la misma posición
-         argumental, generalizando la promesa antes de que el resto de la
-         página la concrete. Decisión anotada en la issue, no en silencio. */}
-    <section class="acto" id="donde-se-pega" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
-      <h2>{dondeSePega.titulo}</h2>
-      <ul class="carrusel" style="margin-top: 1.5rem">
+    {/* CÓMO FUNCIONA · dos secciones que se leen como un solo bloque: dónde
+         acaba el texto y qué pasa por el camino. Van juntas, con poco aire
+         entre ellas (`.acto--sigue`), y separadas del resto con mucho. */}
+    <section class="acto acto--bloque" id="donde-se-pega">
+      <h2 class="rubric">{dondeSePega.titulo}</h2>
+      <ul class="carrusel">
         {
           dondeSePega.piezas.map((p) => (
             <li class="carrusel__pieza">
@@ -262,31 +155,28 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
           ))
         }
       </ul>
-      <p class="c-lead" style="margin-top: 1.5rem">
+      <p class="c-lead">
         {dondeSePega.cuerpo.map((s) => (s.enfasis ? <em>{s.texto}</em> : s.texto))}
       </p>
     </section>
 
-    {/* ACTO 3 · las marcas empiezan a escasear: una barra de margen y nada más */}
-    <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
-      <span class="banda" aria-hidden="true"></span>
+    <section class="acto acto--sigue">
       <h2 class="rubric" id="como-funciona">{pasos.rotulo}</h2>
-      <ol style="list-style: none; padding: 0; display: grid; gap: 1.25rem; margin-top: 1.25rem">
+      <ol class="pasos">
         {
           pasos.lista.map((paso) => (
             <li>
               <span class="c-dim" aria-hidden="true">{paso.n}</span>
               <h3>{paso.titulo}</h3>
-              <p style="margin-top: 0.3rem; color: var(--c-ink-2)">
+              <p class="pasos__texto">
                 {paso.partes.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}
               </p>
               {/* MAK-229: «Puliendo con Claude…» en el píxel de la app — la
                    única prueba visual de que el pulido corre contra la
                    suscripción que el visitante ya paga. Solo en este paso
                    (identidad por referencia contra `pasos.lista[1]`, no por
-                   índice suelto: si el orden de los pasos cambia, esto se
-                   mueve con «Se pule con tu suscripción.»). Carga perezosa:
-                   este paso no está en el primer pantallazo. */}
+                   índice suelto). Carga perezosa: no está en el primer
+                   pantallazo. */}
               {paso === pasos.lista[1] && (
                 <picture class="paso__pildora">
                   <source srcset={url('/producto/hud_polishing.avif')} type="image/avif" />
@@ -307,13 +197,13 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
       </ol>
     </section>
 
-    {/* ACTO 4 · cuatro correcciones, ni una más. */}
-    <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
-      <div class="regla" aria-hidden="true"></div>
+    {/* LA COMPARATIVA · cuatro correcciones, ni una más. Es el único titular
+         grande de la página después de la apertura: aquí se decide si pagar. */}
+    <section class="acto acto--bloque">
       <h2 id="comparacion">{comparativa.titulo}</h2>
       <p class="c-lead">{comparativa.entradilla}</p>
 
-      <div style="margin-top: 2rem">
+      <div class="comparativa">
         {
           comparativa.filas.map((fila) => (
             <div class="corr" data-fila-comparativa>
@@ -325,38 +215,36 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
               <p class="bien">
                 <span class="sr-only">{comparativa.columnas.echo}: </span>{fila.echo}
               </p>
-              {/* MAK-245: el ejemplo del deploy, rescatado de la sección
-                   «Qué hace distinto» al borrarla — único sitio del copy
-                   donde vivía. */}
-              {'nota' in fila && <p class="microcopy" style="margin-top: 0.5rem">{fila.nota}</p>}
+              {/* MAK-245: el ejemplo del deploy. */}
+              {'nota' in fila && <p class="microcopy corr__nota">{fila.nota}</p>}
             </div>
           ))
         }
       </div>
     </section>
 
-    {/* ACTO 5 · cero marcas. La página ya está limpia. */}
-    <section class="acto" style="margin-top: clamp(4rem, 9vw, 8rem)">
+    {/* EL CIERRE · cero marcas: la página ya está limpia. Para quién no es, y
+         el segundo y último botón (MAK-251), con las mismas condiciones. */}
+    <section class="acto acto--bloque">
       <p class="final">
         {comparativa.cierre.concesion} {comparativa.cierre.afirmacion}
       </p>
-      {/* MAK-251: tras el cierre de la comparativa no quedaba más CTA que la
-           cabecera pegajosa. Mismo botón y misma línea de condiciones del
-           héroe, sin copy nuevo. */}
-      <p style="margin-top: 1.5rem"><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
-      <p class="c-dim" style="margin-top: 1.25rem">
+      <p><a class="btn" href={url('/descarga')}>{apertura.cta}</a></p>
+      <p class="c-dim apertura__requisito">
         {apertura.requisito.aviso.map((t) => (t.dato ? <strong>{t.texto}</strong> : t.texto))}{' '}{apertura.requisito.maquina}
       </p>
     </section>
 
-    <section class="acto" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+    {/* LAS DUDAS · privacidad, preguntas y contacto, un solo bloque al final
+         para quien todavía no se ha decidido. */}
+    <section class="acto acto--bloque">
       <h2 class="rubric">{privacidad.rotulo}</h2>
-      <p class="c-lead" style="color: var(--c-ink); margin-top: 1rem">{privacidad.principal}</p>
+      <p class="c-lead privacidad">{privacidad.principal}</p>
     </section>
 
-    <section class="acto" id="preguntas" style="margin-top: clamp(3.5rem, 8vw, 7rem)">
+    <section class="acto acto--sigue" id="preguntas">
       <h2 class="rubric">{preguntas.rotulo}</h2>
-      <div class="faq" style="margin-top: 1.25rem">
+      <div class="faq">
         {
           preguntas.lista.map((q) => (
             <details class="qa">
@@ -368,13 +256,8 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
       </div>
     </section>
 
-    {/* MAK-243: la sección «Escríbenos» (seis piezas de la época de lista de
-         espera) se reduce a una sola línea centrada con un mailto pelado. */}
-    <section
-      class="acto"
-      id="contacto"
-      style="margin-top: clamp(3.5rem, 8vw, 7rem); padding-bottom: clamp(3rem, 7vw, 6rem); text-align: center"
-    >
+    {/* MAK-243: una sola línea con un mailto pelado. */}
+    <section class="acto acto--sigue contacto" id="contacto">
       <p class="c-lead">
         {contacto.texto}<a class="top__cta" href={mailtoContacto}>{contacto.boton}</a>
       </p>
@@ -387,7 +270,6 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
 <script>
   import { iniciarTachado } from '../components/correccion/tachado'
   import { iniciarFaq } from '../components/correccion/faq'
-  import { iniciarCiclo } from '../components/correccion/ciclo'
   import { iniciarVideo } from '../components/correccion/video'
 
   const contenido = document.getElementById('contenido')
@@ -395,8 +277,6 @@ const otroIdiomaHref = lang === 'es' ? url('/', 'en') : url('/')
     iniciarTachado(contenido)
     iniciarFaq(contenido)
   }
-  const ciclo = document.querySelector<HTMLElement>('.ciclo')
-  if (ciclo) iniciarCiclo(ciclo)
   const video = document.querySelector<HTMLElement>('.video-demo__marco')
   if (video) iniciarVideo(video)
 </script>
