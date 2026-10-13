@@ -172,8 +172,8 @@ export const es: Copy = {
         r: 'Se pega la transcripción en bruto y el menú te dice por qué. No pierdes el dictado.',
       },
       {
-        p: '¿Qué Mac necesito?',
-        r: 'macOS 14 (Sonoma) o posterior y Apple Silicon. La primera vez se descarga el modelo de voz, unos 600 MB.',
+        p: '¿Puedo dictar sin que me oiga toda la oficina?',
+        r: 'Sí: susurra. Mantén la tecla y susurra sin acercarte al micrófono. En nuestras pruebas, susurrando se escapan unas 8 palabras de cada 100, frente a 4 hablando normal, y el pulido corrige buena parte.',
       },
     ],
   },
