@@ -178,8 +178,8 @@ export const en: Copy = {
         r: 'The raw transcript gets pasted and the menu tells you why. You never lose what you dictated.',
       },
       {
-        p: 'Which Mac do I need?',
-        r: 'macOS 14 (Sonoma) or later on Apple Silicon. The first time, echo downloads the speech model, about 600 MB.',
+        p: 'Can I dictate without the whole office hearing me?',
+        r: 'Yes: whisper. Hold the key and whisper, no need to lean into the mic. In our tests, whispering misses about 8 words in 100, against 4 at normal volume, and polishing fixes a good share of those.',
       },
     ],
   },
